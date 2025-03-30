@@ -3,7 +3,9 @@ package guru.qa.niffler.test.web;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.BrowserExtension;
-import guru.qa.niffler.jupiter.Spend;
+import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.Spend;
+import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.LoginPage;
@@ -28,10 +30,23 @@ public class SpendingTest {
     final String newDescription = "Обучение Niffler NG";
 
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .doLogin("duck", "12345")
+        .doLogin(new MainPage(),"duck", "12345")
         .editSpending(spend.description())
         .editDescription(newDescription);
 
     new MainPage().checkThatTableContains(newDescription);
   }
+
+//  @Category(username = "duck")
+//  @Test
+//  void catDescriptionShouldBeUpdatedByTableAction(CategoryJson category) {
+//    final String newDescription = "Обучение Niffler NG";
+//
+//    Selenide.open(CFG.frontUrl(), LoginPage.class)
+//            .doLogin("duck", "12345")
+//            .editSpending("asdsa")
+//            .editDescription(newDescription);
+//
+//    new MainPage().checkThatTableContains(newDescription);
+//  }
 }
