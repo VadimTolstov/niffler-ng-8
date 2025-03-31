@@ -36,17 +36,4 @@ public class SpendingTest {
 
     new MainPage().checkThatTableContains(newDescription);
   }
-
-//  @Category(username = "duck")
-//  @Test
-//  void catDescriptionShouldBeUpdatedByTableAction(CategoryJson category) {
-//    final String newDescription = "Обучение Niffler NG";
-//
-//    Selenide.open(CFG.frontUrl(), LoginPage.class)
-//            .doLogin("duck", "12345")
-//            .editSpending("asdsa")
-//            .editDescription(newDescription);
-//
-//    new MainPage().checkThatTableContains(newDescription);
-//  }
 }

@@ -97,14 +97,12 @@ public class RegisterPage extends BasePage<RegisterPage> {
     }
 
     @Step("Проверяем ошибку на странице: {error}")
-    @Nonnull
     public RegisterPage checkError(String... errors) {
         errorContainer.shouldHave(textsInAnyOrder(errors));
         return this;
     }
 
     @Step("Переходим со страницы регистрации на страницу авторизации по ссылке")
-    @Nonnull
     public LoginPage nextLoginPage() {
         nextLoginPage.click();
         return new LoginPage();
