@@ -18,7 +18,7 @@ public class RandomDataUtils {
     }
 
     public static String randomCategoryName() {
-        return faker.app().name();
+        return faker.country().name();
     }
 
     public static String randomSentence(int wordsCount) {
