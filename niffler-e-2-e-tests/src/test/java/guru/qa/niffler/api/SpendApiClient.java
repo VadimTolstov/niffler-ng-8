@@ -71,7 +71,7 @@ public class SpendApiClient {
 
     @Step("Send PATCH [internal/spends/edit] to niffler-spend")
     public @Nonnull SpendJson editSpend(@Nonnull SpendJson spend) {
-        return execute(spendApi.addSpend(spend), HttpStatus.SC_OK);
+        return execute(spendApi.editSpend(spend), HttpStatus.SC_OK);
     }
 
     @Step("Send DELETE [internal/spends/remove] to niffler-spend")
