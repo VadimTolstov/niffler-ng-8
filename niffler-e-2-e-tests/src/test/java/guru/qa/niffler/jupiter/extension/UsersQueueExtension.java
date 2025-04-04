@@ -56,7 +56,7 @@ public class UsersQueueExtension implements
     @Override
     public void beforeTestExecution(ExtensionContext context) {
         Arrays.stream(context.getRequiredTestMethod().getParameters())
-                .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class))
+                .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class) && p.getType().isAssignableFrom(StaticUser.class))
                 .findFirst()
                 .map(p -> p.getAnnotation(UserType.class))
                 .ifPresent(ut -> {
