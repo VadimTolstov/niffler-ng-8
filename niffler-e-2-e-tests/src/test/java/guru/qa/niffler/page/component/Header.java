@@ -9,6 +9,8 @@ import io.qameta.allure.Step;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import java.time.Duration;
+
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
@@ -24,21 +26,21 @@ public class Header {
     @Step("Перейти на страницу профиля")
     @Nonnull
     public ProfilePage toProfilePage() {
-        menuBtn.click();
+        menuBtn.shouldBe(Condition.visible, Duration.ofSeconds(10)).click();
         menuItems.findBy(Condition.text("Profile")).click();
         return new ProfilePage();
     }
 
     @Step("Перейти на страницу друзей")
     public FriendsPage toFriendsPage() {
-        menuBtn.click();
+        menuBtn.shouldBe(Condition.visible, Duration.ofSeconds(10)).click();
         menuItems.findBy(Condition.text("Friends")).click();
         return new FriendsPage();
     }
 
     @Step("Перейти на страницу всех людей")
     public PeoplePage toAllPeoplesPage() {
-        menuBtn.click();
+        menuBtn.shouldBe(Condition.visible, Duration.ofSeconds(10)).click();
         menuItems.findBy(Condition.text("All People")).click();
         return new PeoplePage();
     }
