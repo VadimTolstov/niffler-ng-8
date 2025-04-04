@@ -30,7 +30,7 @@ public class FriendsWebTest {
                 .doLogin(new MainPage(), user.username(), user.password())
                 .getHeaderComponent()
                 .toFriendsPage()
-                .emptyListFriends();
+                .checkEmptyListFriends();
     }
 
     @Test

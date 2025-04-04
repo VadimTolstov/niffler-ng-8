@@ -19,16 +19,14 @@ public class PeoplePage extends BasePage<PeoplePage> {
     @Step("Проверяем, что загрузилась страница Всех пользователей")
     @Override
     public PeoplePage checkThatPageLoaded() {
+        friendsTab.shouldHave(Condition.visible);
         return this;
     }
 
     @Step("Проверяем отображение пользователя: {users}")
     public PeoplePage checkPeople(String... users) {
         for (String user : users) {
-            allPeopleList.shouldHave(CollectionCondition.anyMatch(
-                    "Элемент с текстом '" + user + "' не найден",
-                    el -> el.getText().contains(user)
-            ));
+            allPeopleList.filterBy(Condition.text(user));
         }
         return this;
     }

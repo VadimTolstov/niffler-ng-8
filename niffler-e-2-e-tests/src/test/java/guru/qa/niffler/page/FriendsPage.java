@@ -19,7 +19,6 @@ public class FriendsPage extends BasePage<FriendsPage> {
 
     @Step("Проверяем, что загрузилась страница Друзей")
     @Override
-
     public FriendsPage checkThatPageLoaded() {
         friendsTab.shouldHave(Condition.visible);
         return this;
@@ -51,7 +50,7 @@ public class FriendsPage extends BasePage<FriendsPage> {
     }
 
     @Step("Проверяем, что у пользователя нет друзей")
-    public FriendsPage emptyListFriends() {
+    public FriendsPage checkEmptyListFriends() {
         emptyListFriends.shouldHave(Condition.visible);
         return this;
     }

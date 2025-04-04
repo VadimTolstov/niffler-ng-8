@@ -5,6 +5,7 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -13,6 +14,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
+@ParametersAreNonnullByDefault
 public class UsersQueueExtension implements
         BeforeTestExecutionCallback,
         AfterTestExecutionCallback,
@@ -61,12 +63,7 @@ public class UsersQueueExtension implements
                     Optional<StaticUser> user = Optional.empty();
                     StopWatch sw = StopWatch.createStarted();
                     while (user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 30) {
-                        user = switch (ut.value()) {
-                            case EMPTY -> Optional.ofNullable(EMPTY_USERS.poll());
-                            case WITH_FRIEND -> Optional.ofNullable(WITH_FRIEND_USERS.poll());
-                            case WITH_INCOME_REQUEST -> Optional.ofNullable(WITH_INCOME_REQUEST_USERS.poll());
-                            case WITH_OUTCOME_REQUEST -> Optional.ofNullable(WITH_OUTCOME_REQUEST_USERS.poll());
-                        };
+                        user = Optional.ofNullable(getQueueForType(ut.value()).poll());
                     }
                     Allure.getLifecycle().updateTestCase(testCase ->
                             testCase.setStart(new Date().getTime())
@@ -84,6 +81,15 @@ public class UsersQueueExtension implements
                 });
     }
 
+    private Queue<StaticUser> getQueueForType(Type type) {
+        return switch (type) {
+            case EMPTY -> EMPTY_USERS;
+            case WITH_FRIEND -> WITH_FRIEND_USERS;
+            case WITH_INCOME_REQUEST -> WITH_INCOME_REQUEST_USERS;
+            case WITH_OUTCOME_REQUEST -> WITH_OUTCOME_REQUEST_USERS;
+        };
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public void afterTestExecution(ExtensionContext context) {
@@ -93,12 +99,7 @@ public class UsersQueueExtension implements
         );
         if (mapUser != null) {
             for (Map.Entry<UserType, StaticUser> e : mapUser.entrySet()) {
-                switch (e.getKey().value()) {
-                    case EMPTY -> EMPTY_USERS.add(e.getValue());
-                    case WITH_FRIEND -> WITH_FRIEND_USERS.add(e.getValue());
-                    case WITH_INCOME_REQUEST -> WITH_INCOME_REQUEST_USERS.add(e.getValue());
-                    case WITH_OUTCOME_REQUEST -> WITH_OUTCOME_REQUEST_USERS.add(e.getValue());
-                }
+                getQueueForType(e.getKey().value()).add(e.getValue());
             }
         }
     }
