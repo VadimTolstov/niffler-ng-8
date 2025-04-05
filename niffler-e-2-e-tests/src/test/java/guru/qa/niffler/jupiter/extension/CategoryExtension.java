@@ -21,7 +21,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
 
     @Override
     public void beforeEach(ExtensionContext context) {
-        AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class) // && здесь нужна проверка, что параметром в тесте является CategoryJson
+        AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
                 .ifPresent(userAnno -> {
                     if (userAnno.categories().length > 0) {
                         Category categoryAnno = userAnno.categories()[0];
