@@ -2,6 +2,7 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.page.LoginPage;
@@ -10,12 +11,17 @@ import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 @WebTest
+@ParametersAreNonnullByDefault
 public class ProfileTest {
 
-    @Category(
+    @User(
             username = "duck",
-            archived = false
+            categories = @Category(
+                    archived = false
+            )
     )
     @Test
     @DisplayName("Перевод категории в архивную")
@@ -30,9 +36,11 @@ public class ProfileTest {
                 .checkCategoryExists(category.name());
     }
 
-    @Category(
+    @User(
             username = "duck",
-            archived = true
+            categories = @Category(
+                    archived = true
+            )
     )
     @Test
     @DisplayName("Перевод категории из архивной в действующий")
@@ -45,9 +53,11 @@ public class ProfileTest {
                 .checkCategoryExists(category.name());
     }
 
-    @Category(
+    @User(
             username = "duck",
-            archived = true
+            categories = @Category(
+                    archived = true
+            )
     )
     @Test
     @DisplayName("Перевод категории из архивной в действующий с изменением названия")
