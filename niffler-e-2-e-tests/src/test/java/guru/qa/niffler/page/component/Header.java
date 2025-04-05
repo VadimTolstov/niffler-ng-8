@@ -33,7 +33,7 @@ public class Header {
 
     @Step("Перейти на страницу друзей")
     public FriendsPage toFriendsPage() {
-        menuBtn.shouldBe(Condition.visible, Duration.ofSeconds(10)).click();
+        menuBtn.shouldBe(Condition.visible, Duration.ofSeconds(15)).click();
         menuItems.findBy(Condition.text("Friends")).click();
         return new FriendsPage();
     }

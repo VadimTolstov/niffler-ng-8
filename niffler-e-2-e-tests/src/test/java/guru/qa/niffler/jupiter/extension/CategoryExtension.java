@@ -2,11 +2,16 @@ package guru.qa.niffler.jupiter.extension;
 
 import guru.qa.niffler.api.SpendApiClient;
 import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 public class CategoryExtension implements BeforeEachCallback, AfterTestExecutionCallback, ParameterResolver {
 
@@ -16,30 +21,33 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
 
     @Override
     public void beforeEach(ExtensionContext context) {
-        AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), Category.class)
-                .ifPresent(anno -> {
-                    final String nameCategory = StringUtils.isEmpty(anno.name())
-                            ? RandomDataUtils.randomCategoryName()
-                            : anno.name();
+        AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class) // && здесь нужна проверка, что параметром в тесте является CategoryJson
+                .ifPresent(userAnno -> {
+                    if (userAnno.categories().length > 0) {
+                        Category categoryAnno = userAnno.categories()[0];
+                        final String nameCategory = StringUtils.isEmpty(categoryAnno.name())
+                                ? RandomDataUtils.randomCategoryName()
+                                : categoryAnno.name();
 
-                    CategoryJson categoryJson = new CategoryJson(
-                            null,
-                            nameCategory,
-                            anno.username(),
-                            false
-                    );
-                    CategoryJson create = spendApiClient.addCategory(categoryJson);
-                    if (anno.archived()) {
-                        CategoryJson archivedCategory = new CategoryJson(
-                                create.id(),
-                                create.name(),
-                                create.username(),
-                                true
+                        CategoryJson categoryJson = new CategoryJson(
+                                null,
+                                nameCategory,
+                                userAnno.username(),
+                                false
                         );
-                        create = spendApiClient.updateCategory(archivedCategory);
-                    }
+                        CategoryJson create = spendApiClient.addCategory(categoryJson);
+                        if (categoryAnno.archived()) {
+                            CategoryJson archivedCategory = new CategoryJson(
+                                    create.id(),
+                                    create.name(),
+                                    create.username(),
+                                    true
+                            );
+                            create = spendApiClient.updateCategory(archivedCategory);
+                        }
 
-                    context.getStore(NAMESPACE).put(context.getUniqueId(), create);
+                        context.getStore(NAMESPACE).put(context.getUniqueId(), create);
+                    }
                 });
 
     }
@@ -47,13 +55,15 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
     @Override
     public void afterTestExecution(ExtensionContext context) {
         CategoryJson categoryJson = context.getStore(CategoryExtension.NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
-        spendApiClient.updateCategory(
-                new CategoryJson(
-                        categoryJson.id(),
-                        categoryJson.name(),
-                        categoryJson.username(),
-                        true
-                ));
+        if (categoryJson != null) {
+            spendApiClient.updateCategory(
+                    new CategoryJson(
+                            categoryJson.id(),
+                            categoryJson.name(),
+                            categoryJson.username(),
+                            true
+                    ));
+        }
     }
 
     @Override
@@ -65,6 +75,4 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), CategoryJson.class);
     }
-
-
 }
