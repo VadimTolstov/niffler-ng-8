@@ -5,6 +5,7 @@ import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.utils.RandomDataUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -23,7 +24,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
     public void beforeEach(ExtensionContext context) {
         AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
                 .ifPresent(userAnno -> {
-                    if (userAnno.categories().length > 0) {
+                    if (ArrayUtils.isNotEmpty(userAnno.categories())) {
                         Category categoryAnno = userAnno.categories()[0];
                         final String nameCategory = StringUtils.isEmpty(categoryAnno.name())
                                 ? RandomDataUtils.randomCategoryName()
@@ -54,16 +55,16 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
 
     @Override
     public void afterTestExecution(ExtensionContext context) {
-        CategoryJson categoryJson = context.getStore(CategoryExtension.NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
-        if (categoryJson != null) {
-            spendApiClient.updateCategory(
-                    new CategoryJson(
-                            categoryJson.id(),
-                            categoryJson.name(),
-                            categoryJson.username(),
-                            true
-                    ));
-        }
+        Optional.ofNullable(context.getStore(CategoryExtension.NAMESPACE).get(context.getUniqueId(), CategoryJson.class))
+                .ifPresent(categoryJson -> {
+                    spendApiClient.updateCategory(
+                            new CategoryJson(
+                                    categoryJson.id(),
+                                    categoryJson.name(),
+                                    categoryJson.username(),
+                                    true
+                            ));
+                });
     }
 
     @Override
