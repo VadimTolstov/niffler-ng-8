@@ -1,23 +1,21 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.api.SpendApiClient;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.service.SpendDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 public class CategoryExtension implements BeforeEachCallback, AfterTestExecutionCallback, ParameterResolver {
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
-    private final SpendApiClient spendApiClient = new SpendApiClient();
+    private final SpendDbClient spendDbClient = new SpendDbClient();
 
 
     @Override
@@ -36,7 +34,8 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
                                 userAnno.username(),
                                 false
                         );
-                        CategoryJson create = spendApiClient.addCategory(categoryJson);
+                        CategoryJson create = spendDbClient.addCategory(categoryJson);
+                        //не убираю updateCategory т.к при переходе на API он снова понадобится
                         if (categoryAnno.archived()) {
                             CategoryJson archivedCategory = new CategoryJson(
                                     create.id(),
@@ -44,7 +43,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
                                     create.username(),
                                     true
                             );
-                            create = spendApiClient.updateCategory(archivedCategory);
+                            create = spendDbClient.updateCategory(archivedCategory);
                         }
 
                         context.getStore(NAMESPACE).put(context.getUniqueId(), create);
@@ -57,7 +56,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
     public void afterTestExecution(ExtensionContext context) {
         Optional.ofNullable(context.getStore(CategoryExtension.NAMESPACE).get(context.getUniqueId(), CategoryJson.class))
                 .ifPresent(categoryJson -> {
-                    spendApiClient.updateCategory(
+                    spendDbClient.updateCategory(
                             new CategoryJson(
                                     categoryJson.id(),
                                     categoryJson.name(),

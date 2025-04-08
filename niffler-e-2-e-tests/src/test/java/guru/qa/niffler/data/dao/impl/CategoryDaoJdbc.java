@@ -64,7 +64,7 @@ public class CategoryDaoJdbc implements CategoryDao {
                                 rs.getString("username"),
                                 rs.getBoolean("archived")
                         );
-                        return Optional.of(ce);
+                        return Optional.ofNullable(ce);
                     } else {
                         return Optional.empty();
                     }
@@ -93,7 +93,7 @@ public class CategoryDaoJdbc implements CategoryDao {
                                 rs.getString("username"),
                                 rs.getBoolean("archived")
                         );
-                        return Optional.of(ce);
+                        return Optional.ofNullable(ce);
                     } else {
                         return Optional.empty();
                     }

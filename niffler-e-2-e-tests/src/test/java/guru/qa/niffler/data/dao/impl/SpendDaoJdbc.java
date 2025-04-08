@@ -70,7 +70,7 @@ public class SpendDaoJdbc implements SpendDao {
                             return Optional.empty();
                         }
 
-                        SpendEntity ce = new SpendEntity(
+                        SpendEntity se = new SpendEntity(
                                 rs.getObject("id", UUID.class),
                                 rs.getString("username"),
                                 rs.getObject("currency", CurrencyValues.class),
@@ -78,7 +78,7 @@ public class SpendDaoJdbc implements SpendDao {
                                 rs.getString("description"),
                                 category.get()
                         );
-                        return Optional.of(ce);
+                        return Optional.ofNullable(se);
                     } else {
                         return Optional.empty();
                     }

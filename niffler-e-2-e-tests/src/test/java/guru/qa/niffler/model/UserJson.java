@@ -40,5 +40,4 @@ public record UserJson(
                 entity.getPhotoSmall() != null && entity.getPhotoSmall().length > 0 ? new String(entity.getPhotoSmall(), StandardCharsets.UTF_8) : null
         );
     }
-
 }
