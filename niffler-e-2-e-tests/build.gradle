@@ -1,6 +1,7 @@
 buildscript {
     ext {
         junitVersion = '5.11.4'
+        atomicosVersion = '6.0.0'
         allureVersion = '2.29.1'
         selenideVersion = '7.7.1'
         okhttp3Version = '3.14.9'
@@ -80,6 +81,9 @@ dependencies {
     // DB
     testImplementation "org.springframework:spring-jdbc:${springJdbcVersion}"
     testImplementation "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
+    testImplementation "com.atomikos:transactions-jta:${atomicosVersion}:jakarta"
+    testImplementation "com.atomikos:transactions-hibernate4:${atomicosVersion}:jakarta"
+    testImplementation "com.atomikos:transactions-jdbc:${atomicosVersion}"
     testImplementation "p6spy:p6spy:${p6spyVersion}"
     testImplementation "org.hibernate:hibernate-core:${hibernateVersion}"
     testImplementation "org.springframework.security:spring-security-crypto:${springCryptoVersion}"
