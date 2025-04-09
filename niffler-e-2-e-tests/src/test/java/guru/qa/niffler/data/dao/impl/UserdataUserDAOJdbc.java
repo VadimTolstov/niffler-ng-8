@@ -97,7 +97,7 @@ public class UserdataUserDAOJdbc implements UserdataUserDAO {
                         UserEntity ue = new UserEntity(
                                 rs.getObject("id", UUID.class),
                                 rs.getString("username"),
-                                rs.getObject("currency", CurrencyValues.class),
+                                CurrencyValues.valueOf(rs.getString("currency")),
                                 rs.getString("firstname"),
                                 rs.getString("surname"),
                                 rs.getString("full_name"),

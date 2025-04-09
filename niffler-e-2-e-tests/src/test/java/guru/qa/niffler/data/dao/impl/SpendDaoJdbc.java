@@ -73,7 +73,7 @@ public class SpendDaoJdbc implements SpendDao {
                         SpendEntity se = new SpendEntity(
                                 rs.getObject("id", UUID.class),
                                 rs.getString("username"),
-                                rs.getObject("currency", CurrencyValues.class),
+                                CurrencyValues.valueOf(rs.getString("currency")),
                                 new java.util.Date(rs.getDate("spend_date").getTime()), rs.getDouble("amount"),
                                 rs.getString("description"),
                                 category.get()
