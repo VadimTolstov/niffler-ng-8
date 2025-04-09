@@ -20,7 +20,7 @@ public class CategoryEntity implements Serializable {
     private String username;
     private boolean archived;
 
-    public static @Nonnull CategoryEntity fromJson(@Nonnull CategoryJson json) {
+    public static @Nonnull CategoryEntity fromEntity(@Nonnull CategoryJson json) {
         return new CategoryEntity(
                 json.id(),
                 json.name(),

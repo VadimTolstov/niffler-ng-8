@@ -33,7 +33,7 @@ public class SpendEntity implements Serializable {
                 new java.sql.Date(json.spendDate().getTime()),
                 json.amount(),
                 json.description(),
-                CategoryEntity.fromJson(json.category())
+                CategoryEntity.fromEntity(json.category())
         );
     }
 }

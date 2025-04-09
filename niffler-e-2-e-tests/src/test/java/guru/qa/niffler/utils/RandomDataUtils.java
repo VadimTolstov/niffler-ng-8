@@ -22,7 +22,7 @@ public class RandomDataUtils {
     }
 
     public static @Nonnull String randomCategoryName() {
-        return faker.country().name();
+        return faker.address().city();
     }
 
     public static @Nonnull String randomSentence(int wordsCount) {
