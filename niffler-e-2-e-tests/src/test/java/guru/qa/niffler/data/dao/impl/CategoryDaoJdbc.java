@@ -1,6 +1,5 @@
 package guru.qa.niffler.data.dao.impl;
 
-import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.ex.DataAccessException;
@@ -13,7 +12,6 @@ import java.util.UUID;
 
 @Slf4j
 public class CategoryDaoJdbc implements CategoryDao {
-    private static final Config CFG = Config.getInstance();
 
     private final Connection connection;
 
@@ -24,7 +22,7 @@ public class CategoryDaoJdbc implements CategoryDao {
     @Override
     public @Nonnull CategoryEntity create(@Nonnull CategoryEntity category) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO category(name, username, archived)" +
+                "INSERT INTO category (name, username, archived)" +
                         "VALUES (?,?,?)",
                 Statement.RETURN_GENERATED_KEYS
         )) {
@@ -39,7 +37,7 @@ public class CategoryDaoJdbc implements CategoryDao {
                 if (rs.next()) {
                     generatedKey = rs.getObject("id", UUID.class);
                 } else {
-                    throw new SQLException("Can't find id in ResultSet");
+                    throw new DataAccessException("Can't find id in ResultSet");
                 }
             }
             category.setId(generatedKey);
