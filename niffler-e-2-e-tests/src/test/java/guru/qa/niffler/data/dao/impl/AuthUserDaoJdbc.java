@@ -1,9 +1,8 @@
 package guru.qa.niffler.data.dao.impl;
 
-import guru.qa.niffler.data.dao.UserdataUserDAO;
-import guru.qa.niffler.data.entity.userdata.UserEntity;
+import guru.qa.niffler.data.dao.AuthUserDao;
+import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.ex.DataAccessException;
-import guru.qa.niffler.model.CurrencyValues;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
@@ -12,37 +11,37 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
-public class UserdataUserDAOJdbc implements UserdataUserDAO {
+public class AuthUserDaoJdbc implements AuthUserDao {
 
     private final Connection connection;
 
-    public UserdataUserDAOJdbc(Connection connection) {
+    public AuthUserDaoJdbc(Connection connection) {
         this.connection = connection;
     }
 
     @Override
-    public @Nonnull UserEntity createUser(@Nonnull UserEntity user) {
+    public @Nonnull AuthUserEntity creat(@Nonnull AuthUserEntity user) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO \"user\" (username, currency, firstname, surname, photo, photo_small, full_name)" +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?)"
-                , Statement.RETURN_GENERATED_KEYS
+                "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired)" +
+                        "VALUES (?, ?, ?, ?, ?, ?)",
+                Statement.RETURN_GENERATED_KEYS
         )) {
             ps.setString(1, user.getUsername());
-            ps.setString(2, user.getCurrency().name());
-            ps.setString(3, user.getFirstname());
-            ps.setString(4, user.getSurname());
-            ps.setBytes(5, user.getPhoto());
-            ps.setBytes(6, user.getPhotoSmall());
-            ps.setString(7, user.getFullname());
+            ps.setString(2, user.getPassword());
+            ps.setBoolean(3, user.getEnabled());
+            ps.setBoolean(4, user.getAccountNonExpired());
+            ps.setBoolean(5, user.getAccountNonLocked());
+            ps.setBoolean(6, user.getCredentialsNonExpired());
 
             ps.executeUpdate();
 
             final UUID generatedKey;
+
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     generatedKey = rs.getObject("id", UUID.class);
                 } else {
-                    throw new SQLException("Can't find id in ResultSet");
+                    throw new DataAccessException("Can't find id in ResultSet");
                 }
             }
             user.setId(generatedKey);
@@ -53,7 +52,7 @@ public class UserdataUserDAOJdbc implements UserdataUserDAO {
     }
 
     @Override
-    public @Nonnull Optional<UserEntity> findById(@Nonnull UUID id) {
+    public @Nonnull Optional<AuthUserEntity> findUserById(@Nonnull UUID id) {
         try (PreparedStatement ps = connection.prepareStatement(
                 "SELECT * FROM \"user\" WHERE id = ?"
         )) {
@@ -62,17 +61,16 @@ public class UserdataUserDAOJdbc implements UserdataUserDAO {
 
             try (ResultSet rs = ps.getResultSet()) {
                 if (rs.next()) {
-                    UserEntity ue = new UserEntity(
+                    AuthUserEntity aue = new AuthUserEntity(
                             rs.getObject("id", UUID.class),
                             rs.getString("username"),
-                            CurrencyValues.valueOf(rs.getString("currency")),
-                            rs.getString("firstname"),
-                            rs.getString("surname"),
-                            rs.getString("full_name"),
-                            rs.getBytes("photo"),
-                            rs.getBytes("photo_small")
+                            rs.getString("password"),
+                            rs.getBoolean("enabled"),
+                            rs.getBoolean("account_non_expired"),
+                            rs.getBoolean("account_non_locked"),
+                            rs.getBoolean("credentials_non_expired")
                     );
-                    return Optional.ofNullable(ue);
+                    return Optional.ofNullable(aue);
                 } else {
                     return Optional.empty();
                 }
@@ -83,26 +81,25 @@ public class UserdataUserDAOJdbc implements UserdataUserDAO {
     }
 
     @Override
-    public @Nonnull Optional<UserEntity> findByUsername(@Nonnull String username) {
+    public @Nonnull Optional<AuthUserEntity> findUserByName(@Nonnull String username) {
         try (PreparedStatement ps = connection.prepareStatement(
                 "SELECT * FROM \"user\" WHERE username = ?"
         )) {
-            ps.setObject(1, username);
+            ps.setString(1, username);
             ps.execute();
 
             try (ResultSet rs = ps.getResultSet()) {
                 if (rs.next()) {
-                    UserEntity ue = new UserEntity(
+                    AuthUserEntity aue = new AuthUserEntity(
                             rs.getObject("id", UUID.class),
                             rs.getString("username"),
-                            CurrencyValues.valueOf(rs.getString("currency")),
-                            rs.getString("firstname"),
-                            rs.getString("surname"),
-                            rs.getString("full_name"),
-                            rs.getBytes("photo"),
-                            rs.getBytes("photo_small")
+                            rs.getString("password"),
+                            rs.getBoolean("enabled"),
+                            rs.getBoolean("account_non_expired"),
+                            rs.getBoolean("account_non_locked"),
+                            rs.getBoolean("credentials_non_expired")
                     );
-                    return Optional.ofNullable(ue);
+                    return Optional.ofNullable(aue);
                 } else {
                     return Optional.empty();
                 }
@@ -113,28 +110,25 @@ public class UserdataUserDAOJdbc implements UserdataUserDAO {
     }
 
     @Override
-    public @Nonnull UserEntity update(@Nonnull UserEntity user) {
+    public @Nonnull AuthUserEntity update(@Nonnull AuthUserEntity user) {
         if (user.getId() == null) {
-            throw new DataAccessException("При обновлении User в UserEntity id не должен быть null");
+            throw new DataAccessException("При обновлении Пользователя  id не должен быть null");
         }
         try (PreparedStatement ps = connection.prepareStatement(
-                "UPDATE \"user\" SET username = ?, currency = ?, firstname = ?, " +
-                        "surname = ?, photo = ?, photo_small = ?, full_name = ? " +
+                "UPDATE \"user\" SET username = ?, password = ?, enabled = ?, account_non_expired = ?, account_non_locked = ?, credentials_non_expired = ?" +
                         "WHERE id = ?"
         )) {
             ps.setString(1, user.getUsername());
-            ps.setString(2, user.getCurrency().name());
-            ps.setString(3, user.getFirstname());
-            ps.setString(4, user.getSurname());
-            ps.setBytes(5, user.getPhoto());
-            ps.setBytes(6, user.getPhotoSmall());
-            ps.setString(7, user.getFullname());
-            ps.setObject(8, user.getId());
+            ps.setString(2, user.getPassword());
+            ps.setBoolean(3, user.getEnabled());
+            ps.setBoolean(4, user.getAccountNonExpired());
+            ps.setBoolean(5, user.getAccountNonLocked());
+            ps.setBoolean(6, user.getCredentialsNonExpired());
+            ps.setObject(7, user.getId());
 
-            // Проверяем количество обновленных строк
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 0) {
-                throw new DataAccessException("Пользователь с id " + user.getId() + " не найдена");
+                throw new DataAccessException("Пользователь с id " + user.getId() + " не найден");
             }
             return user;
         } catch (SQLException e) {
@@ -144,13 +138,12 @@ public class UserdataUserDAOJdbc implements UserdataUserDAO {
     }
 
     @Override
-    public void delete(@Nonnull UserEntity user) {
+    public void delete(@Nonnull AuthUserEntity user) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "DELETE FROM \"user\" WHERE id = ?"
+                "DELETE FROM \"user\" where id = ?"
         )) {
             ps.setObject(1, user.getId());
 
-            // Проверяем количество обновленных строк
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 0) {
                 throw new DataAccessException("Пользователь с id " + user.getId() + " не найдена");

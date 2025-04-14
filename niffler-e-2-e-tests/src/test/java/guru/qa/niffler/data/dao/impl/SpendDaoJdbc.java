@@ -1,6 +1,5 @@
 package guru.qa.niffler.data.dao.impl;
 
-import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.SpendDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
@@ -15,7 +14,6 @@ import java.util.UUID;
 
 @Slf4j
 public class SpendDaoJdbc implements SpendDao {
-    private static final Config CFG = Config.getInstance();
 
     private final Connection connection;
 
@@ -75,8 +73,9 @@ public class SpendDaoJdbc implements SpendDao {
                     SpendEntity se = new SpendEntity(
                             rs.getObject("id", UUID.class),
                             rs.getString("username"),
-                            rs.getObject("currency", CurrencyValues.class),
-                            new java.util.Date(rs.getDate("spend_date").getTime()), rs.getDouble("amount"),
+                            CurrencyValues.valueOf(rs.getString("currency")),
+                            new java.util.Date(rs.getDate("spend_date").getTime()),
+                            rs.getDouble("amount"),
                             rs.getString("description"),
                             category.get()
                     );
