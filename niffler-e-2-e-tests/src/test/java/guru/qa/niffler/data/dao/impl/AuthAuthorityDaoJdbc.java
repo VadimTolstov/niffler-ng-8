@@ -68,7 +68,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
                     Optional<AuthUserEntity> userEntity = new AuthUserDaoJdbc(connection).findUserById(userId);
 
                     if (userEntity.isEmpty()) {
-                        log.warn("Пользователь с id {} не найдена для таблицы прав по user_id {}", id, userId);
+                        log.warn("Пользователь с id {} не найден в таблице authority по user_id {}", id, userId);
                         return Optional.empty();
                     }
 
@@ -90,7 +90,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     @Override
     public @Nonnull AuthorityEntity update(@Nonnull AuthorityEntity user) {
         if (user.getId() == null) {
-            throw new DataAccessException("При обновлении Spend в SpendEntity id не должен быть null");
+            throw new DataAccessException("При данных в таблице authority id не должен быть null");
         }
         try (PreparedStatement ps = connection.prepareStatement(
                 "UPDATE \"authority\" SET user_id = ?, authority = ? WHERE id = ?"
