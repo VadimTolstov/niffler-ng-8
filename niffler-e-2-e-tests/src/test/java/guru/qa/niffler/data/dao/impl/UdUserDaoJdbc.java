@@ -1,6 +1,6 @@
 package guru.qa.niffler.data.dao.impl;
 
-import guru.qa.niffler.data.dao.UserdataUserDAO;
+import guru.qa.niffler.data.dao.UdUserDao;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.ex.DataAccessException;
 import guru.qa.niffler.model.CurrencyValues;
@@ -8,15 +8,16 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
 import java.sql.*;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
-public class UserdataUserDAOJdbc implements UserdataUserDAO {
+public class UdUserDaoJdbc implements UdUserDao {
 
     private final Connection connection;
 
-    public UserdataUserDAOJdbc(Connection connection) {
+    public UdUserDaoJdbc(Connection connection) {
         this.connection = connection;
     }
 
@@ -110,6 +111,11 @@ public class UserdataUserDAOJdbc implements UserdataUserDAO {
         } catch (SQLException e) {
             throw new DataAccessException("Ошибка при поиске пользователя по username = " + username, e);
         }
+    }
+
+    @Override
+    public List<UserEntity> findAll() {
+        return List.of();
     }
 
     @Override

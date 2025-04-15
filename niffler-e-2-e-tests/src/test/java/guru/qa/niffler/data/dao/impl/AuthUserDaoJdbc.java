@@ -2,11 +2,13 @@ package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
+import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.ex.DataAccessException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
 import java.sql.*;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -52,7 +54,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
 
     @Override
-    public @Nonnull Optional<AuthUserEntity> findUserById(@Nonnull UUID id) {
+    public @Nonnull Optional<AuthUserEntity> findById(@Nonnull UUID id) {
         try (PreparedStatement ps = connection.prepareStatement(
                 "SELECT * FROM \"user\" WHERE id = ?"
         )) {
@@ -107,6 +109,11 @@ public class AuthUserDaoJdbc implements AuthUserDao {
         } catch (SQLException e) {
             throw new DataAccessException("Ошибка при поиске пользователя по username = " + username, e);
         }
+    }
+
+    @Override
+    public List<UserEntity> findAll() {
+        return List.of();
     }
 
     @Override

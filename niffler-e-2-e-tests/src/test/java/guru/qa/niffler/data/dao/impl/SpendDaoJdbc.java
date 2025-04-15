@@ -3,12 +3,14 @@ package guru.qa.niffler.data.dao.impl;
 import guru.qa.niffler.data.dao.SpendDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
+import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.ex.DataAccessException;
 import guru.qa.niffler.model.CurrencyValues;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
 import java.sql.*;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -53,7 +55,7 @@ public class SpendDaoJdbc implements SpendDao {
     }
 
     @Override
-    public @Nonnull Optional<SpendEntity> findSpendById(@Nonnull UUID id) {
+    public @Nonnull Optional<SpendEntity> findById(@Nonnull UUID id) {
         try (PreparedStatement ps = connection.prepareStatement(
                 "SELECT * FROM spend WHERE id = ?"
         )) {
@@ -63,7 +65,7 @@ public class SpendDaoJdbc implements SpendDao {
             try (ResultSet rs = ps.getResultSet()) {
                 if (rs.next()) {
                     UUID categoryId = rs.getObject("category_id", UUID.class);
-                    Optional<CategoryEntity> category = new CategoryDaoJdbc(connection).findCategoryById(categoryId);
+                    Optional<CategoryEntity> category = new CategoryDaoJdbc(connection).findById(categoryId);
 
                     if (category.isEmpty()) {
                         log.warn("Категория с id {} не найдена для траты {}", categoryId, id);
@@ -87,6 +89,11 @@ public class SpendDaoJdbc implements SpendDao {
         } catch (SQLException e) {
             throw new DataAccessException("Ошибка при поиске траты по id = " + id, e);
         }
+    }
+
+    @Override
+    public List<UserEntity> findAll() {
+        return List.of();
     }
 
     @Override

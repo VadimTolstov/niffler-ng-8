@@ -2,11 +2,13 @@ package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
+import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.ex.DataAccessException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
 import java.sql.*;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -49,7 +51,7 @@ public class CategoryDaoJdbc implements CategoryDao {
 
 
     @Override
-    public @Nonnull Optional<CategoryEntity> findCategoryById(@Nonnull UUID id) {
+    public @Nonnull Optional<CategoryEntity> findById(@Nonnull UUID id) {
         try (PreparedStatement ps = connection.prepareStatement(
                 "SELECT * FROM category WHERE id = ?"
         )) {
@@ -72,6 +74,11 @@ public class CategoryDaoJdbc implements CategoryDao {
         } catch (SQLException e) {
             throw new DataAccessException("Ошибка при поиске категории по id = " + id, e);
         }
+    }
+
+    @Override
+    public List<UserEntity> findAll() {
+        return List.of();
     }
 
     @Override

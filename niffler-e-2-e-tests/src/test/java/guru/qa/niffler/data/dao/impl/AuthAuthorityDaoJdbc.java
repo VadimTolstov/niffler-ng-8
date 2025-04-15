@@ -3,6 +3,7 @@ package guru.qa.niffler.data.dao.impl;
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
+import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.ex.DataAccessException;
 import guru.qa.niffler.model.Authority;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     }
 
     @Override
-    public @Nonnull List<AuthorityEntity> creat(@Nonnull AuthorityEntity... users) {
+    public @Nonnull List<AuthorityEntity> create(@Nonnull AuthorityEntity... users) {
         List<AuthorityEntity> usersList = new ArrayList<>();
 
         try (PreparedStatement ps = connection.prepareStatement(
@@ -55,7 +56,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     }
 
     @Override
-    public @Nonnull Optional<AuthorityEntity> findUserById(@Nonnull UUID id) {
+    public @Nonnull Optional<AuthorityEntity> findById(@Nonnull UUID id) {
         try (PreparedStatement ps = connection.prepareStatement(
                 "SELECT * FROM \"authority\" WHERE id = ?"
         )) {
@@ -65,7 +66,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
             try (ResultSet rs = ps.getResultSet()) {
                 if (rs.next()) {
                     UUID userId = rs.getObject("user_id", UUID.class);
-                    Optional<AuthUserEntity> userEntity = new AuthUserDaoJdbc(connection).findUserById(userId);
+                    Optional<AuthUserEntity> userEntity = new AuthUserDaoJdbc(connection).findById(userId);
 
                     if (userEntity.isEmpty()) {
                         log.warn("Пользователь с id {} не найден в таблице authority по user_id {}", id, userId);
@@ -85,6 +86,11 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
         } catch (SQLException e) {
             throw new DataAccessException("Ошибка при поиске данных в таблице authority  по id = " + id, e);
         }
+    }
+
+    @Override
+    public List<UserEntity> findAll() {
+        return List.of();
     }
 
     @Override
