@@ -3,7 +3,6 @@ package guru.qa.niffler.data.dao.impl;
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
-import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.ex.DataAccessException;
 import guru.qa.niffler.model.Authority;
 import lombok.extern.slf4j.Slf4j;
@@ -89,7 +88,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     }
 
     @Override
-    public List<UserEntity> findAll() {
+    public @Nonnull List<AuthorityEntity> findAll() {
         return List.of();
     }
 

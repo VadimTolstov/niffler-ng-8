@@ -13,7 +13,7 @@ public interface AuthAuthorityDao {
 
     public Optional<AuthorityEntity> findById(UUID id);
 
-    List<UserEntity> findAll();
+    List<AuthorityEntity> findAll();
 
     public AuthorityEntity update(AuthorityEntity user);
 
