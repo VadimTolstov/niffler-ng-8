@@ -15,7 +15,7 @@ public interface AuthUserDao {
 
     public Optional<AuthUserEntity> findUserByName(String name);
 
-    List<UserEntity> findAll();
+    List<AuthUserEntity> findAll();
 
     public AuthUserEntity update(AuthUserEntity user);
 

@@ -1,13 +1,15 @@
-package guru.qa.niffler.data.dao.impl;
+package guru.qa.niffler.data.dao.impl.jdbc;
 
 import guru.qa.niffler.data.dao.UdUserDao;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
+import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
 import guru.qa.niffler.ex.DataAccessException;
 import guru.qa.niffler.model.CurrencyValues;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -114,8 +116,21 @@ public class UdUserDaoJdbc implements UdUserDao {
     }
 
     @Override
-    public List<UserEntity> findAll() {
-        return List.of();
+    public @Nonnull List<UserEntity> findAll() {
+        List<UserEntity> userEntityList = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement(
+                "SELECT * FROM \"user\""
+        )) {
+            ps.execute();
+            try (ResultSet rs = ps.getResultSet()) {
+                while (rs.next()) {
+                    userEntityList.add(UdUserEntityRowMapper.instance.mapRow(rs, rs.getRow()));
+                }
+            }
+            return userEntityList;
+        } catch (SQLException e) {
+            throw new DataAccessException("Ошибка при получении данных с таблицы user ", e);
+        }
     }
 
     @Override

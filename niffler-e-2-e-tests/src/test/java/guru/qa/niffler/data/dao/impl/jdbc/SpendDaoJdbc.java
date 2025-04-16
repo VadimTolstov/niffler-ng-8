@@ -1,15 +1,16 @@
-package guru.qa.niffler.data.dao.impl;
+package guru.qa.niffler.data.dao.impl.jdbc;
 
 import guru.qa.niffler.data.dao.SpendDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
-import guru.qa.niffler.data.entity.userdata.UserEntity;
+import guru.qa.niffler.data.mapper.SpendEntityRowMapper;
 import guru.qa.niffler.ex.DataAccessException;
 import guru.qa.niffler.model.CurrencyValues;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -92,8 +93,21 @@ public class SpendDaoJdbc implements SpendDao {
     }
 
     @Override
-    public List<UserEntity> findAll() {
-        return List.of();
+    public @Nonnull List<SpendEntity> findAll() {
+        List<SpendEntity> spendEntityList = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement(
+                "SELECT * FROM spend"
+        )) {
+            ps.execute();
+            try (ResultSet rs = ps.getResultSet()) {
+                while (rs.next()) {
+                    spendEntityList.add(SpendEntityRowMapper.instance.mapRow(rs, rs.getRow()));
+                }
+            }
+            return spendEntityList;
+        } catch (SQLException e) {
+            throw new DataAccessException("Ошибка при получении данных из таблицы spend", e);
+        }
     }
 
     @Override

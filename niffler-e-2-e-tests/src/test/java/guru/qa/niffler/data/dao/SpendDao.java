@@ -12,9 +12,9 @@ public interface SpendDao {
 
     Optional<SpendEntity> findById(UUID id);
 
-    List<UserEntity> findAll();
+    List<SpendEntity> findAll();
 
-    SpendEntity update(SpendEntity category);
+    SpendEntity update(SpendEntity spend);
 
     void delete(UUID id);
 }

@@ -1,13 +1,14 @@
-package guru.qa.niffler.data.dao.impl;
+package guru.qa.niffler.data.dao.impl.jdbc;
 
 import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
-import guru.qa.niffler.data.entity.userdata.UserEntity;
+import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
 import guru.qa.niffler.ex.DataAccessException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -112,8 +113,21 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
 
     @Override
-    public List<UserEntity> findAll() {
-        return List.of();
+    public @Nonnull List<AuthUserEntity> findAll() {
+        List<AuthUserEntity> authUserEntityList = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement(
+                "SELECT * FROM \"user\""
+        )) {
+            ps.execute();
+            try (ResultSet rs = ps.getResultSet()) {
+                while (rs.next()) {
+                    authUserEntityList.add(AuthUserEntityRowMapper.instance.mapRow(rs, rs.getRow()));
+                }
+            }
+            return authUserEntityList;
+        } catch (SQLException e) {
+            throw new DataAccessException("Ошибка при получении данных с таблицы user ", e);
+        }
     }
 
     @Override

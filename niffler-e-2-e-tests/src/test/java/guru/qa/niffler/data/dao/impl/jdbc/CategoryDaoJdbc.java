@@ -1,13 +1,14 @@
-package guru.qa.niffler.data.dao.impl;
+package guru.qa.niffler.data.dao.impl.jdbc;
 
 import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
-import guru.qa.niffler.data.entity.userdata.UserEntity;
+import guru.qa.niffler.data.mapper.CategoryEntityRowMapper;
 import guru.qa.niffler.ex.DataAccessException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -77,8 +78,21 @@ public class CategoryDaoJdbc implements CategoryDao {
     }
 
     @Override
-    public List<UserEntity> findAll() {
-        return List.of();
+    public @Nonnull List<CategoryEntity> findAll() {
+        List<CategoryEntity> categoryEntityList = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement(
+                "SELECT * FROM category"
+        )) {
+            ps.execute();
+            try (ResultSet rs = ps.getResultSet()) {
+                while (rs.next()) {
+                    categoryEntityList.add(CategoryEntityRowMapper.instance.mapRow(rs, rs.getRow()));
+                }
+            }
+            return categoryEntityList;
+        } catch (SQLException e) {
+            throw new DataAccessException("Ошибка при получении данных с таблицы category", e);
+        }
     }
 
     @Override
