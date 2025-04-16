@@ -24,6 +24,10 @@ public class AuthUserEntity implements Serializable {
     private Boolean accountNonLocked;
     private Boolean credentialsNonExpired;
 
+    public AuthUserEntity(UUID id) {
+        this.id = id;
+    }
+
     public static @Nonnull AuthUserEntity fromEntity(@Nonnull AuthUserJson user) {
         return new AuthUserEntity(
                 user.id(),

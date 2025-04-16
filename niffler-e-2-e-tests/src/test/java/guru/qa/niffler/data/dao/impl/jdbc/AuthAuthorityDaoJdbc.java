@@ -1,8 +1,9 @@
-package guru.qa.niffler.data.dao.impl;
+package guru.qa.niffler.data.dao.impl.jdbc;
 
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
+import guru.qa.niffler.data.mapper.AuthorityEntityRowMapper;
 import guru.qa.niffler.ex.DataAccessException;
 import guru.qa.niffler.model.Authority;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +24,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     }
 
     @Override
-    public @Nonnull List<AuthorityEntity> create(@Nonnull AuthorityEntity... users) {
-        List<AuthorityEntity> usersList = new ArrayList<>();
+    public void create(@Nonnull AuthorityEntity... users) {
 
         try (PreparedStatement ps = connection.prepareStatement(
                 "INSERT INTO \"authority\" (user_id, authority) VALUES (?, ?)",
@@ -34,21 +34,8 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
                 ps.setObject(1, user.getUserId().getId());
                 ps.setString(2, user.getAuthority().name());
                 ps.addBatch();
-                usersList.add(user);
             }
             ps.executeBatch();
-
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                for (int i = 0; i < usersList.size(); i++) {
-                    if (rs.next()) {
-                        UUID generatedKey = rs.getObject("id", UUID.class);
-                        usersList.get(i).setId(generatedKey);
-                    } else {
-                        throw new DataAccessException("Can't find id in ResultSet");
-                    }
-                }
-            }
-            return usersList;
         } catch (SQLException e) {
             throw new DataAccessException("Ошибка при добавлении прав пользователю", e);
         }
@@ -89,13 +76,26 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
 
     @Override
     public @Nonnull List<AuthorityEntity> findAll() {
-        return List.of();
+        List<AuthorityEntity> usersList = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement(
+                "SELECT * FROM \"authority\""
+        )) {
+            ps.execute();
+            try (ResultSet rs = ps.getResultSet()) {
+                while (rs.next()) {
+                    usersList.add(AuthorityEntityRowMapper.instance.mapRow(rs, rs.getRow()));
+                }
+            }
+            return usersList;
+        } catch (SQLException e) {
+            throw new DataAccessException("Ошибка при получении данных в таблице authority", e);
+        }
     }
 
     @Override
     public @Nonnull AuthorityEntity update(@Nonnull AuthorityEntity user) {
         if (user.getId() == null) {
-            throw new DataAccessException("При данных в таблице authority id не должен быть null");
+            throw new DataAccessException("При обновлении данных в таблице authority id не должен быть null");
         }
         try (PreparedStatement ps = connection.prepareStatement(
                 "UPDATE \"authority\" SET user_id = ?, authority = ? WHERE id = ?"
