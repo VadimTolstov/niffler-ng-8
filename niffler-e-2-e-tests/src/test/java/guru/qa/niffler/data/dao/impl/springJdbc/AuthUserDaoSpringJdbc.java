@@ -23,7 +23,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
     private final static Config CFG = Config.getInstance();
 
     @Override
-    public @Nonnull AuthUserEntity creat(@Nonnull AuthUserEntity user) {
+    public @Nonnull AuthUserEntity create(@Nonnull AuthUserEntity user) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {

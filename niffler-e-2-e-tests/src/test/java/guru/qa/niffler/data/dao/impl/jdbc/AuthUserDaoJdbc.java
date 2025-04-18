@@ -24,7 +24,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     private final static Config CFG = Config.getInstance();
 
     @Override
-    public @Nonnull AuthUserEntity creat(@Nonnull AuthUserEntity user) {
+    public @Nonnull AuthUserEntity create(@Nonnull AuthUserEntity user) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
                 "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired)" +
                         "VALUES (?, ?, ?, ?, ?, ?)",
