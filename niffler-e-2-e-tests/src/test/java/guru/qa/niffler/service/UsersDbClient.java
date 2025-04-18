@@ -60,7 +60,7 @@ public class UsersDbClient {
                     authUserEntity.setCredentialsNonExpired(true);
 
                     //создаем нового пользователя и получаем его id
-                    authUserEntity.setId(authUserDaoSpringJdbcDao.creat(authUserEntity).getId());
+                    authUserEntity.setId(authUserDaoSpringJdbcDao.create(authUserEntity).getId());
 
                     authAuthorityDaoSpringJdbc.create(Arrays.stream(Authority.values())
                             .map(value -> {
@@ -90,7 +90,7 @@ public class UsersDbClient {
                     authUserEntity.setCredentialsNonExpired(true);
 
                     //создаем нового пользователя и получаем его id
-                    authUserEntity.setId(authUserDaoJdbc.creat(authUserEntity).getId());
+                    authUserEntity.setId(authUserDaoJdbc.create(authUserEntity).getId());
 
                     authAuthorityDaoJdbc.create(Arrays.stream(Authority.values())
                             .map(value -> {
