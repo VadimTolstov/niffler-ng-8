@@ -1,5 +1,6 @@
 package guru.qa.niffler.data.dao.impl.jdbc;
 
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.SpendDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
@@ -9,24 +10,24 @@ import guru.qa.niffler.model.CurrencyValues;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static guru.qa.niffler.data.tpl.Connections.holder;
+
 @Slf4j
 public class SpendDaoJdbc implements SpendDao {
-
-    private final Connection connection;
-
-    public SpendDaoJdbc(Connection connection) {
-        this.connection = connection;
-    }
+    private final static Config CFG = Config.getInstance();
 
     @Override
     public @Nonnull SpendEntity create(@Nonnull SpendEntity spend) {
-        try (PreparedStatement ps = connection.prepareStatement(
+        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
                 "INSERT INTO spend(username, spend_date, currency, amount, description, category_id)" +
                         "VALUES (?,?,?,?,?,?)",
                 Statement.RETURN_GENERATED_KEYS
@@ -57,7 +58,7 @@ public class SpendDaoJdbc implements SpendDao {
 
     @Override
     public @Nonnull Optional<SpendEntity> findById(@Nonnull UUID id) {
-        try (PreparedStatement ps = connection.prepareStatement(
+        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM spend WHERE id = ?"
         )) {
             ps.setObject(1, id);
@@ -65,13 +66,6 @@ public class SpendDaoJdbc implements SpendDao {
 
             try (ResultSet rs = ps.getResultSet()) {
                 if (rs.next()) {
-                    UUID categoryId = rs.getObject("category_id", UUID.class);
-                    Optional<CategoryEntity> category = new CategoryDaoJdbc(connection).findById(categoryId);
-
-                    if (category.isEmpty()) {
-                        log.warn("Категория с id {} не найдена для траты {}", categoryId, id);
-                        return Optional.empty();
-                    }
 
                     SpendEntity se = new SpendEntity(
                             rs.getObject("id", UUID.class),
@@ -80,7 +74,7 @@ public class SpendDaoJdbc implements SpendDao {
                             new java.util.Date(rs.getDate("spend_date").getTime()),
                             rs.getDouble("amount"),
                             rs.getString("description"),
-                            category.get()
+                            new CategoryEntity(rs.getObject("category_id", UUID.class))
                     );
                     return Optional.ofNullable(se);
                 } else {
@@ -95,7 +89,7 @@ public class SpendDaoJdbc implements SpendDao {
     @Override
     public @Nonnull List<SpendEntity> findAll() {
         List<SpendEntity> spendEntityList = new ArrayList<>();
-        try (PreparedStatement ps = connection.prepareStatement(
+        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM spend"
         )) {
             ps.execute();
@@ -115,7 +109,7 @@ public class SpendDaoJdbc implements SpendDao {
         if (spend.getId() == null) {
             throw new DataAccessException("При обновлении Spend в SpendEntity id не должен быть null");
         }
-        try (PreparedStatement ps = connection.prepareStatement(
+        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
                 "UPDATE spend SET username = ?, spend_date = ?, currency = ?, amount = ?," +
                         " description = ?, category_id = ? WHERE id = ?"
         )) {
@@ -142,7 +136,7 @@ public class SpendDaoJdbc implements SpendDao {
 
     @Override
     public void delete(@Nonnull UUID id) {
-        try (PreparedStatement ps = connection.prepareStatement(
+        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
                 "DELETE FROM spend WHERE id = ?"
         )) {
             ps.setObject(1, id);

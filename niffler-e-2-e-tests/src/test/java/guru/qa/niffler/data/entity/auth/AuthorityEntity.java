@@ -21,10 +21,10 @@ public class AuthorityEntity implements Serializable {
     private AuthUserEntity userId;
     private Authority authority;
 
-    public static @Nonnull AuthorityEntity fromEntity(@Nonnull AuthorityJson authority) {
+    public static @Nonnull AuthorityEntity fromJson(@Nonnull AuthorityJson authority) {
         return new AuthorityEntity(
                 authority.id(),
-                AuthUserEntity.fromEntity(authority.userId()),
+                AuthUserEntity.fromJson(authority.userId()),
                 authority.authority()
         );
     }

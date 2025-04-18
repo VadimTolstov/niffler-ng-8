@@ -1,15 +1,16 @@
 package guru.qa.niffler.data.dao.impl.springJdbc;
 
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
+import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.ex.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import javax.annotation.Nonnull;
-import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -19,16 +20,11 @@ import java.util.UUID;
 import static guru.qa.niffler.data.dao.impl.springJdbc.utils.DaoUtils.getGeneratedId;
 
 public class AuthUserDaoSpringJdbc implements AuthUserDao {
-
-    private final DataSource dataSource;
-
-    public AuthUserDaoSpringJdbc(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    private final static Config CFG = Config.getInstance();
 
     @Override
     public @Nonnull AuthUserEntity creat(@Nonnull AuthUserEntity user) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -52,7 +48,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
     @Override
     public @Nonnull Optional<AuthUserEntity> findById(@Nonnull UUID id) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
         List<AuthUserEntity> result = jdbcTemplate.query(
                 "SELECT * FROM \"user\" WHERE id = ?",
                 AuthUserEntityRowMapper.instance,
@@ -63,7 +59,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
     @Override
     public @Nonnull Optional<AuthUserEntity> findUserByName(@Nonnull String name) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
         List<AuthUserEntity> result = jdbcTemplate.query(
                 "SELECT * FROM \"user\" WHERE username = ?",
                 AuthUserEntityRowMapper.instance,
@@ -74,7 +70,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
     @Override
     public @Nonnull List<AuthUserEntity> findAll() {
-        return new JdbcTemplate(dataSource).query(
+        return new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl())).query(
                 "SELECT * FROM \"user\"",
                 AuthUserEntityRowMapper.instance
         );
@@ -85,7 +81,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
         if (user.getId() == null) {
             throw new DataAccessException("При обновлении данных в таблице user в AuthUserEntity id не должен быть null");
         }
-        int updated = new JdbcTemplate(dataSource).update(
+        int updated = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl())).update(
                 "UPDATE \"user\" SET username = ?, password = ?, enabled = ?, account_non_expired = ?, account_non_locked = ?, credentials_non_expired = ?" +
                         "WHERE id = ?",
                 user.getUsername(),
@@ -107,7 +103,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
         if (user.getId() == null) {
             throw new DataAccessException("При удалении данных в таблице user в AuthUserEntity id не должен быть null");
         }
-        int deleted = new JdbcTemplate(dataSource).update(
+        int deleted = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl())).update(
                 "DELETE FROM \"user\" where id = ?",
                 user.getId()
         );

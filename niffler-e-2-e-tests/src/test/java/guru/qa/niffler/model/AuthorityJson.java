@@ -2,7 +2,6 @@ package guru.qa.niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 
 import javax.annotation.Nonnull;
@@ -17,10 +16,10 @@ public record AuthorityJson(
         @JsonProperty("authority")
         Authority authority) {
 
-    private static @Nonnull AuthorityJson fromJson(@Nonnull AuthorityEntity authority) {
+    private static @Nonnull AuthorityJson fromEntity(@Nonnull AuthorityEntity authority) {
         return new AuthorityJson(
                 authority.getId(),
-              AuthUserJson.fromJson(authority.getUserId()),
+              AuthUserJson.fromEntity(authority.getUserId()),
                 authority.getAuthority()
         );
     }

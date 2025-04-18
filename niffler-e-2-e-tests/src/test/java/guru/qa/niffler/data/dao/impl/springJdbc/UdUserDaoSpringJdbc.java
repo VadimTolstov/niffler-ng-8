@@ -1,15 +1,16 @@
 package guru.qa.niffler.data.dao.impl.springJdbc;
 
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.UdUserDao;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
+import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.ex.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import javax.annotation.Nonnull;
-import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -19,16 +20,11 @@ import java.util.UUID;
 import static guru.qa.niffler.data.dao.impl.springJdbc.utils.DaoUtils.getGeneratedId;
 
 public class UdUserDaoSpringJdbc implements UdUserDao {
-
-    private final DataSource dataSource;
-
-    public UdUserDaoSpringJdbc(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    private final static Config CFG = Config.getInstance();
 
     @Override
     public @Nonnull UserEntity createUser(@Nonnull UserEntity user) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -53,7 +49,7 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
 
     @Override
     public @Nonnull Optional<UserEntity> findById(@Nonnull UUID id) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
                         "SELECT * FROM \"user\" WHERE id = ?",
@@ -66,7 +62,7 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
 
     @Override
     public @Nonnull Optional<UserEntity> findByUsername(@Nonnull String username) {
-        List<UserEntity> result = new JdbcTemplate(dataSource).query(
+        List<UserEntity> result = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl())).query(
                 "SELECT * FROM \"user\" WHERE username = ?",
                 UdUserEntityRowMapper.instance,
                 username
@@ -76,7 +72,7 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
 
     @Override
     public @Nonnull List<UserEntity> findAll() {
-        return new JdbcTemplate(dataSource).query(
+        return new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl())).query(
                 "SELECT * FROM \"user\"",
                 UdUserEntityRowMapper.instance
         );
@@ -87,7 +83,7 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
         if (user.getId() == null) {
             throw new DataAccessException("При обновлении данных в таблице user в UserEntity id не должен быть null");
         }
-        int updated = new JdbcTemplate(dataSource).update(
+        int updated = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl())).update(
                 "UPDATE \"user\" SET username = ?, currency = ?, firstname = ?, " +
                         "surname = ?, photo = ?, photo_small = ?, full_name = ? " +
                         "WHERE id = ?",
@@ -111,7 +107,7 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
         if (user.getId() == null) {
             throw new DataAccessException("При удалении данных в таблице user в UserEntity id не должен быть null");
         }
-        int deleted = new JdbcTemplate(dataSource).update(
+        int deleted = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl())).update(
                 "DELETE FROM \"user\" WHERE id = ?",
                 user.getId()
         );

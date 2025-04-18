@@ -25,7 +25,7 @@ public class SpendEntity implements Serializable {
     private String description;
     private CategoryEntity category;
 
-    public static @Nonnull SpendEntity fromEntity(@Nonnull SpendJson json) {
+    public static @Nonnull SpendEntity fromJson(@Nonnull SpendJson json) {
         return new SpendEntity(
                 json.id(),
                 json.username(),
@@ -33,7 +33,7 @@ public class SpendEntity implements Serializable {
                 new java.sql.Date(json.spendDate().getTime()),
                 json.amount(),
                 json.description(),
-                CategoryEntity.fromEntity(json.category())
+                CategoryEntity.fromJson(json.category())
         );
     }
 }

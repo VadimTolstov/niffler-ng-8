@@ -16,7 +16,7 @@ public class JdbcTest {
     void txTest() {
         SpendDbClient spendDbClient = new SpendDbClient();
 
-        SpendJson spend = spendDbClient.addSpend(
+        SpendJson spend = spendDbClient.createSpendJdbc(
                 new SpendJson(
                         null,
                         new Date(),
@@ -39,10 +39,10 @@ public class JdbcTest {
     @Test
     void xaTxTest() {
         UsersDbClient usersDbClient = new UsersDbClient();
-        UserJson user = usersDbClient.addUser(
+        UserJson user = usersDbClient.creatUserSpringJdbc(
                 new UserJson(
                         null,
-                        "valentin-4",
+                        "valentin-9",
                         null,
                         null,
                         null,
@@ -57,7 +57,7 @@ public class JdbcTest {
     @Test
     void xaTxaTest() {
         UsersDbClient usersDbClient = new UsersDbClient();
-        UserJson user = usersDbClient.addUser(
+        UserJson user = usersDbClient.creatUserJdbc(
                 new UserJson(
                         null,
                         "valentin-5",

@@ -34,7 +34,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
                                 userAnno.username(),
                                 false
                         );
-                        CategoryJson create = spendDbClient.addCategory(categoryJson);
+                        CategoryJson create = spendDbClient.createCategoryJdbc(categoryJson);
                         //не убираю updateCategory т.к при переходе на API он снова понадобится
                         if (categoryAnno.archived()) {
                             CategoryJson archivedCategory = new CategoryJson(
@@ -43,7 +43,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
                                     create.username(),
                                     true
                             );
-                            create = spendDbClient.updateCategory(archivedCategory);
+                            create = spendDbClient.updateCategoryJdbc(archivedCategory);
                         }
 
                         context.getStore(NAMESPACE).put(context.getUniqueId(), create);
@@ -56,7 +56,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
     public void afterTestExecution(ExtensionContext context) {
         Optional.ofNullable(context.getStore(CategoryExtension.NAMESPACE).get(context.getUniqueId(), CategoryJson.class))
                 .ifPresent(categoryJson -> {
-                    spendDbClient.updateCategory(
+                    spendDbClient.updateCategoryJdbc(
                             new CategoryJson(
                                     categoryJson.id(),
                                     categoryJson.name(),

@@ -27,7 +27,7 @@ public class UserEntity implements Serializable {
     private byte[] photo;
     private byte[] photoSmall;
 
-    public static @Nonnull UserEntity fromEntity(@Nonnull UserJson json) {
+    public static @Nonnull UserEntity fromJson(@Nonnull UserJson json) {
         return new UserEntity(
                 json.id(),
                 json.username(),

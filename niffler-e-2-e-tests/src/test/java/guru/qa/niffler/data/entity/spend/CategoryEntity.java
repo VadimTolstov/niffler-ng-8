@@ -24,7 +24,7 @@ public class CategoryEntity implements Serializable {
         this.id = id;
     }
 
-    public static @Nonnull CategoryEntity fromEntity(@Nonnull CategoryJson json) {
+    public static @Nonnull CategoryEntity fromJson(@Nonnull CategoryJson json) {
         return new CategoryEntity(
                 json.id(),
                 json.name(),

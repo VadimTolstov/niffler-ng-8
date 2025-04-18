@@ -28,7 +28,7 @@ public class AuthUserEntity implements Serializable {
         this.id = id;
     }
 
-    public static @Nonnull AuthUserEntity fromEntity(@Nonnull AuthUserJson user) {
+    public static @Nonnull AuthUserEntity fromJson(@Nonnull AuthUserJson user) {
         return new AuthUserEntity(
                 user.id(),
                 user.username(),

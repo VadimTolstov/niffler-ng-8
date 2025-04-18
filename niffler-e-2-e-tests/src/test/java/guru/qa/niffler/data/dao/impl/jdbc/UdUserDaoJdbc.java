@@ -1,5 +1,6 @@
 package guru.qa.niffler.data.dao.impl.jdbc;
 
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.UdUserDao;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
@@ -8,24 +9,24 @@ import guru.qa.niffler.model.CurrencyValues;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static guru.qa.niffler.data.tpl.Connections.holder;
+
 @Slf4j
 public class UdUserDaoJdbc implements UdUserDao {
-
-    private final Connection connection;
-
-    public UdUserDaoJdbc(Connection connection) {
-        this.connection = connection;
-    }
+    private final static Config CFG = Config.getInstance();
 
     @Override
     public @Nonnull UserEntity createUser(@Nonnull UserEntity user) {
-        try (PreparedStatement ps = connection.prepareStatement(
+        try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
                 "INSERT INTO \"user\" (username, currency, firstname, surname, photo, photo_small, full_name)" +
                         "VALUES (?, ?, ?, ?, ?, ?, ?)"
                 , Statement.RETURN_GENERATED_KEYS
@@ -57,7 +58,7 @@ public class UdUserDaoJdbc implements UdUserDao {
 
     @Override
     public @Nonnull Optional<UserEntity> findById(@Nonnull UUID id) {
-        try (PreparedStatement ps = connection.prepareStatement(
+        try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM \"user\" WHERE id = ?"
         )) {
             ps.setObject(1, id);
@@ -87,7 +88,7 @@ public class UdUserDaoJdbc implements UdUserDao {
 
     @Override
     public @Nonnull Optional<UserEntity> findByUsername(@Nonnull String username) {
-        try (PreparedStatement ps = connection.prepareStatement(
+        try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM \"user\" WHERE username = ?"
         )) {
             ps.setObject(1, username);
@@ -118,7 +119,7 @@ public class UdUserDaoJdbc implements UdUserDao {
     @Override
     public @Nonnull List<UserEntity> findAll() {
         List<UserEntity> userEntityList = new ArrayList<>();
-        try (PreparedStatement ps = connection.prepareStatement(
+        try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM \"user\""
         )) {
             ps.execute();
@@ -138,7 +139,7 @@ public class UdUserDaoJdbc implements UdUserDao {
         if (user.getId() == null) {
             throw new DataAccessException("При обновлении User в UserEntity id не должен быть null");
         }
-        try (PreparedStatement ps = connection.prepareStatement(
+        try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
                 "UPDATE \"user\" SET username = ?, currency = ?, firstname = ?, " +
                         "surname = ?, photo = ?, photo_small = ?, full_name = ? " +
                         "WHERE id = ?"
@@ -166,7 +167,7 @@ public class UdUserDaoJdbc implements UdUserDao {
 
     @Override
     public void delete(@Nonnull UserEntity user) {
-        try (PreparedStatement ps = connection.prepareStatement(
+        try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
                 "DELETE FROM \"user\" WHERE id = ?"
         )) {
             ps.setObject(1, user.getId());
