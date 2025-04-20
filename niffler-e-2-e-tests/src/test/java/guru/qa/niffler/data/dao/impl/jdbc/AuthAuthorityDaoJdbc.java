@@ -13,7 +13,6 @@ import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,9 +27,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     @Override
     public void create(@Nonnull AuthorityEntity... users) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
-                "INSERT INTO \"authority\" (user_id, authority) VALUES (?, ?)",
-                Statement.RETURN_GENERATED_KEYS
-        )) {
+                "INSERT INTO \"authority\" (user_id, authority) VALUES (?, ?)")) {
             for (AuthorityEntity user : users) {
                 ps.setObject(1, user.getUserId().getId());
                 ps.setString(2, user.getAuthority().name());

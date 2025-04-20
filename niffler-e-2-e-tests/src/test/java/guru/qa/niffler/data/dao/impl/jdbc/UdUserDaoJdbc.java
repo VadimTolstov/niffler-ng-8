@@ -74,7 +74,9 @@ public class UdUserDaoJdbc implements UdUserDao {
                             rs.getString("surname"),
                             rs.getString("full_name"),
                             rs.getBytes("photo"),
-                            rs.getBytes("photo_small")
+                            rs.getBytes("photo_small"),
+                            new ArrayList<>(),
+                            new ArrayList<>()
                     );
                     return Optional.ofNullable(ue);
                 } else {
@@ -104,7 +106,9 @@ public class UdUserDaoJdbc implements UdUserDao {
                             rs.getString("surname"),
                             rs.getString("full_name"),
                             rs.getBytes("photo"),
-                            rs.getBytes("photo_small")
+                            rs.getBytes("photo_small"),
+                            new ArrayList<>(),
+                            new ArrayList<>()
                     );
                     return Optional.ofNullable(ue);
                 } else {

@@ -1,13 +1,12 @@
-package guru.qa.niffler.data.dao;
+package guru.qa.niffler.data.repository;
 
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
-import guru.qa.niffler.data.entity.userdata.UserEntity;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface AuthAuthorityDao {
+public interface AuthAuthorityRepository {
 
     void create(AuthorityEntity... authority);
 

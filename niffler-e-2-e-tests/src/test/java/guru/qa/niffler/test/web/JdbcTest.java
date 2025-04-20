@@ -4,9 +4,10 @@ import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.SpendDbClient;
-import guru.qa.niffler.service.UsersDbClient;
-import guru.qa.niffler.service.UsersDbExperimentalClient;
+import guru.qa.niffler.service.dao.SpendDbClient;
+import guru.qa.niffler.service.dao.UsersDbClient;
+import guru.qa.niffler.service.dao.UsersDbExperimentalClient;
+import guru.qa.niffler.service.repository.UsersDbRepositoryClient;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
@@ -39,11 +40,11 @@ public class JdbcTest {
 
     @Test
     void xaTxTest() {
-        UsersDbClient usersDbClient = new UsersDbClient();
-        UserJson user = usersDbClient.creatUserSpringJdbc(
+        UsersDbRepositoryClient usersDbClient = new UsersDbRepositoryClient();
+        UserJson user = usersDbClient.creatUserJdbc(
                 new UserJson(
                         null,
-                        "valentin-9",
+                        "valentin-12",
                         null,
                         null,
                         null,
