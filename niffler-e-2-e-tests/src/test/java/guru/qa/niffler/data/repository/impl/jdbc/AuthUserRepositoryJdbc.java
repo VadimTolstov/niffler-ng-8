@@ -99,7 +99,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         }
     }
 
-    @Override
+    @Override//todo
     public @Nonnull Optional<AuthUserEntity> findUserByName(@Nonnull String username) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM \"user\" WHERE username = ?"
@@ -129,7 +129,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         }
     }
 
-    @Override
+    @Override//todo
     public @Nonnull List<AuthUserEntity> findAll() {
         List<AuthUserEntity> authUserEntityList = new ArrayList<>();
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
@@ -147,7 +147,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         }
     }
 
-    @Override
+    @Override//todo
     public @Nonnull AuthUserEntity update(@Nonnull AuthUserEntity user) {
         if (user.getId() == null) {
             throw new DataAccessException("При обновлении Пользователя  id не должен быть null");
@@ -177,14 +177,23 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
 
     @Override
     public void delete(@Nonnull AuthUserEntity user) {
-        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
-                "DELETE FROM \"user\" where id = ?"
-        )) {
-            ps.setObject(1, user.getId());
+        try (PreparedStatement psAuthority = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+                "DELETE FROM authority WHERE user_id = ?");
+             PreparedStatement psUser = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+                     "DELETE FROM \"user\" WHERE id = ?"
+             )) {
+            psAuthority.setObject(1, user.getId());
 
-            int affectedRows = ps.executeUpdate();
-            if (affectedRows == 0) {
-                throw new DataAccessException("Пользователь с id " + user.getId() + " не найдена");
+            int affectedRowsAuthority = psAuthority.executeUpdate();
+            if (affectedRowsAuthority == 0) {
+                throw new DataAccessException("Пользователь с id " + user.getId() + " не найдена в таблице authority");
+            }
+
+            psUser.setObject(1, user.getId());
+
+            int affectedRowsUser = psUser.executeUpdate();
+            if (affectedRowsUser == 0) {
+                throw new DataAccessException("Пользователь с id " + user.getId() + " не найдена в таблице user");
             }
         } catch (SQLException e) {
             log.error("Ошибка при удалении пользователя с id {}", user.getId(), e);

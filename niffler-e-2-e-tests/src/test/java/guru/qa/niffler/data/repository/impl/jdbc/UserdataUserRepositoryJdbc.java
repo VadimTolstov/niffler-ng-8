@@ -159,7 +159,7 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
 
     @Override
     public void addIncomeInvitation(@Nonnull UserEntity requester, @Nonnull UserEntity addressee) {
-        extracted(requester, addressee, FriendshipStatus.PENDING.name());
+        extractedFriend(requester, addressee, FriendshipStatus.PENDING.name());
     }
 
     @Override
@@ -169,11 +169,11 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
 
     @Override
     public void addFriend(UserEntity requester, UserEntity addressee) {
-        extracted(requester, addressee, FriendshipStatus.ACCEPTED.name());
-        extracted(addressee, requester, FriendshipStatus.ACCEPTED.name());
+        extractedFriend(requester, addressee, FriendshipStatus.ACCEPTED.name());
+        extractedFriend(addressee, requester, FriendshipStatus.ACCEPTED.name());
     }
 
-    private static void extracted(@Nonnull UserEntity requester, @Nonnull UserEntity addressee, @Nonnull String friendshipStatus) {
+    private void extractedFriend(@Nonnull UserEntity requester, @Nonnull UserEntity addressee, @Nonnull String friendshipStatus) {
         if (requester.getId() == null || addressee.getId() == null) {
             throw new DataAccessException("При добавлении дружбы id не должен быть null ");
         }
