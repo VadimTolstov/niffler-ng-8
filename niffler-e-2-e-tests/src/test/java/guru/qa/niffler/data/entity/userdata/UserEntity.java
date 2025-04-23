@@ -58,6 +58,10 @@ public class UserEntity implements Serializable {
     @OneToMany(mappedBy = "addressee", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FriendshipEntity> friendshipAddressees = new ArrayList<>();
 
+    public UserEntity(UUID id) {
+        this.id = id;
+    }
+
     public void addFriends(FriendshipStatus status, UserEntity... friends) {
         List<FriendshipEntity> friendsEntities = Stream.of(friends)
                 .map(f -> {

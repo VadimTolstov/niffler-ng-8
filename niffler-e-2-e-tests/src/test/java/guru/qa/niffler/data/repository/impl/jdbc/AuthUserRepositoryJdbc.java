@@ -1,7 +1,6 @@
-package guru.qa.niffler.data.repository.impl;
+package guru.qa.niffler.data.repository.impl.jdbc;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
@@ -87,16 +86,6 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
                     ae.setId(rs.getObject("a.id", UUID.class));
                     ae.setAuthority(Authority.valueOf(rs.getString("authority")));
                     authorityEntities.add(ae);
-                    AuthUserEntity aue = new AuthUserEntity(
-                            rs.getObject("id", UUID.class),
-                            rs.getString("username"),
-                            rs.getString("password"),
-                            rs.getBoolean("enabled"),
-                            rs.getBoolean("account_non_expired"),
-                            rs.getBoolean("account_non_locked"),
-                            rs.getBoolean("credentials_non_expired"),
-                            new ArrayList<>()
-                    );
                 }
                 if (user == null) {
                     return Optional.empty();
