@@ -100,7 +100,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
     }
 
     @Override//todo
-    public @Nonnull Optional<AuthUserEntity> findUserByName(@Nonnull String username) {
+    public @Nonnull Optional<AuthUserEntity> findByUsername(@Nonnull String username) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM \"user\" WHERE username = ?"
         )) {

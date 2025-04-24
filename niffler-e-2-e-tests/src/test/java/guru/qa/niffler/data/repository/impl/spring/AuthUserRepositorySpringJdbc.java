@@ -89,7 +89,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
     }
 
     @Override //todo
-    public @Nonnull Optional<AuthUserEntity> findUserByName(@Nonnull String name) {
+    public @Nonnull Optional<AuthUserEntity> findByUsername(@Nonnull String name) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
         List<AuthUserEntity> result = jdbcTemplate.query(
                 "SELECT * FROM \"user\" WHERE username = ?",

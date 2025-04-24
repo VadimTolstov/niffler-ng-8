@@ -8,6 +8,8 @@ import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
 import guru.qa.niffler.data.repository.impl.jdbc.AuthUserRepositoryJdbc;
 import guru.qa.niffler.data.repository.impl.jdbc.UserdataUserRepositoryJdbc;
+import guru.qa.niffler.data.repository.impl.spring.AuthUserRepositorySpringJdbc;
+import guru.qa.niffler.data.repository.impl.spring.UserdataUserRepositorySpringJdbc;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.Authority;
 import guru.qa.niffler.model.UserJson;
@@ -21,8 +23,11 @@ public class UsersDbRepositoryClient {
     private static final Config CFG = Config.getInstance();
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-    private final AuthUserRepository authUserRepository = new AuthUserRepositoryJdbc();
+    private final AuthUserRepository authUserRepositoryJdbc = new AuthUserRepositoryJdbc();
     private final UserdataUserRepository userdataUserRepositoryJdbc = new UserdataUserRepositoryJdbc();
+
+    private final AuthUserRepository authUserRepositorySpringJdbc = new AuthUserRepositorySpringJdbc();
+    private final UserdataUserRepository userdataUserRepositorySpringJdbc = new UserdataUserRepositorySpringJdbc();
 
     private final XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(
             CFG.authJdbcUrl(),
@@ -50,7 +55,7 @@ public class UsersDbRepositoryClient {
                     );
 
                     //создаем нового пользователя и получаем его id
-                    authUserEntity.setId(authUserRepository.create(authUserEntity).getId());
+                    authUserEntity.setId(authUserRepositoryJdbc.create(authUserEntity).getId());
 
                     return UserJson.fromEntity(
                             userdataUserRepositoryJdbc.create(UserEntity.fromJson(user)
@@ -60,23 +65,75 @@ public class UsersDbRepositoryClient {
         );
     }
 
-    public void addIncomeInvitation(UserJson requester, UserJson addressee) {
+    public void addIncomeInvitationJdbc(UserJson requester, UserJson addressee) {
         xaTransactionTemplate.execute(() -> {
             userdataUserRepositoryJdbc.addIncomeInvitation(UserEntity.fromJson(requester), UserEntity.fromJson(addressee));
             return null;
         });
     }
 
-    public void addOutcomeInvitation(UserJson requester, UserJson addressee) {
+    public void addOutcomeInvitationJdbc(UserJson requester, UserJson addressee) {
         xaTransactionTemplate.execute(() -> {
             userdataUserRepositoryJdbc.addOutcomeInvitation(UserEntity.fromJson(requester), UserEntity.fromJson(addressee));
             return null;
         });
     }
 
-    public void addFriend(UserJson requester, UserJson addressee) {
+    public void addFriendJdbc(UserJson requester, UserJson addressee) {
         xaTransactionTemplate.execute(() -> {
             userdataUserRepositoryJdbc.addFriend(UserEntity.fromJson(requester), UserEntity.fromJson(addressee));
+            return null;
+        });
+    }
+
+    public UserJson creatUserSpringJdbc(UserJson user) {
+        return xaTransactionTemplate.execute(() -> {
+                    AuthUserEntity authUserEntity = new AuthUserEntity();
+                    authUserEntity.setUsername(user.username());
+                    authUserEntity.setPassword(pe.encode("12345"));
+                    authUserEntity.setEnabled(true);
+                    authUserEntity.setAccountNonExpired(true);
+                    authUserEntity.setAccountNonLocked(true);
+                    authUserEntity.setCredentialsNonExpired(true);
+                    authUserEntity.setAuthorities(
+                            Arrays.stream(Authority.values())
+                                    .map(value -> {
+                                                AuthorityEntity ae = new AuthorityEntity();
+                                                ae.setUserId(authUserEntity);
+                                                ae.setAuthority(value);
+                                                return ae;
+                                            }
+                                    ).toList()
+                    );
+
+                    //создаем нового пользователя и получаем его id
+                    authUserEntity.setId(authUserRepositorySpringJdbc.create(authUserEntity).getId());
+
+                    return UserJson.fromEntity(
+                            userdataUserRepositorySpringJdbc.create(UserEntity.fromJson(user)
+                            )
+                    );
+                }
+        );
+    }
+
+    public void addIncomeInvitationSpringJdbc(UserJson requester, UserJson addressee) {
+        xaTransactionTemplate.execute(() -> {
+            userdataUserRepositorySpringJdbc.addIncomeInvitation(UserEntity.fromJson(requester), UserEntity.fromJson(addressee));
+            return null;
+        });
+    }
+
+    public void addOutcomeInvitationSpringJdbc(UserJson requester, UserJson addressee) {
+        xaTransactionTemplate.execute(() -> {
+            userdataUserRepositorySpringJdbc.addOutcomeInvitation(UserEntity.fromJson(requester), UserEntity.fromJson(addressee));
+            return null;
+        });
+    }
+
+    public void addFriendSpringJdbc(UserJson requester, UserJson addressee) {
+        xaTransactionTemplate.execute(() -> {
+            userdataUserRepositorySpringJdbc.addFriend(UserEntity.fromJson(requester), UserEntity.fromJson(addressee));
             return null;
         });
     }
