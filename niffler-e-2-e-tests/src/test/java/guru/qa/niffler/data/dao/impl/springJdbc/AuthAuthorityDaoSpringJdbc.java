@@ -27,7 +27,7 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
-                        ps.setObject(1, authority[i].getUserId().getId());
+                        ps.setObject(1, authority[i].getUser().getId());
                         ps.setString(2, authority[i].getAuthority().name());
                     }
 
@@ -67,7 +67,7 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
         int updated = jdbcTemplate.update(
                 "UPDATE \"authority\" SET user_id = ?, authority = ? WHERE id = ?",
-                user.getUserId().getId(),
+                user.getUser().getId(),
                 user.getAuthority().name(),
                 user.getId()
         );

@@ -29,7 +29,7 @@ public class AuthorityEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private AuthUserEntity userId;
+    private AuthUserEntity user;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

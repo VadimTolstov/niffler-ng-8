@@ -29,7 +29,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
                 "INSERT INTO \"authority\" (user_id, authority) VALUES (?, ?)")) {
             for (AuthorityEntity user : users) {
-                ps.setObject(1, user.getUserId().getId());
+                ps.setObject(1, user.getUser().getId());
                 ps.setString(2, user.getAuthority().name());
                 ps.addBatch();
             }
@@ -90,7 +90,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
                 "UPDATE \"authority\" SET user_id = ?, authority = ? WHERE id = ?"
         )) {
-            ps.setObject(1, user.getUserId().getId());
+            ps.setObject(1, user.getUser().getId());
             ps.setString(2, user.getAuthority().name());
             ps.setObject(3, user.getId());
 

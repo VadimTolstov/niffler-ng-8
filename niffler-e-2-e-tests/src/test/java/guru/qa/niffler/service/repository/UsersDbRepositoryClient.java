@@ -47,7 +47,7 @@ public class UsersDbRepositoryClient {
                             Arrays.stream(Authority.values())
                                     .map(value -> {
                                                 AuthorityEntity ae = new AuthorityEntity();
-                                                ae.setUserId(authUserEntity);
+                                                ae.setUser(authUserEntity);
                                                 ae.setAuthority(value);
                                                 return ae;
                                             }
@@ -99,7 +99,7 @@ public class UsersDbRepositoryClient {
                             Arrays.stream(Authority.values())
                                     .map(value -> {
                                                 AuthorityEntity ae = new AuthorityEntity();
-                                                ae.setUserId(authUserEntity);
+                                                ae.setUser(authUserEntity);
                                                 ae.setAuthority(value);
                                                 return ae;
                                             }

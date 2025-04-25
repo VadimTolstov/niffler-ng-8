@@ -13,14 +13,11 @@ import guru.qa.niffler.data.dao.impl.springJdbc.UdUserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
-import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.Authority;
 import guru.qa.niffler.model.UserJson;
-import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Arrays;
 
@@ -58,7 +55,7 @@ public class UsersDbClient {
                     authAuthorityDaoSpringJdbc.create(Arrays.stream(Authority.values())
                             .map(value -> {
                                         AuthorityEntity ae = new AuthorityEntity();
-                                        ae.setUserId(authUserEntity);
+                                        ae.setUser(authUserEntity);
                                         ae.setAuthority(value);
                                         return ae;
                                     }
@@ -88,7 +85,7 @@ public class UsersDbClient {
                     authAuthorityDaoJdbc.create(Arrays.stream(Authority.values())
                             .map(value -> {
                                         AuthorityEntity ae = new AuthorityEntity();
-                                        ae.setUserId(authUserEntity);
+                                        ae.setUser(authUserEntity);
                                         ae.setAuthority(value);
                                         return ae;
                                     }

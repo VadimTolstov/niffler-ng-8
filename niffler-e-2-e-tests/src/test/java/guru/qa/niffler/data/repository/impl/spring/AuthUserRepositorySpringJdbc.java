@@ -49,7 +49,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
         user.setId(generatedKey);
 
         // Убедиться, что AuthorityEntity имеют корректный user_id
-        user.getAuthorities().forEach(a -> a.getUserId().setId(generatedKey));
+        user.getAuthorities().forEach(a -> a.getUser().setId(generatedKey));
 
         jdbcTemplate.batchUpdate(
                 "INSERT INTO authority (user_id, authority) VALUES (?, ?)",

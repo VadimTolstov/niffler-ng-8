@@ -23,7 +23,7 @@ public class JdbcTest {
          usersDbRepositoryHibernateClient.creatUser(
                     new UserJson(
                             null,
-                            "valentin-20",
+                            "valentin-202",
                             null,
                             null,
                             null,

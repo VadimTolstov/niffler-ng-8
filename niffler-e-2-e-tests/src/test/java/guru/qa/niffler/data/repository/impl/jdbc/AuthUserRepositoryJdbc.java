@@ -82,7 +82,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
                     }
 
                     AuthorityEntity ae = new AuthorityEntity();
-                    ae.setUserId(user);
+                    ae.setUser(user);
                     ae.setId(rs.getObject("a.id", UUID.class));
                     ae.setAuthority(Authority.valueOf(rs.getString("authority")));
                     authorityEntities.add(ae);

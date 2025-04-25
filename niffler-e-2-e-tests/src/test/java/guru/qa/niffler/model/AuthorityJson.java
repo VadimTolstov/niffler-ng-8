@@ -19,7 +19,7 @@ public record AuthorityJson(
     private static @Nonnull AuthorityJson fromEntity(@Nonnull AuthorityEntity authority) {
         return new AuthorityJson(
                 authority.getId(),
-              AuthUserJson.fromEntity(authority.getUserId()),
+              AuthUserJson.fromEntity(authority.getUser()),
                 authority.getAuthority()
         );
     }
