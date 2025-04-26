@@ -40,11 +40,11 @@ public class JdbcTest {
 
     @Test
     void xaTxTest() {
-        UsersDbRepositoryClient usersDbClient = new UsersDbRepositoryClient();
-        UserJson user = usersDbClient.creatUserJdbc(
+        UsersDbRepositoryClient usersDbRepositoryClient = new UsersDbRepositoryClient();
+        UserJson user1 = usersDbRepositoryClient.creatUserJdbc(
                 new UserJson(
                         null,
-                        "valentin-12",
+                        "valentin-16",
                         null,
                         null,
                         null,
@@ -53,7 +53,25 @@ public class JdbcTest {
                         null
                 )
         );
-        System.out.println(user);
+        System.out.println(user1);
+
+        UserJson user2 = usersDbRepositoryClient.creatUserJdbc(
+                new UserJson(
+                        null,
+                        "oleg-16",
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        null,
+                        null
+                )
+        );
+        System.out.println(user2);
+
+        usersDbRepositoryClient.addIncomeInvitation(user1,user2);
+     //   usersDbRepositoryClient.addOutcomeInvitation(user1,user2);
+     //  usersDbRepositoryClient.addFriend(user1,user2);
     }
 
     @Test

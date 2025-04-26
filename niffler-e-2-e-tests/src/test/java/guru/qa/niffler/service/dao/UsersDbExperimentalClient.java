@@ -25,6 +25,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.util.Arrays;
 
 public class UsersDbExperimentalClient {
+
     private static final Config CFG = Config.getInstance();
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     private final AuthUserDao authUserDao = new AuthUserDaoSpringJdbc();

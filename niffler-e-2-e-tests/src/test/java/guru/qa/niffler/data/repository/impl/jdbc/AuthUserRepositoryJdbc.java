@@ -1,7 +1,6 @@
-package guru.qa.niffler.data.repository.impl;
+package guru.qa.niffler.data.repository.impl.jdbc;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
@@ -87,16 +86,6 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
                     ae.setId(rs.getObject("a.id", UUID.class));
                     ae.setAuthority(Authority.valueOf(rs.getString("authority")));
                     authorityEntities.add(ae);
-                    AuthUserEntity aue = new AuthUserEntity(
-                            rs.getObject("id", UUID.class),
-                            rs.getString("username"),
-                            rs.getString("password"),
-                            rs.getBoolean("enabled"),
-                            rs.getBoolean("account_non_expired"),
-                            rs.getBoolean("account_non_locked"),
-                            rs.getBoolean("credentials_non_expired"),
-                            new ArrayList<>()
-                    );
                 }
                 if (user == null) {
                     return Optional.empty();
@@ -110,7 +99,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         }
     }
 
-    @Override
+    @Override//todo
     public @Nonnull Optional<AuthUserEntity> findUserByName(@Nonnull String username) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM \"user\" WHERE username = ?"
@@ -140,7 +129,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         }
     }
 
-    @Override
+    @Override//todo
     public @Nonnull List<AuthUserEntity> findAll() {
         List<AuthUserEntity> authUserEntityList = new ArrayList<>();
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
@@ -158,7 +147,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         }
     }
 
-    @Override
+    @Override//todo
     public @Nonnull AuthUserEntity update(@Nonnull AuthUserEntity user) {
         if (user.getId() == null) {
             throw new DataAccessException("При обновлении Пользователя  id не должен быть null");
@@ -188,14 +177,23 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
 
     @Override
     public void delete(@Nonnull AuthUserEntity user) {
-        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
-                "DELETE FROM \"user\" where id = ?"
-        )) {
-            ps.setObject(1, user.getId());
+        try (PreparedStatement psAuthority = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+                "DELETE FROM authority WHERE user_id = ?");
+             PreparedStatement psUser = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+                     "DELETE FROM \"user\" WHERE id = ?"
+             )) {
+            psAuthority.setObject(1, user.getId());
 
-            int affectedRows = ps.executeUpdate();
-            if (affectedRows == 0) {
-                throw new DataAccessException("Пользователь с id " + user.getId() + " не найдена");
+            int affectedRowsAuthority = psAuthority.executeUpdate();
+            if (affectedRowsAuthority == 0) {
+                throw new DataAccessException("Пользователь с id " + user.getId() + " не найдена в таблице authority");
+            }
+
+            psUser.setObject(1, user.getId());
+
+            int affectedRowsUser = psUser.executeUpdate();
+            if (affectedRowsUser == 0) {
+                throw new DataAccessException("Пользователь с id " + user.getId() + " не найдена в таблице user");
             }
         } catch (SQLException e) {
             log.error("Ошибка при удалении пользователя с id {}", user.getId(), e);
