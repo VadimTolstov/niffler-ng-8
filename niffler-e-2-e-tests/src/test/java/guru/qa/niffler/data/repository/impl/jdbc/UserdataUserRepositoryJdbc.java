@@ -15,10 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static guru.qa.niffler.data.tpl.Connections.holder;
 
@@ -89,7 +86,7 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
                     fe.setStatus(FriendshipStatus.valueOf(rs.getString("friendship_status")));
                     fe.setCreatedDate(rs.getDate("created_date"));
 
-                    if (fe.getRequester().getId() == user.getId()) {
+                    if (Objects.equals(fe.getRequester().getId(), user.getId()) ) {
                         feRequesterList.add(fe);
                     } else if (fe.getAddressee().getId() == user.getId()) {
                         feAddresseeList.add(fe);
