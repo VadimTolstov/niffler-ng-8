@@ -3,7 +3,6 @@ package guru.qa.niffler.data.repository.impl.spring;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.extractor.AuthUserResultSetExtractor;
-import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.ex.DataAccessException;
@@ -16,7 +15,6 @@ import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -86,47 +84,6 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
                 AuthUserResultSetExtractor.INSTANCE,
                 id
         ));
-    }
-
-    @Override //todo
-    public @Nonnull Optional<AuthUserEntity> findByUsername(@Nonnull String name) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
-        List<AuthUserEntity> result = jdbcTemplate.query(
-                "SELECT * FROM \"user\" WHERE username = ?",
-                AuthUserEntityRowMapper.instance,
-                name
-        );
-        return result.isEmpty() ? Optional.empty() : Optional.ofNullable(result.getFirst());
-    }
-
-    @Override //todo
-    public @Nonnull List<AuthUserEntity> findAll() {
-        return new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl())).query(
-                "SELECT * FROM \"user\"",
-                AuthUserEntityRowMapper.instance
-        );
-    }
-
-    @Override//todo
-    public @Nonnull AuthUserEntity update(@Nonnull AuthUserEntity user) {
-        if (user.getId() == null) {
-            throw new DataAccessException("При обновлении данных в таблице user в AuthUserEntity id не должен быть null");
-        }
-        int updated = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl())).update(
-                "UPDATE \"user\" SET username = ?, password = ?, enabled = ?, account_non_expired = ?, account_non_locked = ?, credentials_non_expired = ?" +
-                        "WHERE id = ?",
-                user.getUsername(),
-                user.getPassword(),
-                user.getEnabled(),
-                user.getAccountNonExpired(),
-                user.getAccountNonLocked(),
-                user.getCredentialsNonExpired(),
-                user.getId()
-        );
-        if (updated == 0) {
-            throw new DataAccessException("Данные в таблице user по id " + user.getId() + " не найдена для обновления");
-        }
-        return user;
     }
 
     @Override

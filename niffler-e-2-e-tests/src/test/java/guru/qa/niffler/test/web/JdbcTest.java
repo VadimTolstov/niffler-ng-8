@@ -1,6 +1,5 @@
 package guru.qa.niffler.test.web;
 
-import guru.qa.niffler.data.repository.UserdataUserRepository;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
@@ -11,34 +10,33 @@ import guru.qa.niffler.service.dao.UsersDbExperimentalClient;
 import guru.qa.niffler.service.repository.UsersDbRepositoryClient;
 import guru.qa.niffler.service.repository.hibernate.UsersDbRepositoryHibernateClient;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Date;
 
 public class JdbcTest {
 
-    @Test
-    void hibernateTest() {
-        UsersDbRepositoryHibernateClient usersDbRepositoryHibernateClient =
- new UsersDbRepositoryHibernateClient();
-         usersDbRepositoryHibernateClient.creatUser(
-                    new UserJson(
-                            null,
-                            "valentin-202",
-                            null,
-                            null,
-                            null,
-                            CurrencyValues.RUB,
-                            null,
-                            null
-                    )
-            );
-            //System.out.println(user);
+    static UsersDbRepositoryHibernateClient usersDbClient = new UsersDbRepositoryHibernateClient();
+
+    @ValueSource(strings = {
+            "valentin-216",
+            "valentin-217",
+            "valentin-218"
+    })
+
+    @ParameterizedTest
+    void hibernateTest(String username) {
+        UserJson user = usersDbClient.creatUser(
+                username,
+                "12345"
+        );
+        usersDbClient.addIncomeInvitation(user, 1);
     }
 
     @Test
     void txTest() {
         SpendDbClient spendDbClient = new SpendDbClient();
-
         SpendJson spend = spendDbClient.createSpendJdbc(
                 new SpendJson(
                         null,
@@ -90,9 +88,9 @@ public class JdbcTest {
         );
         System.out.println(user2);
 
-        usersDbRepositoryClient.addIncomeInvitationJdbc(user1,user2);
-     //   usersDbRepositoryClient.addOutcomeInvitation(user1,user2);
-     //  usersDbRepositoryClient.addFriend(user1,user2);
+        usersDbRepositoryClient.addIncomeInvitationJdbc(user1, user2);
+        //   usersDbRepositoryClient.addOutcomeInvitation(user1,user2);
+        //  usersDbRepositoryClient.addFriend(user1,user2);
     }
 
     @Test

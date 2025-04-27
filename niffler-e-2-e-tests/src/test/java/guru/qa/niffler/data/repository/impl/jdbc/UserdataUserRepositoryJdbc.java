@@ -7,7 +7,6 @@ import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
 import guru.qa.niffler.ex.DataAccessException;
-import guru.qa.niffler.model.CurrencyValues;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
@@ -15,10 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static guru.qa.niffler.data.tpl.Connections.holder;
 
@@ -89,9 +85,9 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
                     fe.setStatus(FriendshipStatus.valueOf(rs.getString("friendship_status")));
                     fe.setCreatedDate(rs.getDate("created_date"));
 
-                    if (fe.getRequester().getId() == user.getId()) {
+                    if (Objects.equals(fe.getRequester().getId(), user.getId())) {
                         feRequesterList.add(fe);
-                    } else if (fe.getAddressee().getId() == user.getId()) {
+                    } else if (Objects.equals(fe.getAddressee().getId(), user.getId())) {
                         feAddresseeList.add(fe);
                     }
                 }
@@ -104,56 +100,6 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
             }
         } catch (SQLException e) {
             throw new DataAccessException("Ошибка при поиске пользователя по id = " + id, e);
-        }
-    }
-
-    @Override//todo
-    public @Nonnull Optional<UserEntity> findByUsername(@Nonnull String username) {
-        try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
-                "SELECT * FROM \"user\" WHERE username = ?"
-        )) {
-            ps.setObject(1, username);
-            ps.execute();
-
-            try (ResultSet rs = ps.getResultSet()) {
-                if (rs.next()) {
-                    UserEntity ue = new UserEntity(
-                            rs.getObject("id", UUID.class),
-                            rs.getString("username"),
-                            CurrencyValues.valueOf(rs.getString("currency")),
-                            rs.getString("firstname"),
-                            rs.getString("surname"),
-                            rs.getString("full_name"),
-                            rs.getBytes("photo"),
-                            rs.getBytes("photo_small"),
-                            new ArrayList<>(),
-                            new ArrayList<>()
-                    );
-                    return Optional.ofNullable(ue);
-                } else {
-                    return Optional.empty();
-                }
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException("Ошибка при поиске пользователя по username = " + username, e);
-        }
-    }
-
-    @Override//todo
-    public @Nonnull List<UserEntity> findAll() {
-        List<UserEntity> userEntityList = new ArrayList<>();
-        try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
-                "SELECT * FROM \"user\""
-        )) {
-            ps.execute();
-            try (ResultSet rs = ps.getResultSet()) {
-                while (rs.next()) {
-                    userEntityList.add(UdUserEntityRowMapper.instance.mapRow(rs, rs.getRow()));
-                }
-            }
-            return userEntityList;
-        } catch (SQLException e) {
-            throw new DataAccessException("Ошибка при получении данных с таблицы user ", e);
         }
     }
 
@@ -191,37 +137,6 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
             }
         } catch (SQLException e) {
             throw new RuntimeException("При добавлении данных в таблицу friendship произошла ошибка " + e);
-        }
-    }
-
-    @Override//todo
-    public @Nonnull UserEntity update(@Nonnull UserEntity user) {
-        if (user.getId() == null) {
-            throw new DataAccessException("При обновлении User в UserEntity id не должен быть null");
-        }
-        try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
-                "UPDATE \"user\" SET username = ?, currency = ?, firstname = ?, " +
-                        "surname = ?, photo = ?, photo_small = ?, full_name = ? " +
-                        "WHERE id = ?"
-        )) {
-            ps.setString(1, user.getUsername());
-            ps.setString(2, user.getCurrency().name());
-            ps.setString(3, user.getFirstname());
-            ps.setString(4, user.getSurname());
-            ps.setBytes(5, user.getPhoto());
-            ps.setBytes(6, user.getPhotoSmall());
-            ps.setString(7, user.getFullname());
-            ps.setObject(8, user.getId());
-
-            // Проверяем количество обновленных строк
-            int affectedRows = ps.executeUpdate();
-            if (affectedRows == 0) {
-                throw new DataAccessException("Пользователь с id " + user.getId() + " не найдена");
-            }
-            return user;
-        } catch (SQLException e) {
-            log.error("Ошибка при обновлении пользователя с id {}", user.getId(), e);
-            throw new DataAccessException("Ошибка при обновлении пользователя", e);
         }
     }
 

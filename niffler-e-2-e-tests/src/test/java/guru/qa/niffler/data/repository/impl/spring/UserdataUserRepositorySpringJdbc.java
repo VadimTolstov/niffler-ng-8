@@ -4,7 +4,6 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.extractor.UserdataUserResultSetExtractor;
-import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.ex.DataAccessException;
@@ -15,7 +14,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -69,25 +67,6 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
         );
     }
 
-
-    @Override//todo
-    public @Nonnull Optional<UserEntity> findByUsername(@Nonnull String username) {
-        List<UserEntity> result = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl())).query(
-                "SELECT * FROM \"user\" WHERE username = ?",
-                UdUserEntityRowMapper.instance,
-                username
-        );
-        return result.isEmpty() ? Optional.empty() : Optional.ofNullable(result.getFirst());
-    }
-
-    @Override //todo
-    public @Nonnull List<UserEntity> findAll() {
-        return new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl())).query(
-                "SELECT * FROM \"user\"",
-                UdUserEntityRowMapper.instance
-        );
-    }
-
     @Override
     public void addIncomeInvitation(@Nonnull UserEntity requester, @Nonnull UserEntity addressee) {
         extractedFriend(requester, addressee, FriendshipStatus.PENDING.name());
@@ -119,30 +98,6 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
             ps.setObject(4, new java.sql.Date(System.currentTimeMillis()));
             return ps;
         });
-    }
-
-    @Override//todo
-    public @Nonnull UserEntity update(@Nonnull UserEntity user) {
-        if (user.getId() == null) {
-            throw new DataAccessException("При обновлении данных в таблице user в UserEntity id не должен быть null");
-        }
-        int updated = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl())).update(
-                "UPDATE \"user\" SET username = ?, currency = ?, firstname = ?, " +
-                        "surname = ?, photo = ?, photo_small = ?, full_name = ? " +
-                        "WHERE id = ?",
-                user.getUsername(),
-                user.getCurrency().name(),
-                user.getFirstname(),
-                user.getSurname(),
-                user.getPhoto(),
-                user.getPhotoSmall(),
-                user.getFullname(),
-                user.getId()
-        );
-        if (updated == 0) {
-            throw new DataAccessException("При обновлении данных в таблице user данные с id " + user.getId() + " не найдена для обновления");
-        }
-        return user;
     }
 
     @Override
