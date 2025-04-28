@@ -60,6 +60,17 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
     }
 
     @Override
+    public @Nonnull List<AuthorityEntity> findByUserId(@Nonnull UUID userId) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
+        return jdbcTemplate.query(
+                "SELECT * FROM \"authority\" WHERE user_id = ?",
+                AuthorityEntityRowMapper.instance,
+                userId
+        );
+    }
+
+
+    @Override
     public @Nonnull AuthorityEntity update(@Nonnull AuthorityEntity user) {
         if (user.getId() == null) {
             throw new DataAccessException("При обновлении данных в таблице authority в AuthorityEntity id не должен быть null");

@@ -18,4 +18,9 @@ public interface UdUserDao {
     UserEntity update(UserEntity user);
 
     void delete(UserEntity user);
+
+    void sendInvitation(UserEntity requester, UserEntity addressee);
+
+    void addFriend(UserEntity requester, UserEntity addressee);
+
 }
