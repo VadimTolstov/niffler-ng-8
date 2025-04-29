@@ -73,6 +73,12 @@ public class SpendRepositoryHibernate implements SpendRepository {
     }
 
     @Override
+    public @Nonnull CategoryEntity updateCategory(@Nonnull CategoryEntity category) {
+        entityManager.joinTransaction();
+        return entityManager.merge(category);
+    }
+
+    @Override
     public @Nonnull Optional<CategoryEntity> findCategoryById(@Nonnull UUID id) {
         return Optional.ofNullable(
                 entityManager.find(CategoryEntity.class, id)

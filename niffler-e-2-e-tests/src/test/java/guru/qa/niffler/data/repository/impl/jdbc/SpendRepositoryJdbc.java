@@ -29,18 +29,14 @@ public class SpendRepositoryJdbc implements SpendRepository {
 
     @Override
     public Optional<SpendEntity> findById(UUID id) {
-        SpendEntity spend;
-        Optional<SpendEntity> spendOptional = spendDao.findById(id);
-        if (spendOptional.isPresent()) {
-            spend = spendOptional.get();
-            Optional<CategoryEntity> categoryOptional = categoryDao.findById(spend.getCategory().getId());
-            if (categoryOptional.isPresent()) {
-                spend.setCategory(categoryOptional.get());
-                return Optional.ofNullable(spend);
-            }
-            return Optional.ofNullable(spend);
-        }
-        return Optional.empty();
+        return spendDao.findById(id)
+                .map(spend -> {
+                    Optional.ofNullable(spend.getCategory())
+                            .map(CategoryEntity::getId)
+                            .flatMap(categoryDao::findById)
+                            .ifPresent(spend::setCategory);
+                    return spend;
+                });
     }
 
     @Override
@@ -55,7 +51,15 @@ public class SpendRepositoryJdbc implements SpendRepository {
 
     @Override
     public CategoryEntity createCategory(CategoryEntity category) {
-        return categoryDao.create(category);
+        return categoryDao.findCategoryByUsernameAndCategoryName(
+                category.getUsername(),
+                category.getName()
+        ).orElseGet(() -> categoryDao.create(category));
+    }
+
+    @Override
+    public CategoryEntity updateCategory(CategoryEntity category) {
+        return categoryDao.update(category);
     }
 
     @Override

@@ -1,8 +1,5 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.data.entity.spend.CategoryEntity;
-import guru.qa.niffler.data.repository.SpendRepository;
-import guru.qa.niffler.data.repository.impl.hibernate.SpendRepositoryHibernate;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.model.CategoryJson;
@@ -47,7 +44,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
                                     create.username(),
                                     true
                             );
-                            create = spendClient.update(archivedCategory);
+                            create = spendClient.updateCategory(archivedCategory);
                         }
 
                         context.getStore(NAMESPACE).put(context.getUniqueId(), create);
@@ -60,7 +57,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
     public void afterTestExecution(ExtensionContext context) {
         Optional.ofNullable(context.getStore(CategoryExtension.NAMESPACE).get(context.getUniqueId(), CategoryJson.class))
                 .ifPresent(categoryJson -> {
-                    spendClient.update(
+                    spendClient.updateCategory(
                             new CategoryJson(
                                     categoryJson.id(),
                                     categoryJson.name(),

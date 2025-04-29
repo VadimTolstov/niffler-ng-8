@@ -67,7 +67,15 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
 
     @Override
     public CategoryEntity createCategory(CategoryEntity category) {
-        return categoryDao.create(category);
+        return categoryDao.findCategoryByUsernameAndCategoryName(
+                category.getUsername(),
+                category.getName()
+        ).orElseGet(() -> categoryDao.create(category));
+    }
+
+    @Override
+    public CategoryEntity updateCategory(CategoryEntity category) {
+        return categoryDao.update(category);
     }
 
     @Override
