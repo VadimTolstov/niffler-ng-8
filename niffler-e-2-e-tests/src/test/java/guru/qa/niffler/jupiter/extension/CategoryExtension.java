@@ -6,6 +6,7 @@ import guru.qa.niffler.data.repository.impl.hibernate.SpendRepositoryHibernate;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.service.SpendClient;
 import guru.qa.niffler.service.imp.SpendDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -18,7 +19,7 @@ import java.util.Optional;
 public class CategoryExtension implements BeforeEachCallback, AfterTestExecutionCallback, ParameterResolver {
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
-    private final SpendRepository spendRepository = new SpendRepositoryHibernate();
+    private final SpendClient spendClient = new SpendDbClient();
 
 
     @Override
@@ -37,7 +38,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
                                 userAnno.username(),
                                 false
                         );
-                        CategoryJson create = CategoryJson.fromEntity(spendRepository.createCategory(CategoryEntity.fromJson(categoryJson)));
+                        CategoryJson create = spendClient.createCategory(categoryJson);
                         //не убираю updateCategory т.к при переходе на API он снова понадобится
                         if (categoryAnno.archived()) {
                             CategoryJson archivedCategory = new CategoryJson(
@@ -46,7 +47,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
                                     create.username(),
                                     true
                             );
-                         //   create = spendRepository.u(archivedCategory);
+                            create = spendClient.update(archivedCategory);
                         }
 
                         context.getStore(NAMESPACE).put(context.getUniqueId(), create);
@@ -57,16 +58,16 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
 
     @Override
     public void afterTestExecution(ExtensionContext context) {
-//        Optional.ofNullable(context.getStore(CategoryExtension.NAMESPACE).get(context.getUniqueId(), CategoryJson.class))
-//                .ifPresent(categoryJson -> {
-//                  //  spendDbClient.updateCategoryJdbc(
-//                            new CategoryJson(
-//                                    categoryJson.id(),
-//                                    categoryJson.name(),
-//                                    categoryJson.username(),
-//                                    true
-//                            ));
-//                });
+        Optional.ofNullable(context.getStore(CategoryExtension.NAMESPACE).get(context.getUniqueId(), CategoryJson.class))
+                .ifPresent(categoryJson -> {
+                    spendClient.update(
+                            new CategoryJson(
+                                    categoryJson.id(),
+                                    categoryJson.name(),
+                                    categoryJson.username(),
+                                    true
+                            ));
+                });
     }
 
     @Override

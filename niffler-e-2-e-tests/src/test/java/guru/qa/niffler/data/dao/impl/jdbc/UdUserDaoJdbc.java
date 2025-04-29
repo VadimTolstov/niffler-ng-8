@@ -64,7 +64,7 @@ public class UdUserDaoJdbc implements UdUserDao {
                         " f.addressee_id AS addressee_id," +
                         " f.status AS friendship_status," +
                         " f.created_date AS created_date" +
-                        " FROM \"user\" u LEFT JOIN \"friendship\" " +
+                        " FROM \"user\" u LEFT JOIN \"friendship\" f" +
                         " ON u.id = f.requester_id OR u.id = f.addressee_id " +
                         " WHERE  u.id = ?"
         )) {
