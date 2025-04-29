@@ -105,6 +105,55 @@ public class SpendDaoJdbc implements SpendDao {
     }
 
     @Override
+    public @Nonnull List<SpendEntity> findByCategoryId(@Nonnull UUID categoryId) {
+        List<SpendEntity> spendEntityList = new ArrayList<>();
+        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+                "SELECT * FROM spend WHERE category_id = ?"
+        )) {
+            ps.setObject(1, categoryId);
+            ps.execute();
+            try (ResultSet rs = ps.getResultSet()) {
+                while (rs.next()) {
+                    spendEntityList.add(SpendEntityRowMapper.instance.mapRow(rs, rs.getRow()));
+                }
+            }
+            return spendEntityList;
+        } catch (SQLException e) {
+            throw new DataAccessException("Ошибка при поиске трат по category_id = " + categoryId, e);
+        }
+    }
+
+    @Override
+    public Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description) {
+        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+                "SELECT * FROM spend WHERE username = ? AND description = ?"
+        )) {
+            ps.setString(1, username);
+            ps.setString(2, description);
+            ps.execute();
+
+            try (ResultSet rs = ps.getResultSet()) {
+                if (rs.next()) {
+                    SpendEntity se = new SpendEntity(
+                            rs.getObject("id", UUID.class),
+                            rs.getString("username"),
+                            CurrencyValues.valueOf(rs.getString("currency")),
+                            new java.util.Date(rs.getDate("spend_date").getTime()),
+                            rs.getDouble("amount"),
+                            rs.getString("description"),
+                            new CategoryEntity(rs.getObject("category_id", UUID.class))
+                    );
+                    return Optional.ofNullable(se);
+                } else {
+                    return Optional.empty();
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Ошибка при поиске траты по username = " + username + " и description = " + description, e);
+        }
+    }
+
+    @Override
     public @Nonnull SpendEntity update(@Nonnull SpendEntity spend) {
         if (spend.getId() == null) {
             throw new DataAccessException("При обновлении Spend в SpendEntity id не должен быть null");

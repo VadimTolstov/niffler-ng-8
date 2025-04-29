@@ -13,6 +13,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -64,6 +65,28 @@ public class SpendDaoSpringJdbc implements SpendDao {
         return jdbcTemplate.query(
                 "SELECT * FROM spend",
                 SpendEntityRowMapper.instance);
+    }
+
+    @Override
+    public List<SpendEntity> findByCategoryId(UUID categoryId) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
+        return jdbcTemplate.query(
+                "SELECT * FROM spend WHERE category_id = ?",
+                SpendEntityRowMapper.instance,
+                categoryId
+        );
+    }
+
+    @Override
+    public Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
+        List<SpendEntity> result = jdbcTemplate.query(
+                "SELECT * FROM spend WHERE username = ? AND description = ?",
+                SpendEntityRowMapper.instance,
+                username,
+                description
+        );
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.getFirst());
     }
 
     @Override

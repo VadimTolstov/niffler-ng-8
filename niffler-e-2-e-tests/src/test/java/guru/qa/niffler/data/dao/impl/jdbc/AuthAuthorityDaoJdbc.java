@@ -65,6 +65,31 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     }
 
     @Override
+    public @Nonnull List<AuthorityEntity> findByUserId(@Nonnull UUID userId) {
+        List<AuthorityEntity> entityList = new ArrayList<>();
+        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+                "SELECT * FROM \"authority\" WHERE user_id = ?"
+        )) {
+            ps.setObject(1, userId);
+            ps.execute();
+
+            try (ResultSet rs = ps.getResultSet()) {
+                while (rs.next()) {
+                    AuthorityEntity ae = new AuthorityEntity(
+                            rs.getObject("id", UUID.class),
+                            new AuthUserEntity(rs.getObject("user_id", UUID.class)),
+                            Authority.valueOf(rs.getString("authority"))
+                    );
+                    entityList.add(ae);
+                }
+                return entityList;
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Ошибка при поиске данных в таблице authority  по user_id = " + userId, e);
+        }
+    }
+
+    @Override
     public @Nonnull List<AuthorityEntity> findAll() {
         List<AuthorityEntity> usersList = new ArrayList<>();
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(

@@ -1,4 +1,4 @@
-package guru.qa.niffler.service.repository.hibernate;
+package guru.qa.niffler.service.imp;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
@@ -9,21 +9,18 @@ import guru.qa.niffler.data.repository.UserdataUserRepository;
 import guru.qa.niffler.data.repository.impl.hibernate.AuthUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.impl.hibernate.UserdataUserRepositoryHibernate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
-import guru.qa.niffler.ex.DataAccessException;
 import guru.qa.niffler.model.Authority;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.service.UsersClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.Nonnull;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.UUID;
 
-public class UsersDbRepositoryHibernateClient {
+public class UsersDbClient implements UsersClient {
 
     private static final Config CFG = Config.getInstance();
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -36,7 +33,8 @@ public class UsersDbRepositoryHibernateClient {
             CFG.userdataJdbcUrl()
     );
 
-    public @Nonnull UserJson creatUser(@Nonnull String username, @Nonnull String password) {
+    @Override
+    public @Nonnull UserJson createUser(@Nonnull String username, @Nonnull String password) {
         return xaTransactionTemplate.execute(() -> {
                     AuthUserEntity authUserEntity = authUserEntity(username, password);
 
@@ -51,7 +49,8 @@ public class UsersDbRepositoryHibernateClient {
         );
     }
 
-    public void addIncomeInvitation(UserJson targetUser, int count) {
+    @Override
+    public void createIncomeInvitations(UserJson targetUser, int count) {
         if (count > 0) {
             UserEntity targetEntity = userdataUserRepository.findById(
                     targetUser.id()
@@ -63,7 +62,7 @@ public class UsersDbRepositoryHibernateClient {
                             AuthUserEntity authUserEntity = authUserEntity(username, "12345");
                             authUserRepository.create(authUserEntity);
                             UserEntity adressee = userdataUserRepository.create(userEntity(username));
-                            userdataUserRepository.addIncomeInvitation(targetEntity, adressee);
+                            userdataUserRepository.sendInvitation(targetEntity, adressee);
                             return null;
                         }
                 );
@@ -71,7 +70,8 @@ public class UsersDbRepositoryHibernateClient {
         }
     }
 
-    public void addOutcomeInvitation(UserJson targetUser, int count) {
+    @Override
+    public void createOutcomeInvitations(UserJson targetUser, int count) {
         if (count > 0) {
             UserEntity targetEntity = userdataUserRepository.findById(
                     targetUser.id()
@@ -83,7 +83,7 @@ public class UsersDbRepositoryHibernateClient {
                             AuthUserEntity authUserEntity = authUserEntity(username, "12345");
                             authUserRepository.create(authUserEntity);
                             UserEntity adressee = userdataUserRepository.create(userEntity(username));
-                            userdataUserRepository.addOutcomeInvitation(targetEntity, adressee);
+                            userdataUserRepository.sendInvitation(adressee, targetEntity);
                             return null;
                         }
                 );
@@ -91,7 +91,8 @@ public class UsersDbRepositoryHibernateClient {
         }
     }
 
-    public void addFriend(UserJson targetUser, int count) {
+    @Override
+    public void createFriends(UserJson targetUser, int count) {
         if (count > 0) {
             UserEntity targetEntity = userdataUserRepository.findById(
                     targetUser.id()
@@ -137,4 +138,5 @@ public class UsersDbRepositoryHibernateClient {
         );
         return authUserEntity;
     }
+
 }

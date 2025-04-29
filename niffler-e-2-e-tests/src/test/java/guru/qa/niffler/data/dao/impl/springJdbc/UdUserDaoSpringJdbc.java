@@ -2,6 +2,7 @@ package guru.qa.niffler.data.dao.impl.springJdbc;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.UdUserDao;
+import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
 import guru.qa.niffler.data.tpl.DataSources;
@@ -107,6 +108,11 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
         if (user.getId() == null) {
             throw new DataAccessException("При удалении данных в таблице user в UserEntity id не должен быть null");
         }
+        new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl())).update(
+                "DELETE FROM friendship WHERE requester_id = ? OR addressee_id = ?",
+                user.getId(),
+                user.getId()
+        );
         int deleted = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl())).update(
                 "DELETE FROM \"user\" WHERE id = ?",
                 user.getId()
@@ -114,5 +120,34 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
         if (deleted == 0) {
             throw new DataAccessException("При удалении данных в таблице user данные c id " + user.getId() + " не найдена для удаления");
         }
+    }
+
+    @Override
+    public void sendInvitation(@Nonnull UserEntity requester, @Nonnull UserEntity addressee) {
+        extractedFriend(requester, addressee, FriendshipStatus.PENDING.name());
+
+    }
+
+    @Override
+    public void addFriend(@Nonnull UserEntity requester, @Nonnull UserEntity addressee) {
+        extractedFriend(requester, addressee, FriendshipStatus.ACCEPTED.name());
+        extractedFriend(addressee, requester, FriendshipStatus.ACCEPTED.name());
+    }
+
+    private void extractedFriend(@Nonnull UserEntity requester, @Nonnull UserEntity addressee, @Nonnull String friendshipStatus) {
+        if (requester.getId() == null || addressee.getId() == null) {
+            throw new DataAccessException("При добавлении дружбы id не должен быть null ");
+        }
+        new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl())).update(con -> {
+            PreparedStatement ps = con.prepareStatement(
+                    "INSERT INTO friendship (requester_id, addressee_id, status, created_date)" +
+                            "VALUES (?,?,?,?)"
+            );
+            ps.setObject(1, requester.getId());
+            ps.setObject(2, addressee.getId());
+            ps.setString(3, friendshipStatus);
+            ps.setObject(4, new java.sql.Date(System.currentTimeMillis()));
+            return ps;
+        });
     }
 }
