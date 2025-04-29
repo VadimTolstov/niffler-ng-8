@@ -93,11 +93,17 @@ public class SpendDbClient implements SpendClient {
 
     @Override
     public void remove(SpendJson spend) {
-        spendRepository.remove(SpendEntity.fromJson(spend));
+        xaTransactionTemplate.execute(() -> {
+            spendRepository.remove(SpendEntity.fromJson(spend));
+            return null;
+        });
     }
 
     @Override
     public void removeCategory(CategoryJson category) {
-        spendRepository.removeCategory(CategoryEntity.fromJson(category));
+        xaTransactionTemplate.execute(() -> {
+            spendRepository.removeCategory(CategoryEntity.fromJson(category));
+            return null;
+        });
     }
 }
