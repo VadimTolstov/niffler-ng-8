@@ -9,7 +9,6 @@ import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,9 +20,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
     @Override
     public @Nonnull AuthUserEntity create(@Nonnull AuthUserEntity user) {
         AuthUserEntity createUser = authUserDao.create(user);
-        for (AuthorityEntity authority : createUser.getAuthorities()) {
-            authAuthorityDao.create(authority);
-        }
+        authAuthorityDao.create(createUser.getAuthorities().toArray(new AuthorityEntity[0]));
         return createUser;
     }
 
@@ -34,15 +31,15 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
 
     @Override
     public @Nonnull Optional<AuthUserEntity> findById(@Nonnull UUID id) {
-        List<AuthorityEntity> byListAe = authAuthorityDao.findByUserId(id);
         Optional<AuthUserEntity> authUser = authUserDao.findById(id);
-        AuthUserEntity user;
-        if (authUser.isPresent()) {
-            user = authUser.get();
-            user.setAuthorities(byListAe);
-            return Optional.ofNullable(user);
-        }
-        return Optional.empty();
+        authUser.ifPresent(authUserEntity ->
+                authUserEntity.addAuthorities(
+                        authAuthorityDao
+                                .findByUserId(authUserEntity.getId())
+                                .toArray(new AuthorityEntity[0])
+                )
+        );
+        return authUser;
     }
 
     @Override

@@ -5,6 +5,7 @@ import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.utils.RandomDataUtils;
@@ -25,32 +26,35 @@ public class ProfileTest {
     )
     @Test
     @DisplayName("Перевод категории в архивную")
-    void categoryToAnArchived(CategoryJson category) {
+    void categoryToAnArchived(CategoryJson[] category) {
         Selenide.open(LoginPage.URL, LoginPage.class)
-                .doLogin(new MainPage(), category.username(), "12345")
+                .doLogin(new MainPage(), "duck", "12345")
                 .getHeaderComponent()
                 .toProfilePage()
-                .checkCategoryExists(category.name())
-                .archiveCategory(category.name())
+                .checkCategoryExists(category[0].name())
+                .archiveCategory(category[0].name())
                 .clickSwitcherCategories()
-                .checkCategoryExists(category.name());
+                .checkCategoryExists(category[0].name());
     }
 
     @User(
-            username = "duck",
+              username = "duck",
             categories = @Category(
+                    name = "archived3",
                     archived = true
             )
     )
     @Test
     @DisplayName("Перевод категории из архивной в действующий")
-    void categoryFromAnArchivedOneToAnActive(CategoryJson category) {
+    void categoryFromAnArchivedOneToAnActive(UserJson user) {
+        final CategoryJson archivedCategory = user.testData().categories().getFirst();
+
         Selenide.open(LoginPage.URL, LoginPage.class)
-                .doLogin(new MainPage(), category.username(), "12345")
+                .doLogin(new MainPage(), user.username(), user.testData().password())
                 .getHeaderComponent()
                 .toProfilePage()
-                .unzippingCategory(category.name())
-                .checkCategoryExists(category.name());
+                .unzippingCategory(archivedCategory.name())
+                .checkCategoryExists(archivedCategory.name());
     }
 
     @User(

@@ -1,24 +1,14 @@
 package guru.qa.niffler.data.repository.impl.jdbc;
 
-import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.UdUserDao;
 import guru.qa.niffler.data.dao.impl.jdbc.UdUserDaoJdbc;
-import guru.qa.niffler.data.entity.userdata.FriendshipEntity;
-import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
-import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
-import guru.qa.niffler.ex.DataAccessException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.*;
-
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
@@ -35,23 +25,23 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
     }
 
     @Override
-    public Optional<UserEntity> findByUsername(String username) {
+    public @Nonnull Optional<UserEntity> findByUsername(@Nonnull String username) {
         return udUserDao.findByUsername(username);
     }
 
     @Override
-    public UserEntity update(UserEntity user) {
+    public @Nonnull UserEntity update(UserEntity user) {
         return udUserDao.update(user);
     }
 
     @Override
-    public void sendInvitation(UserEntity requester, UserEntity addressee) {
+    public void sendInvitation(@Nonnull UserEntity requester, @Nonnull UserEntity addressee) {
         udUserDao.sendInvitation(requester, addressee);
     }
 
 
     @Override
-    public void addFriend(UserEntity requester, UserEntity addressee) {
+    public void addFriend(@Nonnull UserEntity requester, @Nonnull UserEntity addressee) {
         udUserDao.addFriend(requester, addressee);
     }
 

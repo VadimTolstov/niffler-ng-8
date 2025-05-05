@@ -41,17 +41,17 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
     }
 
     @Override
-    public Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description) {
+    public @Nonnull Optional<SpendEntity> findByUsernameAndSpendDescription(@Nonnull String username, @Nonnull String description) {
         return spendDao.findByUsernameAndSpendDescription(username, description);
     }
 
     @Override
-    public void remove(SpendEntity spend) {
+    public void remove(@Nonnull SpendEntity spend) {
         spendDao.delete(spend.getId());
     }
 
     @Override
-    public void removeCategory(CategoryEntity category) {
+    public void removeCategory(@Nonnull CategoryEntity category) {
         List<SpendEntity> spendEntityList = spendDao.findByCategoryId(category.getId());
         for (SpendEntity spend : spendEntityList) {
             spendDao.delete(spend.getId());
@@ -66,7 +66,7 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
     }
 
     @Override
-    public CategoryEntity createCategory(CategoryEntity category) {
+    public @Nonnull CategoryEntity createCategory(@Nonnull CategoryEntity category) {
         return categoryDao.findCategoryByUsernameAndCategoryName(
                 category.getUsername(),
                 category.getName()
@@ -79,12 +79,12 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
     }
 
     @Override
-    public Optional<CategoryEntity> findCategoryById(UUID id) {
+    public @Nonnull Optional<CategoryEntity> findCategoryById(@Nonnull UUID id) {
         return categoryDao.findById(id);
     }
 
     @Override
-    public Optional<CategoryEntity> findCategoryByUsernameAndSpendName(String username, String name) {
+    public @Nonnull Optional<CategoryEntity> findCategoryByUsernameAndSpendName(@Nonnull String username, @Nonnull String name) {
         return categoryDao.findCategoryByUsernameAndCategoryName(username, name);
     }
 }

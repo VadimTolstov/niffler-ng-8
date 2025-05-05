@@ -36,7 +36,7 @@ public class UserdataUserRepositoryHibernate implements UserdataUserRepository {
     public @Nonnull Optional<UserEntity> findByUsername(@Nonnull String username) {
         try {
             return Optional.ofNullable(entityManager.createQuery(
-                                    "SELECT u FROM UserEntity u WHERE u.username = :username",
+                                    "SELECT u FROM UserEntity u WHERE u.username =: username",
                                     UserEntity.class
                             )
                             .setParameter("username", username)
@@ -48,7 +48,7 @@ public class UserdataUserRepositoryHibernate implements UserdataUserRepository {
     }
 
     @Override
-    public UserEntity update(UserEntity user) {
+    public @Nonnull UserEntity update(@Nonnull UserEntity user) {
         entityManager.joinTransaction();
         return entityManager.merge(user);
     }

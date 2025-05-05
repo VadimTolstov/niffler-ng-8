@@ -5,7 +5,6 @@ import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
 import guru.qa.niffler.data.repository.impl.hibernate.SpendRepositoryHibernate;
-import guru.qa.niffler.data.repository.impl.jdbc.SpendRepositoryJdbc;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
@@ -43,7 +42,7 @@ public class SpendDbClient implements SpendClient {
     }
 
     @Override
-    public SpendJson update(SpendJson spend) {
+    public @Nonnull SpendJson update(@Nonnull SpendJson spend) {
         return xaTransactionTemplate.execute(() ->
                 SpendJson.fromEntity(spendRepository.update(SpendEntity.fromJson(spend)))
         );
@@ -56,14 +55,14 @@ public class SpendDbClient implements SpendClient {
     }
 
     @Override
-    public CategoryJson updateCategory(CategoryJson category) {
+    public @Nonnull CategoryJson updateCategory(@Nonnull CategoryJson category) {
         return xaTransactionTemplate.execute(() ->
                 CategoryJson.fromEntity(spendRepository.updateCategory(CategoryEntity.fromJson(category)))
         );
     }
 
     @Override
-    public Optional<CategoryJson> findCategoryById(UUID id) {
+    public @Nonnull Optional<CategoryJson> findCategoryById(@Nonnull UUID id) {
         return xaTransactionTemplate.execute(() ->
                 spendRepository.findCategoryById(id)
                         .map(entity -> Optional.ofNullable(CategoryJson.fromEntity(entity)))
@@ -72,7 +71,7 @@ public class SpendDbClient implements SpendClient {
     }
 
     @Override
-    public Optional<CategoryJson> findCategoryByUsernameAndCategoryName(String username, String name) {
+    public @Nonnull Optional<CategoryJson> findCategoryByUsernameAndCategoryName(@Nonnull String username, String name) {
         return xaTransactionTemplate.execute(() ->
                 spendRepository.findCategoryByUsernameAndSpendName(username, name)
                         .map(category -> Optional.ofNullable(CategoryJson.fromEntity(category)))
@@ -81,7 +80,7 @@ public class SpendDbClient implements SpendClient {
     }
 
     @Override
-    public Optional<SpendJson> findById(UUID id) {
+    public @Nonnull Optional<SpendJson> findById(@Nonnull UUID id) {
         return xaTransactionTemplate.execute(() ->
                 spendRepository.findById(id)
                         .map(entity -> Optional.ofNullable(SpendJson.fromEntity(entity)))
@@ -90,7 +89,7 @@ public class SpendDbClient implements SpendClient {
     }
 
     @Override
-    public Optional<SpendJson> findByUsernameAndSpendDescription(String username, String description) {
+    public @Nonnull Optional<SpendJson> findByUsernameAndSpendDescription(@Nonnull String username, @Nonnull String description) {
         return xaTransactionTemplate.execute(() ->
                 spendRepository.findByUsernameAndSpendDescription(username, description)
                         .map(spend -> Optional.ofNullable(SpendJson.fromEntity(spend)))
@@ -99,7 +98,7 @@ public class SpendDbClient implements SpendClient {
     }
 
     @Override
-    public void remove(SpendJson spend) {
+    public void remove(@Nonnull SpendJson spend) {
         xaTransactionTemplate.execute(() -> {
             spendRepository.remove(SpendEntity.fromJson(spend));
             return null;
@@ -107,7 +106,7 @@ public class SpendDbClient implements SpendClient {
     }
 
     @Override
-    public void removeCategory(CategoryJson category) {
+    public void removeCategory(@Nonnull CategoryJson category) {
         xaTransactionTemplate.execute(() -> {
             spendRepository.removeCategory(CategoryEntity.fromJson(category));
             return null;

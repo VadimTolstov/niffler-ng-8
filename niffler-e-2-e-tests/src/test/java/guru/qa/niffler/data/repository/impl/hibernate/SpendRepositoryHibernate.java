@@ -91,7 +91,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
             return Optional.ofNullable(
                     entityManager.createQuery(
                                     "SELECT c FROM CategoryEntity c " +
-                                            "WHERE c.username = :username and c.name = :name",
+                                            "WHERE c.username =: username and c.name =: name",
                                     CategoryEntity.class
                             )
                             .setParameter("username", username)

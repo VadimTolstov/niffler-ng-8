@@ -3,6 +3,7 @@ package guru.qa.niffler.service.imp;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
+import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
@@ -42,15 +43,16 @@ public class UsersDbClient implements UsersClient {
                     authUserEntity.setId(authUserRepository.create(authUserEntity).getId());
 
                     return UserJson.fromEntity(
-                            userdataUserRepository.create(userEntity(username)
-                            )
+                            userdataUserRepository.create(
+                                    userEntity(username)
+                            ), FriendshipStatus.PENDING
                     );
                 }
         );
     }
 
     @Override
-    public void createIncomeInvitations(UserJson targetUser, int count) {
+    public void createIncomeInvitations(@Nonnull UserJson targetUser, int count) {
         if (count > 0) {
             UserEntity targetEntity = userdataUserRepository.findById(
                     targetUser.id()
@@ -71,7 +73,7 @@ public class UsersDbClient implements UsersClient {
     }
 
     @Override
-    public void createOutcomeInvitations(UserJson targetUser, int count) {
+    public void createOutcomeInvitations(@Nonnull UserJson targetUser, int count) {
         if (count > 0) {
             UserEntity targetEntity = userdataUserRepository.findById(
                     targetUser.id()
@@ -92,7 +94,7 @@ public class UsersDbClient implements UsersClient {
     }
 
     @Override
-    public void createFriends(UserJson targetUser, int count) {
+    public void createFriends(@Nonnull UserJson targetUser, int count) {
         if (count > 0) {
             UserEntity targetEntity = userdataUserRepository.findById(
                     targetUser.id()

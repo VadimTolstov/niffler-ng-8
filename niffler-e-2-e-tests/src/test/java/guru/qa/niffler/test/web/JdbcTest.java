@@ -10,9 +10,9 @@ public class JdbcTest {
     static UsersDbClient usersDbClient = new UsersDbClient();
 
     @ValueSource(strings = {
-            "valentin-219",
-            "valentin-220",
-            "valentin-221"
+            "valentin-222",
+            "valentin-223",
+            "valentin-224"
     })
 
     @ParameterizedTest

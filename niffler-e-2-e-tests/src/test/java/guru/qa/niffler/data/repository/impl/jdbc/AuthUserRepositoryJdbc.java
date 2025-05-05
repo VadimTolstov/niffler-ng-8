@@ -1,29 +1,18 @@
 package guru.qa.niffler.data.repository.impl.jdbc;
 
-import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
 import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.dao.impl.jdbc.AuthAuthorityDaoJdbc;
 import guru.qa.niffler.data.dao.impl.jdbc.AuthUserDaoJdbc;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
-import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
 import guru.qa.niffler.data.repository.AuthUserRepository;
-import guru.qa.niffler.ex.DataAccessException;
-import guru.qa.niffler.model.Authority;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import static guru.qa.niffler.data.tpl.Connections.holder;
 
 @Slf4j
 public class AuthUserRepositoryJdbc implements AuthUserRepository {
@@ -34,14 +23,12 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
     @Override
     public @Nonnull AuthUserEntity create(@Nonnull AuthUserEntity user) {
         AuthUserEntity createUser = authUserDao.create(user);
-        for (AuthorityEntity authority : createUser.getAuthorities()) {
-            authAuthorityDao.create(authority);
-        }
+        authAuthorityDao.create(createUser.getAuthorities().toArray(new AuthorityEntity[0]));
         return createUser;
     }
 
     @Override
-    public AuthUserEntity update(AuthUserEntity user) {
+    public @Nonnull AuthUserEntity update(@Nonnull AuthUserEntity user) {
         for (AuthorityEntity authority : user.getAuthorities()) {
             authAuthorityDao.update(authority);
         }
@@ -62,7 +49,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
     }
 
     @Override
-    public Optional<AuthUserEntity> findByUsername(String username) {
+    public @Nonnull Optional<AuthUserEntity> findByUsername(@Nonnull String username) {
         AuthUserEntity user;
         Optional<AuthUserEntity> authUser = authUserDao.findUserByName(username);
         if (authUser.isPresent()) {
