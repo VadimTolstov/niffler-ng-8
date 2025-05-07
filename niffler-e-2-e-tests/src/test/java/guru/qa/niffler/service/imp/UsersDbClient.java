@@ -63,8 +63,8 @@ public class UsersDbClient implements UsersClient {
                             String username = RandomDataUtils.randomUsername();
                             AuthUserEntity authUserEntity = authUserEntity(username, "12345");
                             authUserRepository.create(authUserEntity);
-                            UserEntity adressee = userdataUserRepository.create(userEntity(username));
-                            userdataUserRepository.sendInvitation(targetEntity, adressee);
+                            UserEntity addressee = userdataUserRepository.create(userEntity(username));
+                            userdataUserRepository.sendInvitation(targetEntity, addressee);
                             return null;
                         }
                 );
@@ -84,8 +84,8 @@ public class UsersDbClient implements UsersClient {
                             String username = RandomDataUtils.randomUsername();
                             AuthUserEntity authUserEntity = authUserEntity(username, "12345");
                             authUserRepository.create(authUserEntity);
-                            UserEntity adressee = userdataUserRepository.create(userEntity(username));
-                            userdataUserRepository.sendInvitation(adressee, targetEntity);
+                            UserEntity addressee = userdataUserRepository.create(userEntity(username));
+                            userdataUserRepository.sendInvitation(addressee, targetEntity);
                             return null;
                         }
                 );
@@ -105,8 +105,8 @@ public class UsersDbClient implements UsersClient {
                             String username = RandomDataUtils.randomUsername();
                             AuthUserEntity authUserEntity = authUserEntity(username, "12345");
                             authUserRepository.create(authUserEntity);
-                            UserEntity adressee = userdataUserRepository.create(userEntity(username));
-                            userdataUserRepository.addFriend(targetEntity, adressee);
+                            UserEntity addressee = userdataUserRepository.create(userEntity(username));
+                            userdataUserRepository.addFriend(targetEntity, addressee);
                             return null;
                         }
                 );
