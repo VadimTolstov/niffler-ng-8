@@ -6,7 +6,6 @@ import guru.qa.niffler.model.SpendJson;
 import retrofit2.Call;
 import retrofit2.http.*;
 
-import javax.xml.crypto.Data;
 import java.util.Date;
 import java.util.List;
 

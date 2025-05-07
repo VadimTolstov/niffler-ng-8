@@ -2,6 +2,7 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.page.component.SearchField;
 import io.qameta.allure.Step;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -13,6 +14,8 @@ import static com.codeborne.selenide.Selenide.$$;
 
 @ParametersAreNonnullByDefault
 public class MainPage extends BasePage<MainPage> {
+    SearchField searchField = new SearchField();
+
     public static final String URL = CFG.frontUrl() + "main";
 
     private final ElementsCollection tableRows = $$("#spendings tbody tr");
@@ -35,6 +38,7 @@ public class MainPage extends BasePage<MainPage> {
     }
 
     public void checkThatTableContains(String spendingDescription) {
+        searchField.search(spendingDescription);
         tableRows.find(text(spendingDescription))
                 .should(visible);
     }
