@@ -14,6 +14,7 @@ import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.utils.ScreenDiffResult;
 import org.junit.jupiter.api.Test;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -52,21 +53,36 @@ public class SpendingTest {
     @User(
             spendings = @Spending(
                     category = "Обучение",
-                    description = "Обучение Niffler 2.0",
-                    amount = 89000.00,
-                    currency = CurrencyValues.RUB
+                    description = "Обучение Advanced 2.0",
+                    amount = 79990
             )
     )
-    @ScreenShotTest("img/expected-stat.png")
-    void checkStatComponentTest(UserJson user, BufferedImage expected) throws IOException {
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+    @ScreenShotTest(value = "img/expected-stat.png")
+    void checkStatComponentTest(@Nonnull UserJson user, BufferedImage expected) throws IOException, InterruptedException {
+        Selenide.open(LoginPage.URL, LoginPage.class)
                 .doLogin(new MainPage(), user.username(), user.testData().password())
-                .checkThatPageLoaded();
+                .checkThatPageLoaded()
+                .checkStatImg(expected)
+                .checkStatCell("Обучение 79990 ₽");
+    }
 
-        BufferedImage actual = ImageIO.read($("canvas[role='img']").screenshot());
-        assertTrue(new ScreenDiffResult(
-                actual,
-                expected
-        ), "Screen comparison failure");
+    @User(
+            spendings = @Spending(
+                    category = "Обучение",
+                    description = "Обучение Advanced 2.0",
+                    amount = 79990
+            )
+    )
+    @ScreenShotTest(value = "img/clear-stat.png",rewriteExpected = true)
+    void deleteSpendingTest(@Nonnull UserJson user, BufferedImage clearStat) throws IOException {
+        Selenide.open(LoginPage.URL, LoginPage.class)
+                .doLogin(new MainPage(), user.username(), user.testData().password())
+                .checkThatPageLoaded()
+                .checkThatTableContains("Обучение Advanced 2.0")
+                .deleteSpending("Обучение Advanced 2.0")
+                .checkTableSize(0);
+
+        new MainPage().checkStatImg(clearStat)
+                .checkStatCell("");
     }
 }
