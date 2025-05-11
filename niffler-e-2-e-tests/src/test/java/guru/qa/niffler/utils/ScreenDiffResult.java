@@ -14,9 +14,9 @@ public class ScreenDiffResult implements BooleanSupplier {
     private final ImageDiff diff;
     private final boolean hasDif;
 
-    public ScreenDiffResult(BufferedImage actual, BufferedImage expected) {
-        this.actual = actual;
+    public ScreenDiffResult( BufferedImage expected, BufferedImage actual) {
         this.expected = expected;
+        this.actual = actual;
         this.diff = new ImageDiffer().makeDiff(expected, actual);
         this.hasDif = diff.hasDiff();
     }
