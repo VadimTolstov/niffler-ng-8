@@ -1,22 +1,14 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.meta.User;
-import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.SpendClient;
 import guru.qa.niffler.service.UsersClient;
-import guru.qa.niffler.service.imp.SpendDbClient;
 import guru.qa.niffler.service.imp.UserApiService;
-import guru.qa.niffler.service.imp.UsersDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 public class UserExtension implements BeforeEachCallback, ParameterResolver {
 
@@ -65,7 +57,7 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
     }
 
     public static @Nullable UserJson createdUser() {
-        final ExtensionContext context = TestsMethodContextExtension.context();
+        final ExtensionContext context = TestMethodContextExtension.context();
         return context.getStore(NAMESPACE).get(context.getUniqueId(), UserJson.class);
     }
 }
