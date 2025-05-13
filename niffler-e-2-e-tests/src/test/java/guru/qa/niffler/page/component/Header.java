@@ -6,9 +6,7 @@ import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.*;
 import io.qameta.allure.Step;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
 import java.time.Duration;
 
 import static com.codeborne.selenide.Selenide.$;

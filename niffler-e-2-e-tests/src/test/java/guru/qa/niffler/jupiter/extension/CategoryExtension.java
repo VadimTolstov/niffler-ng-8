@@ -9,14 +9,12 @@ import guru.qa.niffler.service.imp.SpendDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @ParametersAreNonnullByDefault
 public class CategoryExtension implements BeforeEachCallback, ParameterResolver {

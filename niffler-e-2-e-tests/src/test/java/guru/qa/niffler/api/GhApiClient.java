@@ -2,8 +2,6 @@ package guru.qa.niffler.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.ex.ApiException;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import retrofit2.Response;
 import retrofit2.Retrofit;
