@@ -74,7 +74,7 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
     }
 
     @Override
-    public CategoryEntity updateCategory(CategoryEntity category) {
+    public @Nonnull CategoryEntity updateCategory(@Nonnull CategoryEntity category) {
         return categoryDao.update(category);
     }
 

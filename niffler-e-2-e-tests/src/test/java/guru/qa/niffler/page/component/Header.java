@@ -16,10 +16,10 @@ import static com.codeborne.selenide.Selenide.$;
 @ParametersAreNonnullByDefault
 public class Header {
 
-    private final SelenideElement headerElement = $("#root header");
-    private final SelenideElement mainPageLink = headerElement.$("a[href*='/main']");
-    private final SelenideElement addSpendingBtn = headerElement.$("a[href*='/spending']");
-    private final SelenideElement menuBtn = headerElement.$("button");
+    private final SelenideElement self = $("#root header");
+    private final SelenideElement mainPageLink = self.$("a[href*='/main']");
+    private final SelenideElement addSpendingBtn = self.$("a[href*='/spending']");
+    private final SelenideElement menuBtn = self.$("button");
     private final SelenideElement menu = $("ul[role='menu']");
     private final ElementsCollection menuItems = menu.$$("li");
 

@@ -61,7 +61,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
     @Override
     public void remove(@Nonnull SpendEntity spend) {
         entityManager.joinTransaction();
-        entityManager.remove(spend);
+        entityManager.remove(entityManager.contains(spend) ? spend : entityManager.merge(spend));
     }
 
 
@@ -104,9 +104,9 @@ public class SpendRepositoryHibernate implements SpendRepository {
     }
 
     @Override
-    public void removeCategory(@Nonnull CategoryEntity spend) {
+    public void removeCategory(@Nonnull CategoryEntity category) {
         entityManager.joinTransaction();
-        entityManager.remove(spend);
+        entityManager.remove(entityManager.contains(category) ? category : entityManager.merge(category));
     }
 
 }

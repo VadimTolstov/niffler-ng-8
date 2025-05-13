@@ -16,6 +16,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
@@ -100,7 +101,7 @@ public class SpendApiClient {
     }
 
     // Общие методы для выполнения запросов
-    private <T> T execute(Call<T> call, int expectedStatusCode) {
+    private @Nonnull <T> T execute(@Nonnull Call<T> call, int expectedStatusCode) {
         try {
             final Response<T> response = call.execute();
             assertEquals(expectedStatusCode, response.code());
@@ -112,7 +113,7 @@ public class SpendApiClient {
         }
     }
 
-    private <T> Response<T> executeForList(Call<T> call) {
+    private <T> Response<T> executeForList(@Nonnull Call<T> call) {
         try {
             final Response<T> response = call.execute();
             assertEquals(HttpStatus.SC_OK, response.code());
@@ -123,7 +124,7 @@ public class SpendApiClient {
 
     }
 
-    private void executeVoid(Call<Void> call) {
+    private void executeVoid(@Nonnull Call<Void> call) {
         try {
             final Response<Void> response = call.execute();
             assertEquals(HttpStatus.SC_ACCEPTED, response.code());
@@ -132,7 +133,7 @@ public class SpendApiClient {
         }
     }
 
-    private <T> List<T> getList(Response<List<T>> response) {
+    private @Nonnull <T> List<T> getList(@Nonnull Response<List<T>> response) {
         return response.body() != null
                 ? response.body()
                 : Collections.emptyList();

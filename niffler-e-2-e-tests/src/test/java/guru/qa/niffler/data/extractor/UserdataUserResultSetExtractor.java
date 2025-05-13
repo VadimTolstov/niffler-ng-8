@@ -7,8 +7,10 @@ import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
+import javax.annotation.Nonnull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.UUID;
 
 public class UserdataUserResultSetExtractor implements ResultSetExtractor<UserEntity> {
@@ -19,7 +21,7 @@ public class UserdataUserResultSetExtractor implements ResultSetExtractor<UserEn
     }
 
     @Override
-    public UserEntity extractData(ResultSet rs) throws SQLException, DataAccessException {
+    public @Nonnull UserEntity extractData(@Nonnull ResultSet rs) throws SQLException, DataAccessException {
         UserEntity user = null;
         while (rs.next()) {
             if (user == null) {
@@ -49,6 +51,6 @@ public class UserdataUserResultSetExtractor implements ResultSetExtractor<UserEn
                 }
             }
         }
-        return user;
+        return Objects.requireNonNull(user);
     }
 }

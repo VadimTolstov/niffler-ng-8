@@ -6,6 +6,7 @@ import guru.qa.niffler.ex.DataAccessException;
 import guru.qa.niffler.model.Authority;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
+import javax.annotation.Nonnull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class AuthUserResultSetExtractor implements ResultSetExtractor<Optional<A
     }
 
     @Override
-    public Optional<AuthUserEntity> extractData(ResultSet rs) throws SQLException {
+    public @Nonnull Optional<AuthUserEntity> extractData(@Nonnull ResultSet rs) throws SQLException {
         Map<UUID, AuthUserEntity> userMap = new ConcurrentHashMap<>();
         while (rs.next()) {
             UUID userId = rs.getObject("id", UUID.class);

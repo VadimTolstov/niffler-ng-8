@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class UsersDbClient implements UsersClient {
 
@@ -36,7 +37,7 @@ public class UsersDbClient implements UsersClient {
 
     @Override
     public @Nonnull UserJson createUser(@Nonnull String username, @Nonnull String password) {
-        return xaTransactionTemplate.execute(() -> {
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() -> {
                     AuthUserEntity authUserEntity = authUserEntity(username, password);
 
                     //создаем нового пользователя и получаем его id
@@ -48,7 +49,7 @@ public class UsersDbClient implements UsersClient {
                             ), FriendshipStatus.PENDING
                     );
                 }
-        );
+        ), "Transaction result cannot be null");
     }
 
     @Override

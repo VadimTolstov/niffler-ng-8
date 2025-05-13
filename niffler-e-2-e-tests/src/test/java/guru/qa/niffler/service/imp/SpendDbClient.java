@@ -11,6 +11,7 @@ import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,76 +26,81 @@ public class SpendDbClient implements SpendClient {
     );
 
     public @Nonnull SpendJson create(@Nonnull SpendJson spend) {
-        return xaTransactionTemplate.execute(() -> {
-                    CategoryEntity categoryEntity;
-                    SpendEntity spendEntity = SpendEntity.fromJson(spend);
-                    if (spendEntity.getCategory().getId() == null) {
-                        // ищем категорию т.к у пользователя не может быть 2 категории с одним названием
-                        Optional<CategoryEntity> optionalCategoryEntity = spendRepository
-                                .findCategoryByUsernameAndSpendName(spendEntity.getUsername(), spendEntity.getCategory().getName());
-                        //если нашли категорию вернем ее если нет создадим новую
-                        categoryEntity = optionalCategoryEntity.orElseGet(() -> spendRepository.createCategory(spendEntity.getCategory()));
-                        spendEntity.setCategory(categoryEntity);
-                    }
-                    return SpendJson.fromEntity(spendRepository.create(spendEntity));
-                }
-        );
+        return Objects.requireNonNull(
+                xaTransactionTemplate.execute(() -> {
+                            CategoryEntity categoryEntity;
+                            SpendEntity spendEntity = SpendEntity.fromJson(spend);
+                            if (spendEntity.getCategory().getId() == null) {
+                                // ищем категорию т.к у пользователя не может быть 2 категории с одним названием
+                                Optional<CategoryEntity> optionalCategoryEntity = spendRepository
+                                        .findCategoryByUsernameAndSpendName(
+                                                spendEntity.getUsername(),
+                                                spendEntity.getCategory().getName()
+                                        );
+                                //если нашли категорию вернем ее если нет создадим новую
+                                categoryEntity = optionalCategoryEntity.orElseGet(() ->
+                                        spendRepository.createCategory(spendEntity.getCategory()));
+                                spendEntity.setCategory(categoryEntity);
+                            }
+                            return SpendJson.fromEntity(spendRepository.create(spendEntity));
+                        }
+                ), "Transaction result cannot be null");
     }
 
     @Override
     public @Nonnull SpendJson update(@Nonnull SpendJson spend) {
-        return xaTransactionTemplate.execute(() ->
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() ->
                 SpendJson.fromEntity(spendRepository.update(SpendEntity.fromJson(spend)))
-        );
+        ), "Transaction result cannot be null");
     }
 
     public @Nonnull CategoryJson createCategory(@Nonnull CategoryJson category) {
-        return xaTransactionTemplate.execute(() ->
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() ->
                 CategoryJson.fromEntity(spendRepository.createCategory(CategoryEntity.fromJson(category)))
-        );
+        ), "Transaction result cannot be null");
     }
 
     @Override
     public @Nonnull CategoryJson updateCategory(@Nonnull CategoryJson category) {
-        return xaTransactionTemplate.execute(() ->
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() ->
                 CategoryJson.fromEntity(spendRepository.updateCategory(CategoryEntity.fromJson(category)))
-        );
+        ), "Transaction result cannot be null");
     }
 
     @Override
     public @Nonnull Optional<CategoryJson> findCategoryById(@Nonnull UUID id) {
-        return xaTransactionTemplate.execute(() ->
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() ->
                 spendRepository.findCategoryById(id)
                         .map(entity -> Optional.ofNullable(CategoryJson.fromEntity(entity)))
                         .orElse(Optional.empty())
-        );
+        ),"Transaction result cannot be null");
     }
 
     @Override
     public @Nonnull Optional<CategoryJson> findCategoryByUsernameAndCategoryName(@Nonnull String username, String name) {
-        return xaTransactionTemplate.execute(() ->
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() ->
                 spendRepository.findCategoryByUsernameAndSpendName(username, name)
                         .map(category -> Optional.ofNullable(CategoryJson.fromEntity(category)))
                         .orElse(Optional.empty())
-        );
+        ),"Transaction result cannot be null");
     }
 
     @Override
     public @Nonnull Optional<SpendJson> findById(@Nonnull UUID id) {
-        return xaTransactionTemplate.execute(() ->
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() ->
                 spendRepository.findById(id)
                         .map(entity -> Optional.ofNullable(SpendJson.fromEntity(entity)))
                         .orElse(Optional.empty())
-        );
+        ), "Transaction result cannot be null");
     }
 
     @Override
     public @Nonnull Optional<SpendJson> findByUsernameAndSpendDescription(@Nonnull String username, @Nonnull String description) {
-        return xaTransactionTemplate.execute(() ->
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() ->
                 spendRepository.findByUsernameAndSpendDescription(username, description)
                         .map(spend -> Optional.ofNullable(SpendJson.fromEntity(spend)))
                         .orElse(Optional.empty())
-        );
+        ), "Transaction result cannot be null");
     }
 
     @Override
