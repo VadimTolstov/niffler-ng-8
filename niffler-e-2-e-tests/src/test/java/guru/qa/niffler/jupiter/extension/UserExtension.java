@@ -1,22 +1,18 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.meta.User;
-import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.SpendClient;
 import guru.qa.niffler.service.UsersClient;
-import guru.qa.niffler.service.imp.SpendDbClient;
 import guru.qa.niffler.service.imp.UsersDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
+import io.qameta.allure.Step;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class UserExtension implements BeforeEachCallback, ParameterResolver {
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UserExtension.class);
@@ -26,6 +22,7 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
 
 
     @Override
+    @Step("Создаем пользователе перед началом теста")
     public void beforeEach(ExtensionContext context) {
         AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
                 .ifPresent(userAnno -> {

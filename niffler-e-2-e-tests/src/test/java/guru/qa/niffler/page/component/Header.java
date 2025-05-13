@@ -24,7 +24,6 @@ public class Header {
     private final ElementsCollection menuItems = menu.$$("li");
 
     @Step("Перейти на страницу профиля")
-    @Nonnull
     public ProfilePage toProfilePage() {
         menuBtn.shouldBe(Condition.visible, Duration.ofSeconds(10)).click();
         menuItems.findBy(Condition.text("Profile")).click();
