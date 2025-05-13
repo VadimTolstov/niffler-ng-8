@@ -16,6 +16,20 @@ import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.Type.*;
 @WebTest
 public class FriendsWebTest {
 
+    @User(incomeInvitations = 1)
+    @Test
+    void acceptingFriendRequest(UserJson user) {
+        Selenide.open(LoginPage.URL, LoginPage.class)
+                .doLogin(new MainPage(), user.username(), user.testData().password())
+                .getHeaderComponent()
+                .toFriendsPage()
+                .checkIncomeFriendship(user.testData().incomeInvitations().getFirst().username());
+    }
+
+
+
+
+
     @User(friends = 1)
     @Test
     void friendShouldBePresentInFriendsTable(UserJson user) {
@@ -55,5 +69,4 @@ public class FriendsWebTest {
                 .toAllPeoplesPage()
                 .checkStatusWaiting(user.testData().outcomeInvitations().getFirst().username());
     }
-
 }
