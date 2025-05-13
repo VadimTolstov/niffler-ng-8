@@ -90,12 +90,12 @@ public class SpendApiClient {
         return getList(response);
     }
 
-    @Step("Send POST [/internal/categories/add")
+    @Step("Send POST [/internal/categories/add] to niffler-spend")
     public @Nonnull CategoryJson addCategory(@Nonnull CategoryJson category) {
         return execute(spendApi.addCategory(category), HttpStatus.SC_OK);
     }
 
-    @Step("Send PATCH [/internal/categories/update")
+    @Step("Send PATCH [/internal/categories/update] to niffler-spend")
     public @Nonnull CategoryJson updateCategory(@Nonnull CategoryJson category) {
         return execute(spendApi.updateCategory(category), HttpStatus.SC_OK);
     }

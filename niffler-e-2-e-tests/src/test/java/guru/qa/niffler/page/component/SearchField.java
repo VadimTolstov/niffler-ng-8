@@ -3,9 +3,12 @@ package guru.qa.niffler.page.component;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
+import static com.codeborne.selenide.Condition.empty;
+import static com.codeborne.selenide.Condition.not;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault

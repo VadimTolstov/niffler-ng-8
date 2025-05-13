@@ -1,8 +1,12 @@
 package guru.qa.niffler.jupiter.extension;
 
+import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.meta.User;
+import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.service.SpendClient;
 import guru.qa.niffler.service.UsersClient;
+import guru.qa.niffler.service.imp.SpendDbClient;
 import guru.qa.niffler.service.imp.UsersDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import io.qameta.allure.Step;
@@ -18,7 +22,7 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UserExtension.class);
 
     private static final String defaultPassword = "12345";
-    private final UsersClient usersClient = new UsersDbClient();
+    private final UsersClient usersClient = new UserApiService();
 
 
     @Override
@@ -33,6 +37,11 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
                                 username,
                                 defaultPassword
                         );
+
+                        usersClient.createFriends(user, userAnno.friends());
+                        usersClient.createIncomeInvitations(user, userAnno.incomeInvitations());
+                        usersClient.createOutcomeInvitations(user, userAnno.outcomeInvitations());
+
                         context.getStore(NAMESPACE).put(
                                 context.getUniqueId(),
                                 user.withPassword(
@@ -42,6 +51,7 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
                     }
                 });
     }
+
 
 
     @Override
@@ -55,7 +65,7 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
     }
 
     public static @Nullable UserJson createdUser() {
-        final ExtensionContext context = TestsMethodContextExtension.context();
+        final ExtensionContext context = TestMethodContextExtension.context();
         return context.getStore(NAMESPACE).get(context.getUniqueId(), UserJson.class);
     }
 }
