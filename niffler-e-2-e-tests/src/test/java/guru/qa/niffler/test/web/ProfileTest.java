@@ -24,26 +24,25 @@ import java.io.IOException;
 public class ProfileTest {
 
     @User(
-            username = "duck",
             categories = @Category(
                     archived = false
             )
     )
     @Test
     @DisplayName("Перевод категории в архивную")
-    void categoryToAnArchived(CategoryJson[] category) {
+    void categoryToAnArchived(UserJson user) {
+        final String categoriesName = user.testData().categories().getFirst().name();
         Selenide.open(LoginPage.URL, LoginPage.class)
-                .doLogin(new MainPage(), "duck", "12345")
+                .doLogin(new MainPage(), user.username(), "12345")
                 .getHeaderComponent()
                 .toProfilePage()
-                .checkCategoryExists(category[0].name())
-                .archiveCategory(category[0].name())
+                .checkCategoryExists(categoriesName)
+                .archiveCategory(categoriesName)
                 .clickSwitcherCategories()
-                .checkCategoryExists(category[0].name());
+                .checkCategoryExists(categoriesName);
     }
 
     @User(
-            username = "duck",
             categories = @Category(
                     name = "archived3",
                     archived = true
@@ -63,7 +62,6 @@ public class ProfileTest {
     }
 
     @User(
-            username = "duck",
             categories = @Category(
                     archived = true
             )

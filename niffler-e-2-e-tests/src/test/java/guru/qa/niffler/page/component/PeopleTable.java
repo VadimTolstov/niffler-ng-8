@@ -11,9 +11,12 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
 
 @ParametersAreNonnullByDefault
-public class PeopleTable {
+public class PeopleTable extends BaseComponent<PeopleTable>{
 
-    private final SelenideElement self = $("#root header");
+    public PeopleTable() {
+        super($("#root header"));
+    }
+
     private final SelenideElement peopleTable = self.$("div[role='tabpanel']");
     private final ElementsCollection allPeopleList = peopleTable.$$("tr.MuiTableRow-root");
 

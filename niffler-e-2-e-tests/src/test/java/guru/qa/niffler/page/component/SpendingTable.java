@@ -14,7 +14,11 @@ import static com.codeborne.selenide.Selectors.byTagAndText;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class SpendingTable {
+public class SpendingTable extends BaseComponent<SpendingTable> {
+
+    public SpendingTable() {
+        super($("#spendings"));
+    }
 
     private final SelenideElement self = $("#spendings");
     private final ElementsCollection spendingRows = self.$$("tbody tr");
@@ -48,7 +52,7 @@ public class SpendingTable {
     }
 
     @Step("Проверить, что таблица содержит траты: {expectedSpends}")
-    public SpendingTable checkTableContains( String... expectedSpends) {
+    public SpendingTable checkTableContains(String... expectedSpends) {
         for (String spend : expectedSpends) {
             spendingRows.find(text(spend)).shouldBe(visible);
         }

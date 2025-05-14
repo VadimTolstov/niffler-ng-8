@@ -1,6 +1,5 @@
 package guru.qa.niffler.page.component;
 
-import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -8,8 +7,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class SearchField {
-    private final SelenideElement self = $("input[placeholder='Search']");
+public class SearchField extends BaseComponent<SearchField> {
+
+    public SearchField() {
+        super($("input[placeholder='Search']"));
+    }
 
     @Step("Поиск по запросу: {query}")
     public SearchField search(String query) {

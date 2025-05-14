@@ -8,7 +8,6 @@ import guru.qa.niffler.utils.ScreenDiffResult;
 import io.qameta.allure.Step;
 import org.springframework.core.io.ClassPathResource;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -34,7 +33,7 @@ public class ProfilePage extends BasePage<ProfilePage> {
     private final SelenideElement submitButton = $("button[type='submit']");
     private final SelenideElement categoryInput = $("input[name='category']");
     private final SelenideElement archivedSwitcher = $(".MuiSwitch-input");
-    private final SelenideElement modalWindowButtonArchived = $("button.MuiButton-containedPrimary:not([id=':rf:'])");
+    private final ElementsCollection modalWindowButtonArchived = $$("button.MuiButton-containedPrimary:not([id=':rf:'])");
 
     private final ElementsCollection bubbles = $$(".MuiGrid-root.MuiGrid-item");
     private final ElementsCollection bubblesArchived = $$(".MuiChip-filled.MuiChip-colorDefault");
@@ -153,7 +152,7 @@ public class ProfilePage extends BasePage<ProfilePage> {
         $x("//*[text()='" + categoryName + "']")
                 .$x(("../..//button[@aria-label='Archive category']")).click();
 
-        modalWindowButtonArchived.click(ClickOptions.usingJavaScript());
+        modalWindowButtonArchived.get(1).click(ClickOptions.usingJavaScript());
         return this;
     }
 
@@ -163,7 +162,7 @@ public class ProfilePage extends BasePage<ProfilePage> {
         $x("//*[text()='" + categoryName + "']")
                 .$x("../..//button[@aria-label='Unarchive category']")
                 .click();
-        modalWindowButtonArchived.click(ClickOptions.usingJavaScript());
+        modalWindowButtonArchived.get(1).click(ClickOptions.usingJavaScript());
         return this;
     }
 }
