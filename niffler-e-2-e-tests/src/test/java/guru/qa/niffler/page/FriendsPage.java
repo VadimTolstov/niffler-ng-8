@@ -4,6 +4,7 @@ import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.page.component.PeopleTable;
 import guru.qa.niffler.page.component.SearchField;
 import io.qameta.allure.Step;
 
@@ -13,10 +14,15 @@ import static com.codeborne.selenide.Selenide.*;
 
 @ParametersAreNonnullByDefault
 public class FriendsPage extends BasePage<FriendsPage> {
+
     public static final String URL = CFG.frontUrl() + "people/friends";
+
+    SearchField searchField = new SearchField();
+    PeopleTable peopleTable = new PeopleTable();
+
     private final SelenideElement friendsTab = $("a[aria-selected='true'][href='/people/friends']");
-    private final ElementsCollection friendsList = $$(".MuiTableRow-root");
     private final SelenideElement emptyListFriends = $("#simple-tabpanel-friends:not(:has(tr))");
+
 
     @Step("Проверяем, что загрузилась страница Друзей")
     @Override
@@ -28,25 +34,21 @@ public class FriendsPage extends BasePage<FriendsPage> {
     @Step("Проверить отображение списка друзей: {users}")
     public FriendsPage checkFriends(String... users) {
         for (String user : users) {
-            friendsList.shouldHave(CollectionCondition.anyMatch(
-                    "Элемент с текстом '" + user + "' не найден",
-                    el -> el.getText().contains(user)
-            ));
+            searchField.search(user);
+            peopleTable.checkPeople(user);
         }
         return this;
     }
 
     @Step("Проверяем отображение входящей заявки на дружбу от пользователя: {username}")
     public FriendsPage checkIncomeFriendship(String username) {
-        $x(".//tr[.//p[text()='%s'] and .//button[text()='Accept'] and .//button[text()='Decline']]"
-                .formatted(username)).shouldHave(Condition.visible);
+        peopleTable.checkIncomeFriendship(username);
         return this;
     }
 
     @Step("Проверяем отображение пользователя: {username} в списке друзей")
     public FriendsPage checkFriend(String username) {
-        $x(".//tr[.//p[text()='%s'] and .//button[text()='Unfriend']]"
-                .formatted(username)).shouldHave(Condition.visible);
+        peopleTable.checkFriend(username);
         return this;
     }
 

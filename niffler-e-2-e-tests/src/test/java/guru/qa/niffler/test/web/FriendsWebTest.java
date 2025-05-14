@@ -17,7 +17,7 @@ import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.Type.*;
 public class FriendsWebTest {
 
     @User(incomeInvitations = 1)
-    @Test
+    @Test//добавления друга
     void acceptingFriendRequest(UserJson user) {
         Selenide.open(LoginPage.URL, LoginPage.class)
                 .doLogin(new MainPage(), user.username(), user.testData().password())
