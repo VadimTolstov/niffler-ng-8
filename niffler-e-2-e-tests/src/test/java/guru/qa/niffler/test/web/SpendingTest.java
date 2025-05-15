@@ -1,6 +1,7 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.condition.Color;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.meta.User;
@@ -11,12 +12,11 @@ import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
-import guru.qa.niffler.utils.ScreenDiffResult;
+import guru.qa.niffler.page.component.StatComponent;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -43,26 +43,40 @@ public class SpendingTest {
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(new MainPage(), "duck", "12345")
-                .editSpending(user.testData().spendings().getFirst().description())
-                .editDescription(newDescription);
+                .checkThatPageLoaded()
+                .getHeaderComponent()
+                .addSpendingPage()
+                .editDescription(user.testData().spendings().getFirst().description())
+                .editDescription(newDescription)
+                .getSpendingTable()
+                .checkTableContains(newDescription);
 
-        new MainPage().checkThatTableContains(newDescription);
     }
 
     @User(
-            spendings = @Spending(
-                    category = "Обучение",
-                    description = "Обучение Advanced 2.0",
-                    amount = 79990
-            )
+            spendings = {
+                    @Spending(
+                            category = "Обучение",
+                            description = "Обучение Advanced 2.0",
+                            amount = 79990
+                    ),
+                    @Spending(
+                            category = "Ужин",
+                            description = "Ужин в кафе",
+                            amount = 5000
+                    )
+            }
     )
     @ScreenShotTest(value = "img/expected-stat.png")
     void checkStatComponentTest(@Nonnull UserJson user, BufferedImage expected) throws IOException, InterruptedException {
         Selenide.open(LoginPage.URL, LoginPage.class)
                 .doLogin(new MainPage(), user.username(), user.testData().password())
                 .checkThatPageLoaded()
+                .getStatComponent()
                 .checkStatImg(expected)
-                .checkStatCell("Обучение 79990 ₽");
+                .checkStatText("Обучение 79990 ₽")
+                .checkBubbles(Color.yellow, Color.green);
+
     }
 
     @User(
@@ -72,16 +86,18 @@ public class SpendingTest {
                     amount = 79990
             )
     )
-    @ScreenShotTest(value = "img/clear-stat.png",rewriteExpected = true)
+    @ScreenShotTest(value = "img/clear-stat.png", rewriteExpected = true)
     void deleteSpendingTest(@Nonnull UserJson user, BufferedImage clearStat) throws IOException {
         Selenide.open(LoginPage.URL, LoginPage.class)
                 .doLogin(new MainPage(), user.username(), user.testData().password())
                 .checkThatPageLoaded()
-                .checkThatTableContains("Обучение Advanced 2.0")
+                .getSpendingTable()
+                .checkTableContains("Обучение Advanced 2.0")
                 .deleteSpending("Обучение Advanced 2.0")
                 .checkTableSize(0);
 
-        new MainPage().checkStatImg(clearStat)
-                .checkStatCell("");
+        new MainPage().getStatComponent()
+                .checkStatImg(clearStat)
+                .checkStatText("");
     }
 }
