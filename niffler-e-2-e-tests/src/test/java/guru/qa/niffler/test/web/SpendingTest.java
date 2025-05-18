@@ -1,27 +1,24 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.condition.Bubble;
 import guru.qa.niffler.condition.Color;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
+import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
-import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
-import guru.qa.niffler.page.component.StatComponent;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
-import static com.codeborne.selenide.Selenide.$;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @WebTest
 @ParametersAreNonnullByDefault
@@ -75,7 +72,10 @@ public class SpendingTest {
                 .getStatComponent()
                 .checkStatImg(expected)
                 .checkStatText("Обучение 79990 ₽")
-                .checkBubbles(Color.yellow, Color.green);
+                .checkBubblesAndText(
+                        new Bubble(Color.yellow, "Обучение 79990 ₽"),
+                        new Bubble(Color.green, "Ужин 5000 ₽")
+                );
 
     }
 
@@ -99,5 +99,34 @@ public class SpendingTest {
         new MainPage().getStatComponent()
                 .checkStatImg(clearStat)
                 .checkStatText("");
+    }
+
+    @User(
+            spendings = {
+                    @Spending(
+                            category = "Обучение",
+                            description = "Обучение Advanced 2.0",
+                            amount = 79990
+                    ),
+                    @Spending(
+                            category = "Ужин",
+                            description = "Ужин в кафе",
+                            amount = 5000
+                    )
+            }
+    )
+
+    @Test()
+    void checkSpendsTable(@Nonnull UserJson user) throws IOException, InterruptedException {
+        Selenide.open(LoginPage.URL, LoginPage.class)
+                .doLogin(new MainPage(), user.username(), user.testData().password())
+                .checkThatPageLoaded()
+                .getSpendingTable()
+                .checkSpendsValues(
+                        user.testData().spendings().get(0),
+                                       user.testData().spendings().get(1)
+                );
+
+
     }
 }
