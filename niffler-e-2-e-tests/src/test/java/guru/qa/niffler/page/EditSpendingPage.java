@@ -1,6 +1,7 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.SpendingTable;
 import io.qameta.allure.Step;
@@ -17,9 +18,20 @@ public class EditSpendingPage extends BasePage<EditSpendingPage> {
 
     protected SpendingTable spendingTable = new SpendingTable();
 
-    private final SelenideElement descriptionInput = $("#description");
-    private final SelenideElement submitBtn = $("#save");
-    private final SelenideElement heading = $x("//h2[text()='Add new spending']");
+    private final SelenideElement descriptionInput;
+    private final SelenideElement submitBtn;
+    private final SelenideElement heading ;
+
+    protected EditSpendingPage (SelenideDriver selenideDriver) {
+        this.descriptionInput = selenideDriver.$("#description");
+        this.submitBtn = selenideDriver.$("#save");
+        this.heading = selenideDriver.$x("//h2[text()='Add new spending']");
+    }
+    public EditSpendingPage () {
+        this.descriptionInput = $("#description");
+        this.submitBtn = $("#save");
+        this.heading = $x("//h2[text()='Add new spending']");
+    }
 
     @Nonnull
     public SpendingTable getSpendingTable() {

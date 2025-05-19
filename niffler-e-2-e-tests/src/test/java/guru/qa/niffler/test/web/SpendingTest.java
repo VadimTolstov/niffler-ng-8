@@ -1,6 +1,6 @@
 package guru.qa.niffler.test.web;
 
-import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideDriver;
 import guru.qa.niffler.condition.Bubble;
 import guru.qa.niffler.condition.Color;
 import guru.qa.niffler.config.Config;
@@ -9,10 +9,10 @@ import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
+import guru.qa.niffler.utils.SelenideUtils;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Nonnull;
@@ -25,6 +25,7 @@ import java.io.IOException;
 public class SpendingTest {
 
     private static final Config CFG = Config.getInstance();
+    private final SelenideDriver driver = new SelenideDriver(SelenideUtils.chromeConfig);
 
     @User(
             spendings = @Spending(
@@ -38,7 +39,7 @@ public class SpendingTest {
     void spendingDescriptionShouldBeUpdatedByTableAction(UserJson user) {
         final String newDescription = "Обучение Niffler NG";
 
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        driver.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(new MainPage(), "duck", "12345")
                 .checkThatPageLoaded()
                 .getHeaderComponent()
@@ -66,7 +67,7 @@ public class SpendingTest {
     )
     @ScreenShotTest(value = "img/expected-stat.png")
     void checkStatComponentTest(@Nonnull UserJson user, BufferedImage expected) throws IOException, InterruptedException {
-        Selenide.open(LoginPage.URL, LoginPage.class)
+        driver.open(LoginPage.URL, LoginPage.class)
                 .doLogin(new MainPage(), user.username(), user.testData().password())
                 .checkThatPageLoaded()
                 .getStatComponent()
@@ -88,7 +89,7 @@ public class SpendingTest {
     )
     @ScreenShotTest(value = "img/clear-stat.png", rewriteExpected = true)
     void deleteSpendingTest(@Nonnull UserJson user, BufferedImage clearStat) throws IOException {
-        Selenide.open(LoginPage.URL, LoginPage.class)
+        driver.open(LoginPage.URL, LoginPage.class)
                 .doLogin(new MainPage(), user.username(), user.testData().password())
                 .checkThatPageLoaded()
                 .getSpendingTable()
@@ -118,7 +119,7 @@ public class SpendingTest {
 
     @Test()
     void checkSpendsTable(@Nonnull UserJson user) throws IOException, InterruptedException {
-        Selenide.open(LoginPage.URL, LoginPage.class)
+        driver.open(LoginPage.URL, LoginPage.class)
                 .doLogin(new MainPage(), user.username(), user.testData().password())
                 .checkThatPageLoaded()
                 .getSpendingTable()

@@ -2,6 +2,7 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
@@ -13,16 +14,35 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
+
 @ParametersAreNonnullByDefault
 public class LoginPage extends BasePage<LoginPage> {
     public static final String URL = CFG.authUrl() + "login";
 
-    private final SelenideElement usernameInput = $("input[name='username']");
-    private final SelenideElement passwordInput = $("input[name='password']");
-    private final SelenideElement submitBtn = $("button[type='submit']");
-    private final SelenideElement nextOpenRegisterPage = $("a[class='form__register']");
-    private final SelenideElement passwordButton = $(".form__password-button");
-    private final ElementsCollection errorContainer = $$(".form__error");
+    private final SelenideElement usernameInput;
+    private final SelenideElement passwordInput;
+    private final SelenideElement submitBtn;
+    private final SelenideElement nextOpenRegisterPage;
+    private final SelenideElement passwordButton;
+    private final ElementsCollection errorContainer;
+
+    public LoginPage(SelenideDriver driver) {
+    this.usernameInput = driver.$("input[name='username']");
+    this.passwordInput = driver.$("input[name='password']");
+    this.submitBtn = driver.$("button[type='submit']");
+    this.nextOpenRegisterPage = driver.$("a[class='form__register']");
+    this.passwordButton = driver.$(".form__password-button");
+        this.errorContainer = driver.$$(".form__error");
+    }
+
+    public LoginPage() {
+        this.usernameInput = $("input[name='username']");
+        this.passwordInput = $("input[name='password']");
+        this.submitBtn = $("button[type='submit']");
+        this.nextOpenRegisterPage = $("a[class='form__register']");
+        this.passwordButton = $(".form__password-button");
+        this.errorContainer = $$(".form__error");
+    }
 
     @Step("Проверяем, что загрузилась страница авторизации")
     @Override

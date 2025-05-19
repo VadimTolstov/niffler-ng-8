@@ -1,6 +1,6 @@
 package guru.qa.niffler.test.web;
 
-import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideDriver;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.meta.User;
@@ -11,6 +11,7 @@ import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.page.ProfilePage;
 import guru.qa.niffler.utils.RandomDataUtils;
+import guru.qa.niffler.utils.SelenideUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,6 +23,7 @@ import java.io.IOException;
 @WebTest
 @ParametersAreNonnullByDefault
 public class ProfileTest {
+    private final SelenideDriver driver = new SelenideDriver(SelenideUtils.chromeConfig);
 
     @User(
             categories = @Category(
@@ -32,7 +34,7 @@ public class ProfileTest {
     @DisplayName("Перевод категории в архивную")
     void categoryToAnArchived(UserJson user) {
         final String categoriesName = user.testData().categories().getFirst().name();
-        Selenide.open(LoginPage.URL, LoginPage.class)
+        driver.open(LoginPage.URL, LoginPage.class)
                 .doLogin(new MainPage(), user.username(), "12345")
                 .getHeaderComponent()
                 .toProfilePage()
@@ -53,7 +55,7 @@ public class ProfileTest {
     void categoryFromAnArchivedOneToAnActive(UserJson user) {
         final CategoryJson archivedCategory = user.testData().categories().getFirst();
 
-        Selenide.open(LoginPage.URL, LoginPage.class)
+        driver.open(LoginPage.URL, LoginPage.class)
                 .doLogin(new MainPage(), user.username(), user.testData().password())
                 .getHeaderComponent()
                 .toProfilePage()
@@ -71,7 +73,7 @@ public class ProfileTest {
     void categoryFromAnArchivedOneToAnActiveAndNewName(UserJson user) {
         final String newNameCategory = RandomDataUtils.randomCategoryName();
 
-        Selenide.open(LoginPage.URL, LoginPage.class)
+        driver.open(LoginPage.URL, LoginPage.class)
                 .doLogin(new MainPage(), user.username(), user.testData().password())
                 .getHeaderComponent()
                 .toProfilePage()
@@ -86,13 +88,13 @@ public class ProfileTest {
     @ScreenShotTest(value = "img/expectedAvatar.png")
     @DisplayName("Перевод категории из архивной в действующий с изменением названия")
     void avatarTest(@Nonnull UserJson user, BufferedImage expectedAvatar) throws IOException {
-        ProfilePage profilePage = Selenide.open(LoginPage.URL, LoginPage.class)
+        ProfilePage profilePage = driver.open(LoginPage.URL, LoginPage.class)
                 .doLogin(new MainPage(), user.username(), user.testData().password())
                 .getHeaderComponent()
                 .toProfilePage()
                 .uploadPhotoFromClasspath("img/cat.png")
                 .clickSaveChanger();
-        Selenide.refresh();
+        driver.refresh();
 
         profilePage.checkPhotoExist()
                 .checkAvatarImg(expectedAvatar);

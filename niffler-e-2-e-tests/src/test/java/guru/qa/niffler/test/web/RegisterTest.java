@@ -1,14 +1,16 @@
 package guru.qa.niffler.test.web;
 
-import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideDriver;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.page.RegisterPage;
 import guru.qa.niffler.utils.RandomDataUtils;
+import guru.qa.niffler.utils.SelenideUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @WebTest
 public class RegisterTest {
+    private final SelenideDriver driver = new SelenideDriver(SelenideUtils.chromeConfig);
 
     @Test
     @DisplayName("Регистрация нового пользователя")
@@ -16,7 +18,7 @@ public class RegisterTest {
         String name = RandomDataUtils.randomName();
         String password = RandomDataUtils.randomPassword();
 
-        Selenide.open(RegisterPage.URL, RegisterPage.class)
+        driver.open(RegisterPage.URL, RegisterPage.class)
                 .checkThatPageLoaded()
                 .registrationNewUser(name, password)
                 .checkThatPageLoaded();
@@ -27,7 +29,7 @@ public class RegisterTest {
     void validationLoginPassword() {
         String errorName = "Allowed username length should be from 3 to 50 characters";
         String errorPassword = "Allowed password length should be from 3 to 12 characters";
-        Selenide.open(RegisterPage.URL, RegisterPage.class)
+        driver.open(RegisterPage.URL, RegisterPage.class)
                 .checkThatPageLoaded()
                 .setUsername("A")
                 .setPassword("A")
@@ -42,7 +44,7 @@ public class RegisterTest {
         String username = "books";
         String password = "12345";
 
-        Selenide.open(RegisterPage.URL, RegisterPage.class)
+        driver.open(RegisterPage.URL, RegisterPage.class)
                 .checkThatPageLoaded()
                 .setUsername(username)
                 .setPassword(password)
@@ -58,7 +60,7 @@ public class RegisterTest {
         String password = RandomDataUtils.randomPassword();
         String errorPassword = "Passwords should be equal";
 
-        Selenide.open(RegisterPage.URL, RegisterPage.class)
+        driver.open(RegisterPage.URL, RegisterPage.class)
                 .checkThatPageLoaded()
                 .setUsername(username)
                 .setPassword(password)
@@ -73,7 +75,7 @@ public class RegisterTest {
         String username = RandomDataUtils.randomName();
         String password = RandomDataUtils.randomPassword();
 
-        Selenide.open(RegisterPage.URL, RegisterPage.class)
+        driver.open(RegisterPage.URL, RegisterPage.class)
                 .checkThatPageLoaded()
                 .setUsername(username)
                 .setPassword(password)
@@ -85,7 +87,7 @@ public class RegisterTest {
     @DisplayName("Переход на страницу авторизации")
     void mainPageShouldBeDisplayedAfterSuccessLogin() {
 
-        Selenide.open(RegisterPage.URL, RegisterPage.class)
+        driver.open(RegisterPage.URL, RegisterPage.class)
                 .checkThatPageLoaded()
                 .nextLoginPage()
                 .checkThatPageLoaded();
