@@ -1,9 +1,7 @@
 package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.imp.UserApiService;
 import guru.qa.niffler.service.imp.UsersDbClient;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -12,9 +10,9 @@ public class JdbcTest {
     static UsersDbClient usersDbClient = new UsersDbClient();
 
     @ValueSource(strings = {
-            "valentin-222",
-            "valentin-223",
-            "valentin-224"
+            "valentin-235",
+            "valentin-236",
+            "valentin-237"
     })
 
     @ParameterizedTest
