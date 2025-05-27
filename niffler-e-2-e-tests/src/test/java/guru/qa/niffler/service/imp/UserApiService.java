@@ -1,7 +1,7 @@
 package guru.qa.niffler.service.imp;
 
-import guru.qa.niffler.api.AuthApiClient;
-import guru.qa.niffler.api.UserApiClient;
+import guru.qa.niffler.api.imp.AuthApiClient;
+import guru.qa.niffler.api.imp.UserApiClient;
 import guru.qa.niffler.ex.ApiException;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;

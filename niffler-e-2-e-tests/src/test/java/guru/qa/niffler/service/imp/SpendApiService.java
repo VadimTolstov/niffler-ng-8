@@ -1,6 +1,6 @@
 package guru.qa.niffler.service.imp;
 
-import guru.qa.niffler.api.SpendApiClient;
+import guru.qa.niffler.api.imp.SpendApiClient;
 import guru.qa.niffler.ex.ApiException;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;

@@ -1,5 +1,6 @@
-package guru.qa.niffler.api;
+package guru.qa.niffler.api.imp;
 
+import guru.qa.niffler.api.UserApi;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.ex.ApiException;
 import guru.qa.niffler.model.UserJson;
