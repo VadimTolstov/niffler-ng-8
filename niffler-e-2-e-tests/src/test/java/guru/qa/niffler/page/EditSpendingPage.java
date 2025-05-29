@@ -8,7 +8,6 @@ import io.qameta.allure.Step;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
 
@@ -20,6 +19,9 @@ public class EditSpendingPage extends BasePage<EditSpendingPage> {
     private final SelenideElement descriptionInput = $("#description");
     private final SelenideElement submitBtn = $("#save");
     private final SelenideElement heading = $x("//h2[text()='Add new spending']");
+    private final SelenideElement categoryInput = $("#category");
+    private final SelenideElement amountInput = $("#amount");
+
 
     @Nonnull
     public SpendingTable getSpendingTable() {
@@ -34,19 +36,28 @@ public class EditSpendingPage extends BasePage<EditSpendingPage> {
         return this;
     }
 
-    @Step("Создаем новую трату")
-    public EditSpendingPage editDescription(String description) {
+    @Step("Ввести название траты {description}")
+    public EditSpendingPage setSpendingDescription(String description) {
         descriptionInput.clear();
         descriptionInput.setValue(description);
+        return this;
+    }
+
+    @Step("Сохранить изменения")
+    public EditSpendingPage saveSpending() {
         submitBtn.click();
         return this;
     }
 
-//    public EditSpendingPage editSpending(String spendingDescription) {
-//        tableRows.find(text(spendingDescription))
-//                .$$("td")
-//                .get(5)
-//                .click();
-//        return new EditSpendingPage();
-//    }
+    @Step("Ввести название категории: {category}")
+    public EditSpendingPage setSpendingCategory(String category) {
+        categoryInput.setValue(category);
+        return this;
+    }
+
+    @Step("Ввести сумму траты: {amount}")
+    public EditSpendingPage setSpendingAmount(String amount) {
+        amountInput.setValue(amount);
+        return this;
+    }
 }

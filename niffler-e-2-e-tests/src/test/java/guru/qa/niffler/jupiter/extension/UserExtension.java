@@ -1,6 +1,7 @@
 package guru.qa.niffler.jupiter.extension;
 
 import guru.qa.niffler.jupiter.annotation.meta.User;
+import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import guru.qa.niffler.service.imp.UserApiService;
@@ -11,6 +12,7 @@ import org.junit.platform.commons.support.AnnotationSupport;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
 
 @ParametersAreNonnullByDefault
 public class UserExtension implements BeforeEachCallback, ParameterResolver {
@@ -32,6 +34,15 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
                         UserJson user = usersClient.createUser(
                                 username,
                                 defaultPassword
+                        ).withTestData(  // Инициализируем testData
+                                new TestData(
+                                        defaultPassword,
+                                        new ArrayList<>(),
+                                        new ArrayList<>(),
+                                        new ArrayList<>(),
+                                        new ArrayList<>(),
+                                        new ArrayList<>()
+                                )
                         );
 
                         usersClient.createFriends(user, userAnno.friends());

@@ -1,6 +1,7 @@
 package guru.qa.niffler.api.imp;
 
 import guru.qa.niffler.api.UserApi;
+import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.ex.ApiException;
 import guru.qa.niffler.model.UserJson;
@@ -21,26 +22,13 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class UserApiClient {
+public class UserApiClient extends RestClient {
 
-    private static final Config CFG = Config.getInstance();
     private final UserApi userApi;
 
     public UserApiClient() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
-
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(logging)
-                .build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(CFG.userdataUrl())
-                .client(client)
-                .addConverterFactory(JacksonConverterFactory.create())
-                .build();
-
-        this.userApi = retrofit.create(UserApi.class);
+        super(CFG.userdataUrl());
+        userApi = retrofit.create(UserApi.class);
     }
 
     @Step("Send GET [/internal/users/current] to niffler-userdata")

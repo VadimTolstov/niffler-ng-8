@@ -1,13 +1,18 @@
 package guru.qa.niffler.service.imp;
 
+import com.google.common.base.Stopwatch;
+import guru.qa.niffler.api.core.CookieName;
+import guru.qa.niffler.api.core.ThreadSafeCookiesStore;
 import guru.qa.niffler.api.imp.AuthApiClient;
 import guru.qa.niffler.api.imp.UserApiClient;
 import guru.qa.niffler.ex.ApiException;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import guru.qa.niffler.utils.RandomDataUtils;
+import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
+import java.util.concurrent.TimeUnit;
 
 public class UserApiService implements UsersClient {
 
@@ -20,8 +25,32 @@ public class UserApiService implements UsersClient {
     }
 
     @Override
-    public UserJson createUser(String username, String password) {
-        return new UsersDbClient().createUser(username, password);
+    @Step("Создание нового пользователя с именем: {username}")
+    public @Nonnull UserJson createUser(@Nonnull String username, @Nonnull String password) {
+        authApiClient.requestRegisterForm();
+        authApiClient.register(
+                ThreadSafeCookiesStore.INSTANCE.cookieValue(CookieName.XSRF_TOKEN.getValue()),
+                username,
+                password,
+                password
+        );
+
+        long maxWaitTime = 5000L;
+        Stopwatch sw = Stopwatch.createStarted();
+        while (sw.elapsed(TimeUnit.MILLISECONDS) < maxWaitTime) {
+            try {
+                UserJson userJson = userApiClient.currentUser(username);
+                if (userJson != null || userJson.id() != null) {
+                    return userJson; // Пользователь найден, возвращаем
+                } else {
+                    Thread.sleep(100); // Ожидаем перед следующей проверкой
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException("Ошибка при выполнении запроса на получение пользователя или ожидании", e);
+            }
+        }
+        // Если пользователь не найден за отведенное время
+        throw new AssertionError("Пользователь не был найден в системе после истечения времени ожидания");
     }
 
     @Override
@@ -62,7 +91,7 @@ public class UserApiService implements UsersClient {
         }
     }
 
-    private UserJson createRandomUser() {
+    private @Nonnull UserJson createRandomUser() {
         String username = RandomDataUtils.randomUsername();
         return createUser(username, "12345");
     }

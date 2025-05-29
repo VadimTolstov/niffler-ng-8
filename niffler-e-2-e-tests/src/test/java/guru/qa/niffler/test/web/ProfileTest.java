@@ -23,6 +23,19 @@ import java.io.IOException;
 @ParametersAreNonnullByDefault
 public class ProfileTest {
 
+    @User
+    @Test
+    @DisplayName("Редактируем поле Name в профиле пользователя")
+    void editingNameFieldInProfile(UserJson user) {
+        Selenide.open(LoginPage.URL, LoginPage.class)
+                .doLogin(new MainPage(), user.username(), "12345")
+                .getHeaderComponent()
+                .toProfilePage()
+                .nameInput("HTTPs")
+                .clickSaveChanger()
+                .checkAlert("Profile successfully updated");
+    }
+
     @User(
             categories = @Category(
                     archived = false

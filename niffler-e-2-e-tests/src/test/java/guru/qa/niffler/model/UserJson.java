@@ -58,16 +58,29 @@ public record UserJson(
     }
 
     public @Nonnull UserJson withPassword(@Nonnull String password) {
-        return withTestData(
-                new TestData(
-                        password,
-                        testData.categories(),
-                        testData.spendings(),
-                        testData.friends(),
-                        testData.outcomeInvitations(),
-                        testData.incomeInvitations()
-                )
-        );
+        if (testData == null) {
+            return withTestData(
+                    new TestData(
+                            password,
+                            new ArrayList<>(),
+                            new ArrayList<>(),
+                            new ArrayList<>(),
+                            new ArrayList<>(),
+                            new ArrayList<>()
+                    )
+            );
+        } else {
+            return withTestData(
+                    new TestData(
+                            password,
+                            testData.categories(),
+                            testData.spendings(),
+                            testData.friends(),
+                            testData.outcomeInvitations(),
+                            testData.incomeInvitations()
+                    )
+            );
+        }
     }
 
     public @Nonnull UserJson withTestData(@Nonnull TestData testData) {

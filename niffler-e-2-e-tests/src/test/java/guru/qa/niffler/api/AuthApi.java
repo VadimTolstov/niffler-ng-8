@@ -1,15 +1,17 @@
 package guru.qa.niffler.api;
 
-import guru.qa.niffler.model.UserJson;
 import retrofit2.Call;
-import retrofit2.http.POST;
-import retrofit2.http.Query;
+import retrofit2.http.*;
 
 public interface AuthApi {
 
     @POST("/register")
-    Call<Void> register(@Query("_csrf") String _csrf,
-                            @Query("username") String username,
-                            @Query("password") String password,
-                            @Query("passwordSubmit") String passwordSubmit);
+    @FormUrlEncoded
+    Call<Void> register(@Field("_csrf") String _csrf,
+                        @Field("username") String username,
+                        @Field("password") String password,
+                        @Field("passwordSubmit") String passwordSubmit);
+
+    @GET("/register")
+    Call<Void> requestRegisterForm();
 }
