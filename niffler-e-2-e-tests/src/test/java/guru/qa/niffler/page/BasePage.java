@@ -15,7 +15,7 @@ import static com.codeborne.selenide.Selenide.$;
 public abstract class BasePage<T extends BasePage<?>> {
     protected static final Config CFG = Config.getInstance();
 
-    protected final SelenideElement alert = $("");
+    protected final SelenideElement alert = $(".MuiAlert-message");
 
     @SuppressWarnings("unchecked")
     public T checkAlert(String message) {
