@@ -1,6 +1,7 @@
 package guru.qa.niffler.api.core;
 
 import guru.qa.niffler.config.Config;
+import io.qameta.allure.okhttp3.AllureOkHttp3;
 import okhttp3.Interceptor;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
@@ -46,15 +47,18 @@ public abstract class RestClient {
 
     }
 
-    public RestClient(String baseUrl, boolean followRedirect, Converter.Factory converterFactory, HttpLoggingInterceptor.Level loggingLevel,  Interceptor... interceptors) {
+    public RestClient(String baseUrl, boolean followRedirect, Converter.Factory converterFactory, HttpLoggingInterceptor.Level loggingLevel, Interceptor... interceptors) {
         OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder()
                 .followRedirects(followRedirect);
 
-            for (Interceptor interceptor : interceptors) {
-                okHttpBuilder.addNetworkInterceptor(interceptor);
-            }
+        for (Interceptor interceptor : interceptors) {
+            okHttpBuilder.addNetworkInterceptor(interceptor);
+        }
 
         okHttpBuilder.addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(loggingLevel));
+        okHttpBuilder.addNetworkInterceptor(new AllureOkHttp3()
+                .setRequestTemplate("http-request.ftl")
+                .setResponseTemplate("http-response.ftl"));
         okHttpBuilder.cookieJar(
                 new JavaNetCookieJar(
                         new CookieManager(
