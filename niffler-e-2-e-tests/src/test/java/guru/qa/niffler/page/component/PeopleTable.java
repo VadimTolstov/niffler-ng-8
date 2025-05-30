@@ -3,15 +3,20 @@ package guru.qa.niffler.page.component;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.page.FriendsPage;
 import io.qameta.allure.Step;
+import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.codeborne.selenide.ClickOptions.usingJavaScript;
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
 
 @ParametersAreNonnullByDefault
-public class PeopleTable extends BaseComponent<PeopleTable>{
+public class PeopleTable extends BaseComponent<PeopleTable> {
 
     public PeopleTable() {
         super($("#root header"));
@@ -19,6 +24,9 @@ public class PeopleTable extends BaseComponent<PeopleTable>{
 
     private final SelenideElement peopleTable = self.$("div[role='tabpanel']");
     private final ElementsCollection allPeopleList = peopleTable.$$("tr.MuiTableRow-root");
+    private final SelenideElement popup = $("div[role='dialog']");
+    private final SelenideElement requestsTable = $("#requests");
+
 
     @Step("Проверяем отображение пользователя: {user}")
     public void checkPeople(String user) {
@@ -47,6 +55,19 @@ public class PeopleTable extends BaseComponent<PeopleTable>{
     public void checkIncomeFriendship(String username) {
         $x(".//tr[.//p[text()='%s'] and .//button[text()='Accept'] and .//button[text()='Decline']]"
                 .formatted(username)).shouldHave(Condition.visible);
+    }
+
+    @Step("Принять предложение дружить")
+    public PeopleTable acceptFriendship() {
+        $x(".//button[text()='Accept']").click();
+        return this;
+    }
+
+    @Step("Отклонить предложение дружить")
+    public void declineFriendInvitationFromUser(String username) {
+        SelenideElement friendRow = requestsTable.$$("tr").find(text(username));
+        friendRow.$(byText("Decline")).click();
+        popup.$(byText("Decline")).click(usingJavaScript());
     }
 
 }

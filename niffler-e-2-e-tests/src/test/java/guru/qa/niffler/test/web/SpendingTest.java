@@ -12,6 +12,7 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Nonnull;
@@ -27,6 +28,7 @@ public class SpendingTest {
 
     @User
     @Test
+    @DisplayName("Добавление новой траты и проверка сообщения")
     void checkAlertSpending(UserJson user) {
         final String newDescription = "Обучение Niffler NG";
         final String newCategory = "Обучение";

@@ -4,8 +4,10 @@ import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.page.FriendsPage;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @WebTest
@@ -45,12 +47,39 @@ public class FriendsWebTest {
 
     @User(incomeInvitations = 1)
     @Test
+    @DisplayName("Принять входящие предложение дружбы")
     void incomeInvitationBePresentInFriendsTable(UserJson user) {
         Selenide.open(LoginPage.URL, LoginPage.class)
                 .doLogin(new MainPage(), user.username(), user.testData().password())
                 .getHeaderComponent()
                 .toFriendsPage()
-                .checkIncomeFriendship(user.testData().incomeInvitations().getFirst().username());
+                .checkIncomeFriendship(user.testData().incomeInvitations().getFirst().username())
+                .getPeopleTable()
+                .acceptFriendship();
+
+        new FriendsPage().checkAlert(
+                "Invitation of %s accepted".formatted(
+                        user.testData()
+                                .incomeInvitations()
+                                .getFirst()
+                                .username()
+                )
+        );
+    }
+
+    @User(incomeInvitations = 1)
+    @Test
+    @DisplayName("Отклонить входящие предложение дружбы")
+    void rejectingFriendRequest(UserJson user) {
+        final String incomeInvitationsUserName = user.testData().incomeInvitations().getFirst().username();
+        Selenide.open(LoginPage.URL, LoginPage.class)
+                .doLogin(new MainPage(), user.username(), user.testData().password())
+                .getHeaderComponent()
+                .toFriendsPage()
+                .checkIncomeFriendship(incomeInvitationsUserName)
+                .getPeopleTable()
+                .declineFriendInvitationFromUser(incomeInvitationsUserName);
+        new FriendsPage().checkAlert("Invitation of %s is declined".formatted(incomeInvitationsUserName));
     }
 
     @User(outcomeInvitations = 1)
