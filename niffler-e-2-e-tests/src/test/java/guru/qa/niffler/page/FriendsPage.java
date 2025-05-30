@@ -6,8 +6,12 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.PeopleTable;
 import guru.qa.niffler.page.component.SearchField;
+import guru.qa.niffler.page.component.SpendingTable;
 import io.qameta.allure.Step;
+import lombok.Getter;
+import retrofit2.http.GET;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.codeborne.selenide.Selenide.*;
@@ -23,6 +27,10 @@ public class FriendsPage extends BasePage<FriendsPage> {
     private final SelenideElement friendsTab = $("a[aria-selected='true'][href='/people/friends']");
     private final SelenideElement emptyListFriends = $("#simple-tabpanel-friends:not(:has(tr))");
 
+    @Nonnull
+    public PeopleTable getPeopleTable() {
+        return peopleTable;
+    }
 
     @Step("Проверяем, что загрузилась страница Друзей")
     @Override

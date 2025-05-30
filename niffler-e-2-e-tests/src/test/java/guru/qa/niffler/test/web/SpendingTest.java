@@ -12,6 +12,7 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Nonnull;
@@ -24,6 +25,28 @@ import java.io.IOException;
 public class SpendingTest {
 
     private static final Config CFG = Config.getInstance();
+
+    @User
+    @Test
+    @DisplayName("Добавление новой траты и проверка сообщения")
+    void checkAlertSpending(UserJson user) {
+        final String newDescription = "Обучение Niffler NG";
+        final String newCategory = "Обучение";
+
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .doLogin(new MainPage(), user.username(), user.testData().password())
+                .checkThatPageLoaded()
+                .getHeaderComponent()
+                .addSpendingPage()
+                .setSpendingDescription(newDescription)
+                .setSpendingAmount("1000")
+                .setSpendingCategory(newCategory)
+                .saveSpending()
+                .checkAlert("New spending is successfully created")
+                .getSpendingTable()
+                .checkTableContains(newDescription);
+
+    }
 
     @User(
             spendings = @Spending(
@@ -38,12 +61,16 @@ public class SpendingTest {
         final String newDescription = "Обучение Niffler NG";
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(new MainPage(), "duck", "12345")
+                .doLogin(new MainPage(), user.username(), user.testData().password())
                 .checkThatPageLoaded()
                 .getHeaderComponent()
                 .addSpendingPage()
-                .editDescription(user.testData().spendings().getFirst().description())
-                .editDescription(newDescription)
+                .setSpendingAmount(user.testData().spendings().getFirst().amount().toString())
+                .setSpendingCategory(user.testData().spendings().getFirst().category().name())
+                .setSpendingDescription(user.testData().spendings().getFirst().description())
+                .setSpendingDescription(newDescription)
+                .saveSpending()
+                .checkAlert("New spending is successfully created")
                 .getSpendingTable()
                 .checkTableContains(newDescription);
 
@@ -123,7 +150,7 @@ public class SpendingTest {
                 .getSpendingTable()
                 .checkSpendsValues(
                         user.testData().spendings().get(0),
-                                       user.testData().spendings().get(1)
+                        user.testData().spendings().get(1)
                 );
 
 
