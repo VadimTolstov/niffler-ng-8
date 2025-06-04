@@ -2,6 +2,7 @@ package guru.qa.niffler.test.api;
 
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.imp.UserApiService;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 public class ApiTest {
