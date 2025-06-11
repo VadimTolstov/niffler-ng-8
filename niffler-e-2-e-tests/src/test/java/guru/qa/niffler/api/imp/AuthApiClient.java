@@ -122,6 +122,7 @@ public class AuthApiClient extends RestClient {
                 CLIENT_ID
         ), HttpStatus.SC_OK);
 
+        AuthCodeStore.INSTANCE.clear();
         return response.get("id_token").asText();
     }
 

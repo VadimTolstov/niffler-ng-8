@@ -14,4 +14,18 @@ public class OAuthTest {
         System.out.println("Получили токен = " + token);
         Assertions.assertNotNull(token);
     }
+
+    @Test
+    void oauthTest2() {
+        final String token = userApiService.singIn("raymundo.bartell", "12345");
+        System.out.println("Получили токен = " + token);
+        Assertions.assertNotNull(token);
+    }
+
+    @Test
+    void oauthTest3() {
+        final String token = userApiService.singIn("johnie.parker", "12345");
+        System.out.println("Получили токен = " + token);
+        Assertions.assertNotNull(token);
+    }
 }
