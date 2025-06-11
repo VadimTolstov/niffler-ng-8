@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SpendApiClient extends RestClient {
 
-    private static final Config CFG = Config.getInstance();
     private final SpendApi spendApi;
 
     public SpendApiClient() {

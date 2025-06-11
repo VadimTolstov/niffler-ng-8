@@ -1,19 +1,21 @@
 package guru.qa.niffler.service.imp;
 
 import com.google.common.base.Stopwatch;
-import guru.qa.niffler.api.core.CookieName;
 import guru.qa.niffler.api.core.ThreadSafeCookiesStore;
 import guru.qa.niffler.api.imp.AuthApiClient;
 import guru.qa.niffler.api.imp.UserApiClient;
 import guru.qa.niffler.ex.ApiException;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
+import guru.qa.niffler.utils.OauthUtils;
 import guru.qa.niffler.utils.RandomDataUtils;
 import io.qameta.allure.Step;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class UserApiService implements UsersClient {
 
     private final AuthApiClient authApiClient;
@@ -24,12 +26,29 @@ public class UserApiService implements UsersClient {
         this.userApiClient = new UserApiClient();
     }
 
+    /**
+     * Метод для входа в систему и получения токена.
+     *
+     * @param username Имя пользователя.
+     * @param password Пароль пользователя.
+     * @return Токен доступа.
+     */
+    @Step("Получения token пользователя username = {username}, password = {password}")
+    public String singIn(String username, String password) {
+        final String codeVerifier = OauthUtils.generateCodeVerifier();
+        ThreadSafeCookiesStore.INSTANCE.removeAll();
+        log.info("Войдите в систему под: username = [{}], password = [{}]", username, password);
+
+        authApiClient.authorize(OauthUtils.generateCodeChallenge(codeVerifier));
+        authApiClient.login(username, password);
+        return authApiClient.token(codeVerifier);
+    }
+
     @Override
     @Step("Создание нового пользователя с именем: {username}")
     public @Nonnull UserJson createUser(@Nonnull String username, @Nonnull String password) {
         authApiClient.requestRegisterForm();
         authApiClient.register(
-                ThreadSafeCookiesStore.INSTANCE.cookieValue(CookieName.XSRF_TOKEN.getValue()),
                 username,
                 password,
                 password
