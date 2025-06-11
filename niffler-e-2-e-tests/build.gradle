@@ -143,10 +143,31 @@ tasks.register('printVersion') {
 }
 
 test {
+    // Передаёт все системные свойства в тестовый процесс
     options {
         systemProperties(System.getProperties())
     }
+    // Включает вывод стандартных потоков (System.out/err) в консоль
     testLogging.showStandardStreams = true
+    // Форматирование исключений: полный стектрейс
     testLogging.exceptionFormat = 'full'
-    useJUnitPlatform()
+    // Использование JUnit 5 с исключением тестов по тегам
+    useJUnitPlatform {
+        excludeTags("EMPTY_DB", "FULL_DB")
+    }
+    // Порядок выполнения: задача test должна запускаться ПОСЛЕ задачи dbEmpty
+    shouldRunAfter("dbEmpty")
+}
+
+tasks.register("dbEmpty", Test) {
+    useJUnitPlatform {
+        includeTags "EMPTY_DB" // Только тесты с тегом EMPTY_DB
+    }
+}
+
+tasks.register("dbFull", Test) {
+    useJUnitPlatform {
+        includeTags "FULL_DB" // Только тесты с тегом FULL_DB
+    }
+    shouldRunAfter(test) // Запускается ПОСЛЕ основной задачи test
 }
