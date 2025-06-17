@@ -49,16 +49,20 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
                         usersClient.createIncomeInvitations(user, userAnno.incomeInvitations());
                         usersClient.createOutcomeInvitations(user, userAnno.outcomeInvitations());
 
-                        context.getStore(NAMESPACE).put(
-                                context.getUniqueId(),
-                                user.withPassword(
-                                        defaultPassword
-                                )
-                        );
+                        setUser(user);
                     }
                 });
     }
 
+    public static void setUser(UserJson user) {
+        final ExtensionContext context = TestMethodContextExtension.context();
+        context.getStore(NAMESPACE).put(
+                context.getUniqueId(),
+                user.withPassword(
+                        defaultPassword
+                )
+        );
+    }
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
@@ -71,6 +75,11 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
     }
 
     public static @Nullable UserJson createdUser() {
+        final ExtensionContext context = TestMethodContextExtension.context();
+        return context.getStore(NAMESPACE).get(context.getUniqueId(), UserJson.class);
+    }
+
+    public static UserJson getUserJson() {
         final ExtensionContext context = TestMethodContextExtension.context();
         return context.getStore(NAMESPACE).get(context.getUniqueId(), UserJson.class);
     }

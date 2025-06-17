@@ -5,8 +5,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -34,6 +37,13 @@ public record UserJson(
         @JsonIgnore
         TestData testData) {
 
+    public UserJson(@Nonnull String username) {
+        this(username, null);
+    }
+
+    public UserJson(@Nonnull String username, @Nullable TestData testData) {
+        this(null, username, null, null, null, null, null, null, null, testData);
+    }
 
     public static @Nonnull UserJson fromEntity(@Nonnull UserEntity entity, @Nonnull FriendshipStatus friendshipStatus) {
         return new UserJson(

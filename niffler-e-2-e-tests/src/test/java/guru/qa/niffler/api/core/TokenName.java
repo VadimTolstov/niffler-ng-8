@@ -15,7 +15,7 @@ import java.util.Optional;
 @Getter
 @RequiredArgsConstructor
 @ParametersAreNonnullByDefault
-public enum Token {
+public enum TokenName {
     /**
      * Токен CSRF, используемый для защиты от межсайтовой подделки запросов (CSRF).
      */
@@ -37,7 +37,7 @@ public enum Token {
      * @return Optional, содержащий элемент перечисления, если найден, иначе пустой Optional.
      */
     @NotNull
-    public static Optional<Token> getEnumByCookieName(String cookieName) {
-        return Arrays.stream(values()).filter(token -> token.getCookieName().equalsIgnoreCase(cookieName)).findFirst();
+    public static Optional<TokenName> getEnumByCookieName(String cookieName) {
+        return Arrays.stream(values()).filter(tokenName -> tokenName.getCookieName().equalsIgnoreCase(cookieName)).findFirst();
     }
 }

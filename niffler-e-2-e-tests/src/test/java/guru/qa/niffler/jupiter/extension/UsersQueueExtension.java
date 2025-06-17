@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
+@Deprecated
 @ParametersAreNonnullByDefault
 public class UsersQueueExtension implements
         BeforeTestExecutionCallback,

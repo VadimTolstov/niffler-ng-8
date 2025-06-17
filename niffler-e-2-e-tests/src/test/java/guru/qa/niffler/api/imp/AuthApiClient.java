@@ -4,10 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import guru.qa.niffler.api.AuthApi;
 import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.api.core.ThreadSafeCookiesStore;
-import guru.qa.niffler.api.core.Token;
+import guru.qa.niffler.api.core.TokenName;
 import guru.qa.niffler.api.core.interceptor.AuthorizedCodeInterceptor;
-import guru.qa.niffler.api.core.store.AuthCodeStore;
+import guru.qa.niffler.api.core.interceptor.CodeInterceptor;
 import guru.qa.niffler.ex.ApiException;
+import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
 import io.qameta.allure.Step;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.hc.core5.http.HttpStatus;
@@ -19,6 +20,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Objects;
 
+import static guru.qa.niffler.api.core.TokenName.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AuthApiClient extends RestClient {
@@ -36,7 +38,7 @@ public class AuthApiClient extends RestClient {
                 true,
                 JacksonConverterFactory.create(),
                 HttpLoggingInterceptor.Level.BODY,
-                new AuthorizedCodeInterceptor()
+                new CodeInterceptor()
         );
         authApi = retrofit.create(AuthApi.class);
     }
@@ -63,10 +65,10 @@ public class AuthApiClient extends RestClient {
             @Nonnull String passwordSubmit) {
         executeVoid(
                 authApi.register(
-                        ThreadSafeCookiesStore.INSTANCE.cookieValue(Token.CSRF.getCookieName()),
                         username,
                         password,
-                        passwordSubmit
+                        passwordSubmit,
+                        ThreadSafeCookiesStore.INSTANCE.cookieValue(CSRF.getCookieName())
                 ), HttpStatus.SC_CREATED
         );
     }
@@ -100,7 +102,7 @@ public class AuthApiClient extends RestClient {
         executeVoid(authApi.login(
                         username,
                         password,
-                        ThreadSafeCookiesStore.INSTANCE.cookieValue(Token.CSRF.getCookieName())
+                        ThreadSafeCookiesStore.INSTANCE.cookieValue(CSRF.getCookieName())
                 ), HttpStatus.SC_OK
         );
     }
@@ -113,16 +115,16 @@ public class AuthApiClient extends RestClient {
      */
     @Step("Получение токена  POST [/oauth2/token] to niffler-auth")
     public String token(String codeVerifier) {
-        final String code = Objects.requireNonNull(AuthCodeStore.INSTANCE.getCode());
+        //    final String code = Objects.requireNonNull(AuthCodeStore.INSTANCE.getCode());
         final JsonNode response = execute(authApi.token(
-                code,
+                ApiLoginExtension.getCode(),
                 REDIRECT_URI,
                 codeVerifier,
                 GRANT_TYPE,
                 CLIENT_ID
         ), HttpStatus.SC_OK);
 
-        AuthCodeStore.INSTANCE.clear();
+        // AuthCodeStore.INSTANCE.clear();
         return response.get("id_token").asText();
     }
 
