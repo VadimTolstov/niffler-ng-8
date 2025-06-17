@@ -1,4 +1,4 @@
-package guru.qa.niffler.test.db;
+package guru.qa.niffler.test.fake.db;
 
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.imp.UsersDbClient;

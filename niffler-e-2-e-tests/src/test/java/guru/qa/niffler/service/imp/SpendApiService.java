@@ -3,10 +3,12 @@ package guru.qa.niffler.service.imp;
 import guru.qa.niffler.api.imp.SpendApiClient;
 import guru.qa.niffler.ex.ApiException;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
 
 import javax.annotation.Nonnull;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -67,5 +69,13 @@ public class SpendApiService implements SpendClient {
     @Override
     public void removeCategory(@Nonnull CategoryJson category) {
         throw new ApiException("Метод находится в разработке");
+    }
+
+    public @Nonnull List<SpendJson> getAllSpends(@Nonnull String username, CurrencyValues filterCurrency, Date from, Date to) {
+        return spendApiClient.getAllSpends(username, filterCurrency, from, to);
+    }
+
+    public @Nonnull List<CategoryJson> getAllCategories(@Nonnull String username, boolean excludeArchived) {
+        return spendApiClient.getAllCategories(username, excludeArchived);
     }
 }

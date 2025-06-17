@@ -13,6 +13,8 @@ import io.qameta.allure.Step;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -84,6 +86,13 @@ public class UserApiService implements UsersClient {
         }
     }
 
+    public @Nonnull List<UserJson> allUsers(@Nonnull String username, @Nullable String searchQuery) {
+        return userApiClient.allUsers(username, searchQuery);
+    }
+
+    public @Nonnull List<UserJson> friends(@Nonnull String username, @Nullable String searchQuery) {
+        return userApiClient.friends(username, searchQuery);
+    }
 
     @Override
     public void createOutcomeInvitations(UserJson targetUser, int count) {

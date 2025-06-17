@@ -1,4 +1,4 @@
-package guru.qa.niffler.test.api;
+package guru.qa.niffler.test.fake.api;
 
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Token;
@@ -32,6 +32,13 @@ public class OAuthTest {
     @ApiLogin(username = "Adica", password = "12345")
     void oauthTest3(@Token String token) {
         System.out.println("Получили токен = " + token);
+        Assertions.assertNotNull(token);
+    }
+
+    @Test
+    @ApiLogin(username = "Adica", password = "12345")
+    void friendTest(@Token String token, UserJson user) {
+        System.out.println("Получаем список друзей, категории = " + user);
         Assertions.assertNotNull(token);
     }
 }

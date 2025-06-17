@@ -15,6 +15,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +39,7 @@ public class UserApiClient extends RestClient {
 
     @Step("Send GET [/internal/users/all] to niffler-userdata")
     public @Nonnull List<UserJson> allUsers(@Nonnull String username,
-                                            @Nonnull String searchQuery) {
+                                            @Nullable String searchQuery) {
         return getList(executeForList(userApi.allUsers(username, searchQuery)));
     }
 
@@ -49,7 +50,7 @@ public class UserApiClient extends RestClient {
 
     @Step("Send GET [/internal/friends/all] to niffler-userdata")
     public @Nonnull List<UserJson> friends(@Nonnull String username,
-                                           @Nonnull String searchQuery) {
+                                           @Nullable String searchQuery) {
         return getList(executeForList(userApi.friends(username, searchQuery)));
     }
 

@@ -4,13 +4,13 @@ import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.condition.Bubble;
 import guru.qa.niffler.condition.Color;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,15 +27,14 @@ public class SpendingTest {
     private static final Config CFG = Config.getInstance();
 
     @User
+    @ApiLogin
     @Test
     @DisplayName("Добавление новой траты и проверка сообщения")
-    void checkAlertSpending(UserJson user) {
+    void checkAlertSpending() {
         final String newDescription = "Обучение Niffler NG";
         final String newCategory = "Обучение";
 
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(new MainPage(), user.username(), user.testData().password())
-                .checkThatPageLoaded()
+        Selenide.open(MainPage.URL, MainPage.class)
                 .getHeaderComponent()
                 .addSpendingPage()
                 .setSpendingDescription(newDescription)
@@ -56,13 +55,12 @@ public class SpendingTest {
                     currency = CurrencyValues.RUB
             )
     )
+    @ApiLogin
     @Test
     void spendingDescriptionShouldBeUpdatedByTableAction(UserJson user) {
         final String newDescription = "Обучение Niffler NG";
 
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(new MainPage(), user.username(), user.testData().password())
-                .checkThatPageLoaded()
+        Selenide.open(MainPage.URL, MainPage.class)
                 .getHeaderComponent()
                 .addSpendingPage()
                 .setSpendingAmount(user.testData().spendings().getFirst().amount().toString())
@@ -90,10 +88,10 @@ public class SpendingTest {
                     )
             }
     )
+    @ApiLogin
     @ScreenShotTest(value = "img/expected-stat.png")
     void checkStatComponentTest(@Nonnull UserJson user, BufferedImage expected) throws IOException, InterruptedException {
-        Selenide.open(LoginPage.URL, LoginPage.class)
-                .doLogin(new MainPage(), user.username(), user.testData().password())
+        Selenide.open(MainPage.URL, MainPage.class)
                 .checkThatPageLoaded()
                 .getStatComponent()
                 .checkStatImg(expected)
@@ -112,19 +110,20 @@ public class SpendingTest {
                     amount = 79990
             )
     )
+    @ApiLogin
     @ScreenShotTest(value = "img/clear-stat.png", rewriteExpected = true)
     void deleteSpendingTest(@Nonnull UserJson user, BufferedImage clearStat) throws IOException {
-        Selenide.open(LoginPage.URL, LoginPage.class)
-                .doLogin(new MainPage(), user.username(), user.testData().password())
+        Selenide.open(MainPage.URL, MainPage.class)
                 .checkThatPageLoaded()
                 .getSpendingTable()
                 .checkTableContains("Обучение Advanced 2.0")
                 .deleteSpending("Обучение Advanced 2.0")
                 .checkTableSize(0);
 
-        new MainPage().getStatComponent()
-                .checkStatImg(clearStat)
-                .checkStatText("");
+        new MainPage().checkAlert("Spendings succesfully deleted")
+                .getStatComponent()
+                .checkStatImg(clearStat);
+
     }
 
     @User(
@@ -141,11 +140,10 @@ public class SpendingTest {
                     )
             }
     )
-
+    @ApiLogin
     @Test()
     void checkSpendsTable(@Nonnull UserJson user) throws IOException, InterruptedException {
-        Selenide.open(LoginPage.URL, LoginPage.class)
-                .doLogin(new MainPage(), user.username(), user.testData().password())
+        Selenide.open(MainPage.URL, MainPage.class)
                 .checkThatPageLoaded()
                 .getSpendingTable()
                 .checkSpendsValues(
