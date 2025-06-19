@@ -13,13 +13,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @ExtendWith({
         IssueExtension.class,
-        BrowserExtension.class,
         AllureJunit5.class,
         UserExtension.class,
         CategoryExtension.class,
-        SpendingExtension.class,
-        ApiLoginExtension.class,
-        ScreenShotTestExtension.class
+        SpendingExtension.class
 })
-public @interface WebTest {
+public @interface RestTest {
 }

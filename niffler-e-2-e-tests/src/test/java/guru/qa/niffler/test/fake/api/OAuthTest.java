@@ -2,9 +2,9 @@ package guru.qa.niffler.test.fake.api;
 
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Token;
-import guru.qa.niffler.jupiter.annotation.meta.User;
-import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.imp.UserApiService;
+import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.model.rest.UserJson;
+import guru.qa.niffler.service.impl.UserApiService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

@@ -10,6 +10,7 @@ import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import javax.annotation.Nonnull;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 
@@ -25,6 +26,10 @@ public abstract class RestClient {
     public RestClient(String baseUrl, boolean followRedirect) {
         this(baseUrl, followRedirect, JacksonConverterFactory.create(), HttpLoggingInterceptor.Level.HEADERS, new Interceptor[0]);
 
+    }
+
+    public RestClient(String baseUrl, Converter.Factory factory) {
+        this(baseUrl, false, factory, HttpLoggingInterceptor.Level.BODY);
     }
 
     public RestClient(String baseUrl, HttpLoggingInterceptor.Level loggingLevel) {
@@ -76,5 +81,28 @@ public abstract class RestClient {
                 .baseUrl(baseUrl)
                 .addConverterFactory(converterFactory)
                 .build();
+    }
+
+    @Nonnull
+    public <T> T create(final Class<T> service) {
+        return this.retrofit.create(service);
+    }
+
+    public static final class EmtyRestClient extends RestClient {
+        public EmtyRestClient(String baseUrl) {
+            super(baseUrl);
+        }
+
+        public EmtyRestClient(String baseUrl, boolean followRedirect) {
+            super(baseUrl, followRedirect);
+        }
+
+        public EmtyRestClient(String baseUrl, Converter.Factory factory) {
+            super(baseUrl, factory);
+        }
+
+        public EmtyRestClient(String baseUrl, boolean followRedirect, Converter.Factory factory, HttpLoggingInterceptor.Level level, Interceptor... interceptors) {
+            super(baseUrl, followRedirect, factory, level, interceptors);
+        }
     }
 }

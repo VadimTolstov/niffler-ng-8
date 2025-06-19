@@ -1,7 +1,7 @@
 package guru.qa.niffler.jupiter.extension;
 
 import guru.qa.niffler.service.UsersClient;
-import guru.qa.niffler.service.imp.UsersDbClient;
+import guru.qa.niffler.service.impl.UsersDbClient;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 

@@ -1,11 +1,11 @@
-package guru.qa.niffler.service.imp;
+package guru.qa.niffler.service.impl;
 
 import com.google.common.base.Stopwatch;
 import guru.qa.niffler.api.core.ThreadSafeCookiesStore;
-import guru.qa.niffler.api.imp.AuthApiClient;
-import guru.qa.niffler.api.imp.UserApiClient;
+import guru.qa.niffler.api.impl.AuthApiClient;
+import guru.qa.niffler.api.impl.UserApiClient;
 import guru.qa.niffler.ex.ApiException;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import guru.qa.niffler.utils.OauthUtils;
 import guru.qa.niffler.utils.RandomDataUtils;

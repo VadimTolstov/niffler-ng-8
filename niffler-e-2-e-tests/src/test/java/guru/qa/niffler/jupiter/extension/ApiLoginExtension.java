@@ -6,13 +6,13 @@ import guru.qa.niffler.api.core.ThreadSafeCookiesStore;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Token;
-import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.rest.CategoryJson;
+import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.model.TestData;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.MainPage;
-import guru.qa.niffler.service.imp.SpendApiService;
-import guru.qa.niffler.service.imp.UserApiService;
+import guru.qa.niffler.service.impl.SpendApiService;
+import guru.qa.niffler.service.impl.UserApiService;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -40,7 +40,7 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
         this.setupBrowser = true;
     }
 
-    public static ApiLoginExtension restApiloginExtension() {
+    public static ApiLoginExtension rest() {
         return new ApiLoginExtension(false);
     }
 

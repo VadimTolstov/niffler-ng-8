@@ -1,7 +1,7 @@
 package guru.qa.niffler.data.entity.auth;
 
 import guru.qa.niffler.model.Authority;
-import guru.qa.niffler.model.AuthorityJson;
+import guru.qa.niffler.model.rest.AuthorityJson;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

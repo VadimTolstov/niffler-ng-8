@@ -1,11 +1,11 @@
 package guru.qa.niffler.jupiter.extension;
 
 import guru.qa.niffler.jupiter.annotation.Category;
-import guru.qa.niffler.jupiter.annotation.meta.User;
-import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.model.rest.CategoryJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.SpendClient;
-import guru.qa.niffler.service.imp.SpendDbClient;
+import guru.qa.niffler.service.impl.SpendDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.ArrayUtils;

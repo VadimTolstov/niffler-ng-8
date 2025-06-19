@@ -1,18 +1,13 @@
-package guru.qa.niffler.api.imp;
+package guru.qa.niffler.api.impl;
 
 import guru.qa.niffler.api.UserApi;
 import guru.qa.niffler.api.core.RestClient;
-import guru.qa.niffler.config.Config;
 import guru.qa.niffler.ex.ApiException;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.Step;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.hc.core5.http.HttpStatus;
 import retrofit2.Call;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

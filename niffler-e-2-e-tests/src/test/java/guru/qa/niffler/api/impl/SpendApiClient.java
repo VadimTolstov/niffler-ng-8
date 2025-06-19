@@ -1,11 +1,10 @@
-package guru.qa.niffler.api.imp;
+package guru.qa.niffler.api.impl;
 
 import guru.qa.niffler.api.SpendApi;
-import guru.qa.niffler.config.Config;
 import guru.qa.niffler.ex.ApiException;
-import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.rest.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.api.core.RestClient;
 import io.qameta.allure.Step;
 import org.apache.hc.core5.http.HttpStatus;

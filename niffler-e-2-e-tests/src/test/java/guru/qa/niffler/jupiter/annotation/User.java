@@ -8,8 +8,16 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 
-public @interface ApiLogin {
+public @interface User {
     String username() default "";
 
-    String password() default "";
+    Category[] categories() default {};
+
+    Spending[] spendings() default {};
+
+    int friends() default 0;
+
+    int outcomeInvitations() default 0;
+
+    int incomeInvitations() default 0;
 }

@@ -2,25 +2,20 @@ package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import guru.qa.niffler.condition.Bubble;
-import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.page.EditSpendingPage;
-import guru.qa.niffler.page.MainPage;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.codeborne.selenide.ClickOptions.usingJavaScript;
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byTagAndText;
-import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static guru.qa.niffler.condition.SpendsConditions.spendsInAnyOrder;
-import static guru.qa.niffler.condition.StatConditions.statBubblesInAnyOrder;
 
 @ParametersAreNonnullByDefault
 public class SpendingTable extends BaseComponent<SpendingTable> {

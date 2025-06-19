@@ -1,10 +1,10 @@
-package guru.qa.niffler.service.imp;
+package guru.qa.niffler.service.impl;
 
-import guru.qa.niffler.api.imp.SpendApiClient;
+import guru.qa.niffler.api.impl.SpendApiClient;
 import guru.qa.niffler.ex.ApiException;
-import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.rest.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.service.SpendClient;
 
 import javax.annotation.Nonnull;

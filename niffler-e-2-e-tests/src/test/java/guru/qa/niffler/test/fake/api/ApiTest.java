@@ -1,8 +1,7 @@
 package guru.qa.niffler.test.fake.api;
 
-import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.imp.UserApiService;
-import org.junit.jupiter.api.Order;
+import guru.qa.niffler.model.rest.UserJson;
+import guru.qa.niffler.service.impl.UserApiService;
 import org.junit.jupiter.api.Test;
 
 public class ApiTest {

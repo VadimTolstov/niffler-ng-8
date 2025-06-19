@@ -1,4 +1,4 @@
-package guru.qa.niffler.service.imp;
+package guru.qa.niffler.service.impl;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
@@ -12,7 +12,7 @@ import guru.qa.niffler.data.repository.impl.hibernate.UserdataUserRepositoryHibe
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.Authority;
 import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;

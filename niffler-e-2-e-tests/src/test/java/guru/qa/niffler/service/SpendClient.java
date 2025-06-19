@@ -1,12 +1,13 @@
 package guru.qa.niffler.service;
 
-import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.rest.CategoryJson;
+import guru.qa.niffler.model.rest.SpendJson;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public interface SpendClient {
+
     SpendJson create(SpendJson spend);
 
     SpendJson update(SpendJson spend);

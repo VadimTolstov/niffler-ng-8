@@ -1,8 +1,8 @@
 package guru.qa.niffler.test.fake.api;
 
-import guru.qa.niffler.api.imp.UserApiClient;
-import guru.qa.niffler.jupiter.annotation.meta.User;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.api.impl.UserApiClient;
+import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.model.rest.UserJson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;

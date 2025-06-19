@@ -1,7 +1,7 @@
 package guru.qa.niffler.test.fake.db;
 
-import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.imp.UsersDbClient;
+import guru.qa.niffler.model.rest.UserJson;
+import guru.qa.niffler.service.impl.UsersDbClient;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 

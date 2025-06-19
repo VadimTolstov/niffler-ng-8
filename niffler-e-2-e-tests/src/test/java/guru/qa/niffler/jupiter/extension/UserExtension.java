@@ -1,10 +1,10 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.jupiter.annotation.meta.User;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.TestData;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.UsersClient;
-import guru.qa.niffler.service.imp.UserApiService;
+import guru.qa.niffler.service.impl.UserApiService;
 import guru.qa.niffler.utils.RandomDataUtils;
 import io.qameta.allure.Step;
 import org.junit.jupiter.api.extension.*;

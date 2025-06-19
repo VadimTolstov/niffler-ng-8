@@ -1,11 +1,9 @@
-package guru.qa.niffler.api.imp;
+package guru.qa.niffler.api.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import guru.qa.niffler.api.AuthApi;
 import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.api.core.ThreadSafeCookiesStore;
-import guru.qa.niffler.api.core.TokenName;
-import guru.qa.niffler.api.core.interceptor.AuthorizedCodeInterceptor;
 import guru.qa.niffler.api.core.interceptor.CodeInterceptor;
 import guru.qa.niffler.ex.ApiException;
 import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
