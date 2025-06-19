@@ -20,8 +20,10 @@ import retrofit2.http.Query;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
 public interface GatewayApi {
 
     @GET("api/categories/all")

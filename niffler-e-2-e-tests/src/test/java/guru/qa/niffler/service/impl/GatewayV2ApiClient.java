@@ -2,9 +2,15 @@ package guru.qa.niffler.service.impl;
 
 import guru.qa.niffler.api.GatewayV2Api;
 import guru.qa.niffler.api.core.RestClient;
+import guru.qa.niffler.model.CurrencyValues;
+import guru.qa.niffler.model.DataFilterValues;
 import guru.qa.niffler.model.pageable.RestResponsePage;
+import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.Step;
+import org.apache.hc.core5.http.HttpStatus;
+import org.junit.jupiter.api.Assertions;
+import retrofit2.Call;
 import retrofit2.Response;
 
 import javax.annotation.Nonnull;
@@ -13,7 +19,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ParametersAreNonnullByDefault
 public class GatewayV2ApiClient extends RestClient {
@@ -28,17 +33,63 @@ public class GatewayV2ApiClient extends RestClient {
     @Step("Get all friends & income invitations using /api/v2/friends/all endpoint")
     @Nonnull
     public RestResponsePage<UserJson> allFriends(String bearerToken,
-                                                 int page,
-                                                 int size,
+                                                 @Nullable Integer page,
+                                                 @Nullable Integer size,
                                                  @Nullable String searchQuery) {
-        final Response<RestResponsePage<UserJson>> response;
+
+        return executeAndVerify(
+                gatewayApi.allFriends(
+                        "Bearer " + bearerToken,
+                        page,
+                        size,
+                        searchQuery
+                )
+        );
+    }
+
+    @Step("send /api/v2/spends/all GET request to niffler-gateway")
+    public RestResponsePage<SpendJson> allSpends(@Nonnull String bearerToken,
+                                                 @Nullable Integer page,
+                                                 @Nullable DataFilterValues filterPeriod,
+                                                 @Nullable CurrencyValues filterCurrency,
+                                                 @Nullable String searchQuery) {
+        return executeAndVerify(
+                gatewayApi.allSpends(
+                        "Bearer " + bearerToken,
+                        page,
+                        filterPeriod,
+                        filterCurrency,
+                        searchQuery
+                )
+        );
+    }
+
+    @Step("send /api/v2/users/all GET request to niffler-gateway")
+    public RestResponsePage<UserJson> allUsers(@Nonnull String bearerToken,
+                                               @Nullable String searchQuery,
+                                               @Nullable Integer page,
+                                               @Nullable Integer size,
+                                               @Nullable String sort) {
+        return executeAndVerify(
+                gatewayApi.allUsers(
+                        "Bearer " + bearerToken,
+                        searchQuery,
+                        page,
+                        size,
+                        sort
+                )
+        );
+    }
+
+
+    private <T> RestResponsePage<T> executeAndVerify(Call<RestResponsePage<T>> call) {
+        final Response<RestResponsePage<T>> response;
         try {
-            response = gatewayApi.allFriends(bearerToken, page, size, searchQuery)
-                    .execute();
+            response = call.execute();
         } catch (IOException e) {
             throw new AssertionError(e);
         }
-        assertEquals(200, response.code());
+        Assertions.assertEquals(HttpStatus.SC_OK, response.code());
         return requireNonNull(response.body());
     }
 }
