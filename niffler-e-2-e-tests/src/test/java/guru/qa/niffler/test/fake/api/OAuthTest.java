@@ -3,14 +3,18 @@ package guru.qa.niffler.test.fake.api;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.jupiter.annotation.meta.RestTest;
+import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.impl.UserApiService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
+@RestTest
 public class OAuthTest {
-    private final UserApiService userApiService = new UserApiService();
-
+    @RegisterExtension
+    static ApiLoginExtension apiLoginExtension = ApiLoginExtension.rest();
 
     @Test
     @ApiLogin(username = "Adica", password = "12345")
