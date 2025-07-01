@@ -17,7 +17,7 @@ import java.util.List;
 public class FriendsRestTest {
 
     @RegisterExtension
-    static ApiLoginExtension apiLoginExtension = ApiLoginExtension.rest();
+  protected   static ApiLoginExtension apiLoginExtension = ApiLoginExtension.rest();
 
     private final GatewayApiClient gatewayApiClient = new GatewayApiClient();
 
