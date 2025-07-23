@@ -26,6 +26,12 @@ public interface Config {
 
     String currencyJdbcUrl();
 
+    String currencyGrpcAddress();
+
+    default int currencyGrpcPort() {
+        return 8092;
+    }
+
     String ghUrl();
 
 
