@@ -54,6 +54,12 @@ enum LocalConfig implements Config {
     }
 
     @Override
+    public String userdataGrpcAddress() {
+        return "127.0.0.1";
+    }
+
+
+    @Override
     public String ghUrl() {
         return "https://api.github.com/";
     }

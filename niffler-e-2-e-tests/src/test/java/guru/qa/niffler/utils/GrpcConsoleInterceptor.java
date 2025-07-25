@@ -49,8 +49,6 @@ public class GrpcConsoleInterceptor implements io.grpc.ClientInterceptor {
                 };
                 super.start(clientCallListener, headers);
             }
-
-
         };
     }
 }

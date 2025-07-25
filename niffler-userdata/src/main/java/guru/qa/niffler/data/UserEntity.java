@@ -1,28 +1,15 @@
 package guru.qa.niffler.data;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import guru.qa.niffler.grpc.UserResponse;
+import jakarta.annotation.Nonnull;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Getter
@@ -63,29 +50,47 @@ public class UserEntity implements Serializable {
   @OneToMany(mappedBy = "addressee", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<FriendshipEntity> friendshipAddressees = new ArrayList<>();
 
+  public static @Nonnull UserResponse toUserResponse(UserEntity userEntity) {
+    return toUserResponse(userEntity, guru.qa.niffler.grpc.FriendshipStatus.UNDEFINED);
+  }
+
+  public static @Nonnull UserResponse toUserResponse(UserEntity userEntity, guru.qa.niffler.grpc.FriendshipStatus friendshipStatus) {
+    return UserResponse.newBuilder()
+            .setId(userEntity.getId().toString())
+            .setUsername(userEntity.getUsername())
+            .setFirstname(userEntity.getFirstname() != null ? userEntity.getFirstname() : "")
+            .setSurname(userEntity.getSurname() != null ? userEntity.getSurname() : "")
+            .setFullname(userEntity.getFullname() != null ? userEntity.getFullname() : "")
+            .setCurrency(guru.qa.niffler.grpc.CurrencyValues.valueOf(userEntity.getCurrency().name()))
+            .setPhoto(userEntity.getPhoto() != null && userEntity.getPhoto().length > 0 ? new String(userEntity.getPhoto(), StandardCharsets.UTF_8) : "")
+            .setPhotoSmall(userEntity.getPhotoSmall() != null && userEntity.getPhotoSmall().length > 0 ? new String(userEntity.getPhotoSmall(), StandardCharsets.UTF_8) : "")
+            .setFriendshipStatus(friendshipStatus)
+            .build();
+  }
+
   public void addFriends(FriendshipStatus status, UserEntity... friends) {
     List<FriendshipEntity> friendsEntities = Stream.of(friends)
-        .map(f -> {
-          FriendshipEntity fe = new FriendshipEntity();
-          fe.setRequester(this);
-          fe.setAddressee(f);
-          fe.setStatus(status);
-          fe.setCreatedDate(new Date());
-          return fe;
-        }).toList();
+            .map(f -> {
+              FriendshipEntity fe = new FriendshipEntity();
+              fe.setRequester(this);
+              fe.setAddressee(f);
+              fe.setStatus(status);
+              fe.setCreatedDate(new Date());
+              return fe;
+            }).toList();
     this.friendshipRequests.addAll(friendsEntities);
   }
 
   public void addInvitations(UserEntity... invitations) {
     List<FriendshipEntity> invitationsEntities = Stream.of(invitations)
-        .map(i -> {
-          FriendshipEntity fe = new FriendshipEntity();
-          fe.setRequester(i);
-          fe.setAddressee(this);
-          fe.setStatus(FriendshipStatus.PENDING);
-          fe.setCreatedDate(new Date());
-          return fe;
-        }).toList();
+            .map(i -> {
+              FriendshipEntity fe = new FriendshipEntity();
+              fe.setRequester(i);
+              fe.setAddressee(this);
+              fe.setStatus(FriendshipStatus.PENDING);
+              fe.setCreatedDate(new Date());
+              return fe;
+            }).toList();
     this.friendshipAddressees.addAll(invitationsEntities);
   }
 

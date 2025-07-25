@@ -1,7 +1,14 @@
 server:
   port: 8089
+grpc:
+  server:
+    port: 8094
 
 spring:
+  grpc:
+    server:
+      servlet:
+        enabled: false
   application:
     name: niffler-userdata
   datasource:
@@ -33,7 +40,7 @@ spring:
 
 logging:
   file:
-    path: ./logs/niffler-userdata
+    path: ./logs/niffler-gateway
   level:
     root: INFO
     org.springframework.kafka: INFO

@@ -54,6 +54,11 @@ enum DockerConfig implements Config {
     }
 
     @Override
+    public String userdataGrpcAddress() {
+        return "";
+    }
+
+    @Override
     public String ghUrl() {
         return "";
     }
