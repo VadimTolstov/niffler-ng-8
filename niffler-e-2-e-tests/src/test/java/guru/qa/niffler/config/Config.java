@@ -32,6 +32,11 @@ public interface Config {
         return 8092;
     }
 
+    String userdataGrpcAddress();
+
+    default int userdataGrpcPort() {
+        return 8094;
+    }
     String ghUrl();
 
 
