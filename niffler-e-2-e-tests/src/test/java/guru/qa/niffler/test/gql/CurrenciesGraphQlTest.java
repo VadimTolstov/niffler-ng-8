@@ -4,11 +4,10 @@ import com.apollographql.apollo.api.ApolloResponse;
 import com.apollographql.java.client.ApolloCall;
 import com.apollographql.java.rx2.Rx2Apollo;
 import guru.qa.CurrenciesQuery;
+import guru.qa.jaxb.userdata.Currency;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.jupiter.annotation.meta.GqlTest;
-import jaxb.userdata.Currency;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

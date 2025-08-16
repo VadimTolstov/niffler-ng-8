@@ -1,11 +1,11 @@
 package guru.qa.niffler.test.soap;
 
+import guru.qa.jaxb.userdata.CurrentUserRequest;
+import guru.qa.jaxb.userdata.UserResponse;
 import guru.qa.niffler.api.impl.UserSoapClient;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.SoapTest;
 import guru.qa.niffler.model.rest.UserJson;
-import jaxb.userdata.CurrentUserRequest;
-import jaxb.userdata.UserResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

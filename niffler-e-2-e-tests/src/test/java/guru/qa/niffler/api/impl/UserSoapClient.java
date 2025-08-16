@@ -1,11 +1,11 @@
 package guru.qa.niffler.api.impl;
 
+import guru.qa.jaxb.userdata.*;
 import guru.qa.niffler.api.UserSoapApi;
 import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.api.core.converter.SoapConverterFactory;
 import guru.qa.niffler.ex.SoapException;
 import io.qameta.allure.Step;
-import jaxb.userdata.*;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.hc.core5.http.HttpStatus;
 import retrofit2.Call;
