@@ -100,7 +100,7 @@ public class UserSoapClient extends RestClient {
     private void executeVoid(Call<Void> call) {
         try {
             final Response<Void> response = call.execute();
-            if (HttpStatus.SC_OK != response.code()) {
+            if (HttpStatus.SC_ACCEPTED != response.code()) {
                 throw new SoapException("Unexpected status code: " + response.code()
                         + " for " + call.request().method()
                         + " " + call.request().url());
