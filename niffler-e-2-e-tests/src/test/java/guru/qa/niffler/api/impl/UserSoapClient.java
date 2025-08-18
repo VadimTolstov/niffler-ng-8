@@ -1,11 +1,11 @@
 package guru.qa.niffler.api.impl;
 
+import guru.qa.jaxb.userdata.*;
 import guru.qa.niffler.api.UserSoapApi;
 import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.api.core.converter.SoapConverterFactory;
 import guru.qa.niffler.ex.SoapException;
 import io.qameta.allure.Step;
-import jaxb.userdata.*;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.hc.core5.http.HttpStatus;
 import retrofit2.Call;
@@ -100,7 +100,7 @@ public class UserSoapClient extends RestClient {
     private void executeVoid(Call<Void> call) {
         try {
             final Response<Void> response = call.execute();
-            if (HttpStatus.SC_OK != response.code()) {
+            if (HttpStatus.SC_ACCEPTED != response.code()) {
                 throw new SoapException("Unexpected status code: " + response.code()
                         + " for " + call.request().method()
                         + " " + call.request().url());
