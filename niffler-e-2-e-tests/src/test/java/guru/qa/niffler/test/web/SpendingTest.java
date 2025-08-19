@@ -79,7 +79,7 @@ public class SpendingTest {
                     @Spending(
                             category = "Обучение",
                             description = "Обучение Advanced 2.0",
-                            amount = 79990
+                            amount = 799910
                     ),
                     @Spending(
                             category = "Ужин",
@@ -89,15 +89,15 @@ public class SpendingTest {
             }
     )
     @ApiLogin
-    @ScreenShotTest(expected = "img/expected-stat.png")
+    @ScreenShotTest(expected = "expected-stat.png")
     void checkStatComponentTest(@Nonnull UserJson user, BufferedImage expected) throws IOException, InterruptedException {
         Selenide.open(MainPage.URL, MainPage.class)
                 .checkThatPageLoaded()
                 .getStatComponent()
                 .checkStatImg(expected)
-                .checkStatText("Обучение 79990 ₽")
+                .checkStatText("Обучение 799910 ₽")
                 .checkBubblesAndText(
-                        new Bubble(Color.yellow, "Обучение 79990 ₽"),
+                        new Bubble(Color.yellow, "Обучение 799910 ₽"),
                         new Bubble(Color.green, "Ужин 5000 ₽")
                 );
 
@@ -112,7 +112,7 @@ public class SpendingTest {
     )
 
     @ApiLogin
-    @ScreenShotTest(expected = "img/clear-stat1.png", rewriteExpected = true)
+    @ScreenShotTest(expected = "clear-stat.png")
     void deleteSpendingTest(@Nonnull UserJson user, BufferedImage clearStat) throws IOException {
         Selenide.open(MainPage.URL, MainPage.class)
                 .checkThatPageLoaded()

@@ -51,12 +51,6 @@ public class StatComponent extends BaseComponent<StatComponent> {
     @Step("Убедитесь, что статистическое изображение соответствует ожидаемому")
     @Nonnull
     public StatComponent checkStatImg(BufferedImage expected) throws IOException {
-        // Сначала делаем скриншот и сохраняем его
-        BufferedImage actual = ImageIO.read(requireNonNull(
-                Screenshots.takeScreenShot(chart)
-        ));
-        ScreenShotTestExtension.setActual(actual);
-
         chart.shouldHave(image(expected));
         return this;
     }

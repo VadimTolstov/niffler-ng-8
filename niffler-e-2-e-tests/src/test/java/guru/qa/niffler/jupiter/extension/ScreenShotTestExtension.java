@@ -62,7 +62,7 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
                     ImageIO.write(
                             actual,
                             "png",
-                            new File(".screen-output/" + CFG.screenshotBaseDir() + screenShotTest.expected())
+                            new File("src/test/resources/" + CFG.screenshotBaseDir() + screenShotTest.expected())
                     );
                 }
             }
