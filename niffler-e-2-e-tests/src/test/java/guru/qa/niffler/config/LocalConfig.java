@@ -1,5 +1,7 @@
 package guru.qa.niffler.config;
 
+import javax.annotation.Nonnull;
+
 enum LocalConfig implements Config {
     INSTANCE;
 
@@ -62,5 +64,11 @@ enum LocalConfig implements Config {
     @Override
     public String ghUrl() {
         return "https://api.github.com/";
+    }
+
+    @Nonnull
+    @Override
+    public String screenshotBaseDir() {
+        return "screenshots/local/";
     }
 }

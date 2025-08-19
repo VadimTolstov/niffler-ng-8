@@ -5,12 +5,12 @@ import guru.qa.niffler.api.core.store.AuthCodeStore;
 import guru.qa.niffler.jupiter.extension.TestMethodContextExtension;
 import okhttp3.Interceptor;
 import okhttp3.Response;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 
-import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 /**
  * Перехватчик HTTP-запросов для автоматического извлечения authorization code из URL.
@@ -55,8 +55,8 @@ public class AuthorizedCodeInterceptor implements Interceptor {
         // Извлекаем значение параметра 'code' из URL запроса
         final String code = chain.request().url().queryParameter("code");
 
-        // Если параметр 'code' присутствует и не пустой
-        if (isNotEmpty(code)) {
+        // Если параметр 'code' присутствует и непустой
+        if (StringUtils.isNotBlank(code)) {
             // Сохраняем код в хранилище для последующего использования
             AuthCodeStore.INSTANCE.setCode(code);
         }

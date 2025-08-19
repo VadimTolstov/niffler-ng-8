@@ -8,6 +8,7 @@ import guru.qa.niffler.utils.ScreenDiffResult;
 import io.qameta.allure.Step;
 import org.springframework.core.io.ClassPathResource;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -16,6 +17,8 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Objects;
+import static guru.qa.niffler.condition.ScreenshotConditions.image;
+
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
@@ -90,12 +93,9 @@ public class ProfilePage extends BasePage<ProfilePage> {
     }
 
     @Step("Проверьте, соответствует ли изображение аватара ожидаемому изображению")
-    public ProfilePage checkAvatarImg(BufferedImage expectedAvatar) throws IOException {
-        BufferedImage actual = ImageIO.read(Objects.requireNonNull($(".MuiAvatar-img").screenshot()));
-        assertFalse(new ScreenDiffResult(
-                expectedAvatar,
-                actual
-        ));
+    @Nonnull
+    public ProfilePage checkAvatarImg(BufferedImage expected) throws IOException {
+        avatar.shouldHave(image(expected));
         return this;
     }
 

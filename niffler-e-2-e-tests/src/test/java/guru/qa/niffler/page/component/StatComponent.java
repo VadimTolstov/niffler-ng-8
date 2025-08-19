@@ -2,9 +2,11 @@ package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.Screenshots;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.condition.Bubble;
 import guru.qa.niffler.condition.Color;
+import guru.qa.niffler.jupiter.extension.ScreenShotTestExtension;
 import guru.qa.niffler.utils.ScreenDiffResult;
 import io.qameta.allure.Step;
 
@@ -17,7 +19,10 @@ import java.util.Objects;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.sleep;
-import static guru.qa.niffler.condition.StatConditions.*;
+import static guru.qa.niffler.condition.ScreenshotConditions.image;
+import static guru.qa.niffler.condition.StatConditions.color;
+import static guru.qa.niffler.condition.StatConditions.statBubblesInAnyOrder;
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ParametersAreNonnullByDefault
@@ -46,12 +51,13 @@ public class StatComponent extends BaseComponent<StatComponent> {
     @Step("Убедитесь, что статистическое изображение соответствует ожидаемому")
     @Nonnull
     public StatComponent checkStatImg(BufferedImage expected) throws IOException {
-        sleep(3000);
-        BufferedImage actual = ImageIO.read(Objects.requireNonNull(chart.screenshot()));
-        assertFalse(new ScreenDiffResult(
-                        expected, actual),
-                "Screen comparison failure"
-        );
+        // Сначала делаем скриншот и сохраняем его
+        BufferedImage actual = ImageIO.read(requireNonNull(
+                Screenshots.takeScreenShot(chart)
+        ));
+        ScreenShotTestExtension.setActual(actual);
+
+        chart.shouldHave(image(expected));
         return this;
     }
 

@@ -1,5 +1,7 @@
 package guru.qa.niffler.config;
 
+import javax.annotation.Nonnull;
+
 enum DockerConfig implements Config {
     INSTANCE;
 
@@ -61,5 +63,11 @@ enum DockerConfig implements Config {
     @Override
     public String ghUrl() {
         return "";
+    }
+
+    @Nonnull
+    @Override
+    public String screenshotBaseDir() {
+        return "screenshots/selenoid/";
     }
 }

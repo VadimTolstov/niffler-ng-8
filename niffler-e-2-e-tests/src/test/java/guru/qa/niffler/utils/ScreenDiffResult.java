@@ -4,9 +4,11 @@ import guru.qa.niffler.jupiter.extension.ScreenShotTestExtension;
 import ru.yandex.qatools.ashot.comparison.ImageDiff;
 import ru.yandex.qatools.ashot.comparison.ImageDiffer;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.awt.image.BufferedImage;
 import java.util.function.BooleanSupplier;
 
+@ParametersAreNonnullByDefault
 public class ScreenDiffResult implements BooleanSupplier {
 
     private final BufferedImage expected;
@@ -14,9 +16,9 @@ public class ScreenDiffResult implements BooleanSupplier {
     private final ImageDiff diff;
     private final boolean hasDif;
 
-    public ScreenDiffResult( BufferedImage expected, BufferedImage actual) {
-        this.expected = expected;
+    public ScreenDiffResult(BufferedImage actual, BufferedImage expected) {
         this.actual = actual;
+        this.expected = expected;
         this.diff = new ImageDiffer().makeDiff(expected, actual);
         this.hasDif = diff.hasDiff();
     }

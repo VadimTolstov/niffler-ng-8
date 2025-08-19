@@ -1,3 +1,8 @@
+"""
+Built-in Boolean
+"""
+scalar Boolean
+
 type Category {
   id: ID!
 
@@ -45,6 +50,11 @@ enum FilterPeriod {
   MONTH
 }
 
+"""
+Built-in Float
+"""
+scalar Float
+
 enum FriendshipAction {
   ADD
 
@@ -68,6 +78,16 @@ enum FriendshipStatus {
 
   FRIEND
 }
+
+"""
+Built-in ID
+"""
+scalar ID
+
+"""
+Built-in Int
+"""
+scalar Int
 
 type Mutation {
   user(input: UserInput!): User!
@@ -164,6 +184,11 @@ type Statistic {
 
   statByCategories: [SumByCategory!]!
 }
+
+"""
+Built-in String
+"""
+scalar String
 
 type SumByCategory {
   categoryName: String!

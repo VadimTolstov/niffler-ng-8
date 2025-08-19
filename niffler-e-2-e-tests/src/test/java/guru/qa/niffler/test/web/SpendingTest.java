@@ -89,7 +89,7 @@ public class SpendingTest {
             }
     )
     @ApiLogin
-    @ScreenShotTest(value = "img/expected-stat.png")
+    @ScreenShotTest(expected = "img/expected-stat.png")
     void checkStatComponentTest(@Nonnull UserJson user, BufferedImage expected) throws IOException, InterruptedException {
         Selenide.open(MainPage.URL, MainPage.class)
                 .checkThatPageLoaded()
@@ -110,8 +110,9 @@ public class SpendingTest {
                     amount = 79990
             )
     )
+
     @ApiLogin
-    @ScreenShotTest(value = "img/clear-stat.png", rewriteExpected = true)
+    @ScreenShotTest(expected = "img/clear-stat1.png", rewriteExpected = true)
     void deleteSpendingTest(@Nonnull UserJson user, BufferedImage clearStat) throws IOException {
         Selenide.open(MainPage.URL, MainPage.class)
                 .checkThatPageLoaded()
