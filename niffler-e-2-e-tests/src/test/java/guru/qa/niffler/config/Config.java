@@ -51,8 +51,11 @@ public interface Config {
         return 8094;
     }
 
-    String ghUrl();
+   default String ghUrl() { return "https://api.github.com/";}
 
     @Nonnull
     String screenshotBaseDir();
+
+    @Nonnull
+    String allureDockerServiceUrl();
 }
