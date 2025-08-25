@@ -224,6 +224,6 @@ networks:
   niffler-network:
     driver: bridge
 
-  volumes:
-    allure-results:
-      external: true
+volumes:
+  allure-results:
+    external: true
