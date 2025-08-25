@@ -33,17 +33,17 @@ public class CategoryService {
   public @Nonnull
   List<CategoryJson> getAllCategories(@Nonnull String username, boolean excludeArchived) {
     return categoryRepository.findAllByUsernameOrderByName(username)
-        .stream()
-        .filter(ce -> !excludeArchived || !ce.isArchived())
-        .map(CategoryJson::fromEntity)
-        .toList();
+            .stream()
+            .filter(ce -> !excludeArchived || !ce.isArchived())
+            .map(CategoryJson::fromEntity)
+            .toList();
   }
 
   @Transactional
   public @Nonnull
   CategoryJson update(@Nonnull CategoryJson category) {
     CategoryEntity categoryEntity = categoryRepository.findByUsernameAndId(category.username(), category.id())
-        .orElseThrow(() -> new CategoryNotFoundException("Can`t find category by id: '" + category.id() + "'"));
+            .orElseThrow(() -> new CategoryNotFoundException("Can`t find category by id: '" + category.id() + "'"));
 
     final String categoryName = category.name();
 
@@ -80,7 +80,7 @@ public class CategoryService {
   @Transactional
   CategoryEntity getOrSave(@Nonnull CategoryJson category) {
     return categoryRepository.findByUsernameAndName(category.username(), category.name())
-        .orElseGet(() -> this.save(category));
+            .orElseGet(() -> this.save(category));
   }
 
   @Nonnull

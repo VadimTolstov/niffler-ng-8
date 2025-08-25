@@ -33,24 +33,24 @@ class CategoryServiceTest {
     final UUID id = UUID.randomUUID();
 
     Mockito.when(categoryRepository.findByUsernameAndId(eq(username), eq(id)))
-        .thenReturn(Optional.empty());
+            .thenReturn(Optional.empty());
 
     CategoryService categoryService = new CategoryService(categoryRepository);
 
     CategoryJson categoryJson = new CategoryJson(
-        id,
-        "",
-        username,
-        true
+            id,
+            "",
+            username,
+            true
     );
 
     CategoryNotFoundException ex = Assertions.assertThrows(
-        CategoryNotFoundException.class,
-        () -> categoryService.update(categoryJson)
+            CategoryNotFoundException.class,
+            () -> categoryService.update(categoryJson)
     );
     Assertions.assertEquals(
-        "Can`t find category by id: '" + id + "'",
-        ex.getMessage()
+            "Can`t find category by id: '" + id + "'",
+            ex.getMessage()
     );
   }
 
@@ -62,26 +62,26 @@ class CategoryServiceTest {
     final CategoryEntity cat = new CategoryEntity();
 
     Mockito.when(categoryRepository.findByUsernameAndId(eq(username), eq(id)))
-        .thenReturn(Optional.of(
-            cat
-        ));
+            .thenReturn(Optional.of(
+                    cat
+            ));
 
     CategoryService categoryService = new CategoryService(categoryRepository);
 
     CategoryJson categoryJson = new CategoryJson(
-        id,
-        catName,
-        username,
-        true
+            id,
+            catName,
+            username,
+            true
     );
 
     InvalidCategoryNameException ex = Assertions.assertThrows(
-        InvalidCategoryNameException.class,
-        () -> categoryService.update(categoryJson)
+            InvalidCategoryNameException.class,
+            () -> categoryService.update(categoryJson)
     );
     Assertions.assertEquals(
-        "Can`t add category with name: '" + catName + "'",
-        ex.getMessage()
+            "Can`t add category with name: '" + catName + "'",
+            ex.getMessage()
     );
   }
 
@@ -96,19 +96,19 @@ class CategoryServiceTest {
     cat.setArchived(false);
 
     Mockito.when(categoryRepository.findByUsernameAndId(eq(username), eq(id)))
-        .thenReturn(Optional.of(
-            cat
-        ));
+            .thenReturn(Optional.of(
+                    cat
+            ));
     Mockito.when(categoryRepository.save(any(CategoryEntity.class)))
-        .thenAnswer(invocation -> invocation.getArgument(0));
+            .thenAnswer(invocation -> invocation.getArgument(0));
 
     CategoryService categoryService = new CategoryService(categoryRepository);
 
     CategoryJson categoryJson = new CategoryJson(
-        id,
-        "Бары",
-        username,
-        true
+            id,
+            "Бары",
+            username,
+            true
     );
 
     categoryService.update(categoryJson);

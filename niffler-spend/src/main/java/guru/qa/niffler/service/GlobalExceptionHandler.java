@@ -57,13 +57,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                                                         @Nonnull String message,
                                                         @Nonnull HttpServletRequest request) {
     return ResponseEntity
-        .status(status)
-        .body(new ErrorJson(
-            appName + ": " + type,
-            status.getReasonPhrase(),
-            status.value(),
-            message,
-            request.getRequestURI()
-        ));
+            .status(status)
+            .body(new ErrorJson(
+                    appName + ": " + type,
+                    status.getReasonPhrase(),
+                    status.value(),
+                    message,
+                    request.getRequestURI()
+            ));
   }
 }

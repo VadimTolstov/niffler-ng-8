@@ -53,17 +53,17 @@ public class SpendService {
   public @Nonnull
   SpendJson editSpendForUser(@Nonnull SpendJson spend) {
     return spendRepository.findByIdAndUsername(spend.id(), spend.username()).map(
-        spendEntity -> {
-          CategoryEntity categoryEntity = categoryService.getOrSave(spend.category());
-          spendEntity.setSpendDate(spend.spendDate());
-          spendEntity.setCategory(categoryEntity);
-          spendEntity.setAmount(spend.amount());
-          spendEntity.setDescription(spend.description());
-          spendEntity.setCurrency(spend.currency());
-          return SpendJson.fromEntity(spendRepository.save(spendEntity));
-        }
+            spendEntity -> {
+              CategoryEntity categoryEntity = categoryService.getOrSave(spend.category());
+              spendEntity.setSpendDate(spend.spendDate());
+              spendEntity.setCategory(categoryEntity);
+              spendEntity.setAmount(spend.amount());
+              spendEntity.setDescription(spend.description());
+              spendEntity.setCurrency(spend.currency());
+              return SpendJson.fromEntity(spendRepository.save(spendEntity));
+            }
     ).orElseThrow(() -> new SpendNotFoundException(
-        "Can`t find spend by given id: " + spend.id()
+            "Can`t find spend by given id: " + spend.id()
     ));
   }
 
@@ -72,10 +72,10 @@ public class SpendService {
   SpendJson getSpendForUser(@Nonnull String id,
                             @Nonnull String username) {
     return spendRepository.findByIdAndUsername(extractUuid(id), username)
-        .map(SpendJson::fromEntity)
-        .orElseThrow(() -> new SpendNotFoundException(
-            "Can`t find spend by given id: " + id
-        ));
+            .map(SpendJson::fromEntity)
+            .orElseThrow(() -> new SpendNotFoundException(
+                    "Can`t find spend by given id: " + id
+            ));
   }
 
   @Transactional(readOnly = true)
@@ -85,9 +85,9 @@ public class SpendService {
                                    @Nullable Date dateFrom,
                                    @Nullable Date dateTo) {
     return getSpendsEntityForUser(username, filterCurrency, dateFrom, dateTo)
-        .stream()
-        .map(SpendJson::fromEntity)
-        .toList();
+            .stream()
+            .map(SpendJson::fromEntity)
+            .toList();
   }
 
   @Transactional(readOnly = true)
@@ -99,14 +99,14 @@ public class SpendService {
                                    @Nullable Date dateTo,
                                    @Nullable String searchQuery) {
     return getSpendsEntityForUser(username, filterCurrency, dateFrom, dateTo, searchQuery, pageable)
-        .map(SpendJson::fromEntity);
+            .map(SpendJson::fromEntity);
   }
 
   @Transactional
   public void deleteSpends(@Nonnull String username, @Nonnull List<String> ids) {
     spendRepository.deleteByUsernameAndIdIn(
-        username,
-        ids.stream().map(UUID::fromString).toList()
+            username,
+            ids.stream().map(UUID::fromString).toList()
     );
   }
 
@@ -121,11 +121,11 @@ public class SpendService {
 
     if (filterCurrency != null) {
       return spendRepository.findAllByUsernameAndCurrencyAndSpendDateGreaterThanEqualAndSpendDateLessThanEqualOrderBySpendDateDesc(
-          username, filterCurrency, dateFrom, dateTo
+              username, filterCurrency, dateFrom, dateTo
       );
     } else {
       return spendRepository.findAllByUsernameAndSpendDateGreaterThanEqualAndSpendDateLessThanEqualOrderBySpendDateDesc(
-          username, dateFrom, dateTo
+              username, dateFrom, dateTo
       );
     }
   }
@@ -153,12 +153,12 @@ public class SpendService {
                                            @Nullable String searchQuery,
                                            @Nonnull Pageable pageable) {
     dateTo = dateTo == null
-        ? new Date()
-        : dateTo;
+            ? new Date()
+            : dateTo;
 
     dateFrom = dateFrom == null
-        ? new Date(0)
-        : dateFrom;
+            ? new Date(0)
+            : dateFrom;
 
     Page<SpendEntity> spends;
     if (filterCurrency != null) {
@@ -183,7 +183,7 @@ public class SpendService {
       spendId = UUID.fromString(id);
     } catch (IllegalArgumentException e) {
       throw new SpendNotFoundException(
-          "Can`t find spend by given id: " + id
+              "Can`t find spend by given id: " + id
       );
     }
     return spendId;

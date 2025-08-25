@@ -31,13 +31,13 @@ public class GrpcCurrencyClient {
                        @Nonnull CurrencyValues spendCurrency,
                        @Nonnull CurrencyValues desiredCurrency) {
     return BigDecimal.valueOf(
-        nifflerCurrencyServiceStub.calculateRate(
-            CalculateRequest.newBuilder()
-                .setAmount(amount)
-                .setSpendCurrency(valueOf(spendCurrency.name()))
-                .setDesiredCurrency(valueOf(desiredCurrency.name()))
-                .build()
-        ).getCalculatedAmount()
+            nifflerCurrencyServiceStub.calculateRate(
+                    CalculateRequest.newBuilder()
+                            .setAmount(amount)
+                            .setSpendCurrency(valueOf(spendCurrency.name()))
+                            .setDesiredCurrency(valueOf(desiredCurrency.name()))
+                            .build()
+            ).getCalculatedAmount()
     );
   }
 }

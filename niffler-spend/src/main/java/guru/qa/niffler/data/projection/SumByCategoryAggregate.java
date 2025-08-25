@@ -28,7 +28,7 @@ public class SumByCategoryAggregate implements SumByCategoryInfo {
   @Override
   public double sum() {
     return BigDecimal.valueOf(
-        delegates.stream().map(SumByCategoryInfo::sum).reduce(0.0, Double::sum)
+            delegates.stream().map(SumByCategoryInfo::sum).reduce(0.0, Double::sum)
     ).setScale(2, RoundingMode.HALF_UP).doubleValue();
   }
 

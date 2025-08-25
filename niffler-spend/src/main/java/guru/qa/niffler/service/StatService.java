@@ -52,21 +52,21 @@ public class StatService {
                                  @Nullable Date dateTo) {
     List<SumByCategoryInfo> result = new ArrayList<>();
     for (List<SumByCategoryInfo> delegates : spendService.getSumByCategories(username, dateFrom, dateTo)
-        .stream().parallel()
-        .filter(sumByCategory -> filterCurrency == null || sumByCategory.currency() == filterCurrency)
-        .map(sumByCategory -> mapToUserCurrency(statCurrency, sumByCategory))
-        .collect(toCategoriesMap())
-        .values()) {
+            .stream().parallel()
+            .filter(sumByCategory -> filterCurrency == null || sumByCategory.currency() == filterCurrency)
+            .map(sumByCategory -> mapToUserCurrency(statCurrency, sumByCategory))
+            .collect(toCategoriesMap())
+            .values()) {
       SumByCategoryInfo sumByCategoryInfo = new SumByCategoryAggregate(delegates);
       result.add(sumByCategoryInfo);
     }
     result.sort(Comparator.comparing((SumByCategoryInfo p) -> !p.categoryName().equals("Archived"))
-        .thenComparing(SumByCategoryInfo::sum).reversed());
+            .thenComparing(SumByCategoryInfo::sum).reversed());
 
     return new StatisticV2Json(
-        getTotalSumm(result),
-        statCurrency,
-        result
+            getTotalSumm(result),
+            statCurrency,
+            result
     );
   }
 
@@ -97,9 +97,9 @@ public class StatService {
                                    @Nullable Date dateTo) {
     StatisticJson statistic = createDefaultStatisticJson(statisticCurrency, userCurrency, dateTo);
     List<SpendEntity> sortedSpends = spendEntities.stream()
-        .filter(se -> se.getCurrency() == statisticCurrency)
-        .sorted(Comparator.comparing(SpendEntity::getSpendDate))
-        .toList();
+            .filter(se -> se.getCurrency() == statisticCurrency)
+            .sorted(Comparator.comparing(SpendEntity::getSpendDate))
+            .toList();
 
     statistic = calculateStatistic(statistic, statisticCurrency, userCurrency, sortedSpends);
     Map<String, List<SpendJson>> spendsByCategory = bindSpendsToCategories(sortedSpends);
@@ -107,33 +107,33 @@ public class StatService {
     List<StatisticByCategoryJson> sbcjResult = new ArrayList<>();
     for (Map.Entry<String, List<SpendJson>> entry : spendsByCategory.entrySet()) {
       double total = entry.getValue().stream()
-          .map(SpendJson::amount)
-          .map(BigDecimal::valueOf)
-          .reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue();
+              .map(SpendJson::amount)
+              .map(BigDecimal::valueOf)
+              .reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue();
 
       double totalInUserDefaultCurrency = grpcCurrencyClient.calculate(
-          total,
-          statisticCurrency,
-          userCurrency
+              total,
+              statisticCurrency,
+              userCurrency
       ).doubleValue();
 
       sbcjResult.add(new StatisticByCategoryJson(
-          entry.getKey(),
-          total,
-          totalInUserDefaultCurrency,
-          entry.getValue()
+              entry.getKey(),
+              total,
+              totalInUserDefaultCurrency,
+              entry.getValue()
       ));
     }
 
     categoryService.getAllCategories(username, true).stream()
-        .filter(c -> !spendsByCategory.containsKey(c.name()))
-        .map(c -> new StatisticByCategoryJson(
-            c.name(),
-            0.0,
-            0.0,
-            Collections.emptyList()
-        ))
-        .forEach(sbcjResult::add);
+            .filter(c -> !spendsByCategory.containsKey(c.name()))
+            .map(c -> new StatisticByCategoryJson(
+                    c.name(),
+                    0.0,
+                    0.0,
+                    Collections.emptyList()
+            ))
+            .forEach(sbcjResult::add);
 
     sbcjResult.sort(Comparator.comparing(StatisticByCategoryJson::category));
     statistic.categoryStatistics().addAll(sbcjResult);
@@ -143,32 +143,32 @@ public class StatService {
   @Nonnull
   Function<SpendEntity, StatisticJson> enrichStatisticDateFromByFirstStreamElement(@Nonnull StatisticJson statistic) {
     return se -> (statistic.dateFrom() == null)
-        ?
-        new StatisticJson(
-            se.getSpendDate(),
-            statistic.dateTo(),
-            statistic.currency(),
-            statistic.total(),
-            statistic.userDefaultCurrency(),
-            statistic.totalInUserDefaultCurrency(),
-            statistic.categoryStatistics()
-        )
-        :
-        statistic;
+            ?
+            new StatisticJson(
+                    se.getSpendDate(),
+                    statistic.dateTo(),
+                    statistic.currency(),
+                    statistic.total(),
+                    statistic.userDefaultCurrency(),
+                    statistic.totalInUserDefaultCurrency(),
+                    statistic.categoryStatistics()
+            )
+            :
+            statistic;
   }
 
   @Nonnull
   Function<SpendEntity, StatisticJson> enrichStatisticTotalAmountByAllStreamElements(@Nonnull StatisticJson statistic) {
     return se -> new StatisticJson(
-        statistic.dateFrom(),
-        statistic.dateTo(),
-        statistic.currency(),
-        BigDecimal.valueOf(statistic.total())
-            .add(BigDecimal.valueOf(se.getAmount()))
-            .doubleValue(),
-        statistic.userDefaultCurrency(),
-        statistic.totalInUserDefaultCurrency(),
-        statistic.categoryStatistics()
+            statistic.dateFrom(),
+            statistic.dateTo(),
+            statistic.currency(),
+            BigDecimal.valueOf(statistic.total())
+                    .add(BigDecimal.valueOf(se.getAmount()))
+                    .doubleValue(),
+            statistic.userDefaultCurrency(),
+            statistic.totalInUserDefaultCurrency(),
+            statistic.categoryStatistics()
     );
   }
 
@@ -177,36 +177,36 @@ public class StatService {
                                                                                              @Nonnull CurrencyValues statisticCurrency,
                                                                                              @Nonnull CurrencyValues userCurrency) {
     return se -> new StatisticJson(
-        statistic.dateFrom(),
-        statistic.dateTo(),
-        statistic.currency(),
-        statistic.total(),
-        statistic.userDefaultCurrency(),
-        (userCurrency != statisticCurrency)
-            ? BigDecimal.valueOf(statistic.totalInUserDefaultCurrency())
-            .add(
-                grpcCurrencyClient.calculate(
-                    se.getAmount(), se.getCurrency(), userCurrency
-                )
-            ).doubleValue()
-            : statistic.total(),
-        statistic.categoryStatistics()
+            statistic.dateFrom(),
+            statistic.dateTo(),
+            statistic.currency(),
+            statistic.total(),
+            statistic.userDefaultCurrency(),
+            (userCurrency != statisticCurrency)
+                    ? BigDecimal.valueOf(statistic.totalInUserDefaultCurrency())
+                    .add(
+                            grpcCurrencyClient.calculate(
+                                    se.getAmount(), se.getCurrency(), userCurrency
+                            )
+                    ).doubleValue()
+                    : statistic.total(),
+            statistic.categoryStatistics()
     );
   }
 
   @Nonnull
   Map<String, List<SpendJson>> bindSpendsToCategories(@Nonnull List<SpendEntity> sortedSpends) {
     return sortedSpends.stream().map(SpendJson::fromEntity)
-        .collect(Collectors.groupingBy(
-            (SpendJson sj) -> {
-              CategoryJson ce = sj.category();
-              return ce.archived()
-                  ? CategoryService.ARCHIVED_CATEGORY_NAME
-                  : ce.name();
-            },
-            HashMap::new,
-            Collectors.toCollection(ArrayList::new)
-        ));
+            .collect(Collectors.groupingBy(
+                    (SpendJson sj) -> {
+                      CategoryJson ce = sj.category();
+                      return ce.archived()
+                              ? CategoryService.ARCHIVED_CATEGORY_NAME
+                              : ce.name();
+                    },
+                    HashMap::new,
+                    Collectors.toCollection(ArrayList::new)
+            ));
   }
 
   @Nonnull
@@ -216,11 +216,11 @@ public class StatService {
                                    @Nonnull List<SpendEntity> sortedSpends) {
     for (SpendEntity spend : sortedSpends) {
       statistic = enrichStatisticTotalInUserCurrencyByAllStreamElements(
-          enrichStatisticTotalAmountByAllStreamElements(
-              enrichStatisticDateFromByFirstStreamElement(
-                  statistic
-              ).apply(spend)
-          ).apply(spend), statisticCurrency, userCurrency
+              enrichStatisticTotalAmountByAllStreamElements(
+                      enrichStatisticDateFromByFirstStreamElement(
+                              statistic
+                      ).apply(spend)
+              ).apply(spend), statisticCurrency, userCurrency
       ).apply(spend);
     }
     return statistic;
@@ -231,29 +231,29 @@ public class StatService {
                                            @Nonnull CurrencyValues userCurrency,
                                            @Nullable Date dateTo) {
     return new StatisticJson(
-        null,
-        dateTo,
-        statisticCurrency,
-        0.0,
-        userCurrency,
-        0.0,
-        new ArrayList<>()
+            null,
+            dateTo,
+            statisticCurrency,
+            0.0,
+            userCurrency,
+            0.0,
+            new ArrayList<>()
     );
   }
 
   @Nonnull
   CurrencyValues[] resolveDesiredCurrenciesInStatistic(@Nullable CurrencyValues filterCurrency) {
     return filterCurrency != null
-        ? new CurrencyValues[]{filterCurrency}
-        : CurrencyValues.values();
+            ? new CurrencyValues[]{filterCurrency}
+            : CurrencyValues.values();
   }
 
   @Nonnull
   Collector<SumByCategoryInfo, ?, HashMap<String, List<SumByCategoryInfo>>> toCategoriesMap() {
     return Collectors.groupingBy(
-        SumByCategoryInfo::categoryName,
-        HashMap::new,
-        Collectors.toCollection(ArrayList::new)
+            SumByCategoryInfo::categoryName,
+            HashMap::new,
+            Collectors.toCollection(ArrayList::new)
     );
   }
 
@@ -262,13 +262,13 @@ public class StatService {
                                       @Nonnull SumByCategoryInfo sumByCategory) {
     if (sumByCategory.currency() != userCurrency) {
       return new SumByCategoryInUserCurrency(
-          sumByCategory,
-          userCurrency,
-          grpcCurrencyClient.calculate(
-              sumByCategory.sum(),
-              sumByCategory.currency(),
-              userCurrency
-          ).setScale(2, RoundingMode.HALF_UP).doubleValue()
+              sumByCategory,
+              userCurrency,
+              grpcCurrencyClient.calculate(
+                      sumByCategory.sum(),
+                      sumByCategory.currency(),
+                      userCurrency
+              ).setScale(2, RoundingMode.HALF_UP).doubleValue()
       );
     } else {
       return sumByCategory;
@@ -277,10 +277,10 @@ public class StatService {
 
   double getTotalSumm(@Nonnull List<SumByCategoryInfo> result) {
     return result.stream()
-        .map(SumByCategoryInfo::sum)
-        .map(BigDecimal::valueOf)
-        .reduce(BigDecimal.ZERO, BigDecimal::add)
-        .setScale(2, RoundingMode.HALF_UP)
-        .doubleValue();
+            .map(SumByCategoryInfo::sum)
+            .map(BigDecimal::valueOf)
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .setScale(2, RoundingMode.HALF_UP)
+            .doubleValue();
   }
 }

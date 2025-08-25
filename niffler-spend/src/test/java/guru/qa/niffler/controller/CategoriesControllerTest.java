@@ -37,14 +37,14 @@ class CategoriesControllerTest {
     final String fixtureUser = "duck";
 
     mockMvc.perform(get("/internal/categories/all")
-            .param("username", fixtureUser))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].username").value(fixtureUser))
-        .andExpect(jsonPath("$[0].name").value("Веселье"))
-        .andExpect(jsonPath("$[0].archived").value(false))
-        .andExpect(jsonPath("$[1].username").value(fixtureUser))
-        .andExpect(jsonPath("$[1].name").value("Магазины"))
-        .andExpect(jsonPath("$[1].archived").value(true));
+                    .param("username", fixtureUser))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].username").value(fixtureUser))
+            .andExpect(jsonPath("$[0].name").value("Веселье"))
+            .andExpect(jsonPath("$[0].archived").value(false))
+            .andExpect(jsonPath("$[1].username").value(fixtureUser))
+            .andExpect(jsonPath("$[1].name").value("Магазины"))
+            .andExpect(jsonPath("$[1].archived").value(true));
   }
 
   @Test
@@ -54,19 +54,19 @@ class CategoriesControllerTest {
     final String fixtureUser = "duck";
 
     CategoryJson categoryJson = new CategoryJson(
-        UUID.fromString(fixtureCategoryId),
-        "Бары",
-        fixtureUser,
-        true
+            UUID.fromString(fixtureCategoryId),
+            "Бары",
+            fixtureUser,
+            true
     );
 
     mockMvc.perform(patch("/internal/categories/update")
-            .contentType(APPLICATION_JSON)
-            .content(om.writeValueAsString(categoryJson)))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.id").value(fixtureCategoryId))
-        .andExpect(jsonPath("$.name").value("Бары"))
-        .andExpect(jsonPath("$.username").value(fixtureUser))
-        .andExpect(jsonPath("$.archived").value(true));
+                    .contentType(APPLICATION_JSON)
+                    .content(om.writeValueAsString(categoryJson)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(fixtureCategoryId))
+            .andExpect(jsonPath("$.name").value("Бары"))
+            .andExpect(jsonPath("$.username").value(fixtureUser))
+            .andExpect(jsonPath("$.archived").value(true));
   }
 }

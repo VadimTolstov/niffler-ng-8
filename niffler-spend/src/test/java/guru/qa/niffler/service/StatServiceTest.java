@@ -78,22 +78,22 @@ class StatServiceTest {
     thirdSpend.setSpendDate(addDaysToDate(new Date(), Calendar.DAY_OF_WEEK, -2));
 
     lenient().when(spendService.getSpendsEntityForUser(eq("dima"), any(CurrencyValues.class), isNull(), any(Date.class)))
-        .thenReturn(List.of(
-            firstSpend, secondSpend, thirdSpend
-        ));
+            .thenReturn(List.of(
+                    firstSpend, secondSpend, thirdSpend
+            ));
 
     lenient().when(spendService.getSpendsEntityForUser(eq("dima"), any(CurrencyValues.class), any(Date.class), any(Date.class)))
-        .thenReturn(List.of(
-            secondSpend, thirdSpend
-        ));
+            .thenReturn(List.of(
+                    secondSpend, thirdSpend
+            ));
 
     lenient().when(categoryService.getAllCategories(eq("dima"), eq(false)))
-        .thenReturn(Stream.of(
-            firstCategory, secondCategory, thirdCategory
-        ).map(CategoryJson::fromEntity).toList());
+            .thenReturn(Stream.of(
+                    firstCategory, secondCategory, thirdCategory
+            ).map(CategoryJson::fromEntity).toList());
 
     lenient().when(grpcCurrencyClient.calculate(any(Double.class), eq(CurrencyValues.RUB), eq(CurrencyValues.USD)))
-        .thenAnswer(a -> BigDecimal.valueOf((double) a.getArguments()[0] / 75.0));
+            .thenAnswer(a -> BigDecimal.valueOf((double) a.getArguments()[0] / 75.0));
 
     statService = new StatService(spendService, categoryService, grpcCurrencyClient);
   }
@@ -106,9 +106,9 @@ class StatServiceTest {
 
   static Stream<Arguments> resolveDesiredCurrenciesInStatisticTest() {
     return Stream.of(
-        Arguments.of(null, CurrencyValues.values()),
-        Arguments.of(CurrencyValues.KZT, new CurrencyValues[]{CurrencyValues.KZT}),
-        Arguments.of(CurrencyValues.USD, new CurrencyValues[]{CurrencyValues.USD})
+            Arguments.of(null, CurrencyValues.values()),
+            Arguments.of(CurrencyValues.KZT, new CurrencyValues[]{CurrencyValues.KZT}),
+            Arguments.of(CurrencyValues.USD, new CurrencyValues[]{CurrencyValues.USD})
     );
   }
 
@@ -138,10 +138,10 @@ class StatServiceTest {
     StatisticJson defaultStatisticJson = statService.createDefaultStatisticJson(CurrencyValues.KZT, userCurrency, dateTo);
 
     for (SpendEntity spend : Stream.of(secondSpend, firstSpend, thirdSpend)
-        .sorted(Comparator.comparing(SpendEntity::getSpendDate))
-        .toList()) {
+            .sorted(Comparator.comparing(SpendEntity::getSpendDate))
+            .toList()) {
       defaultStatisticJson = statService.enrichStatisticDateFromByFirstStreamElement(
-          defaultStatisticJson
+              defaultStatisticJson
       ).apply(spend);
     }
 
@@ -154,10 +154,10 @@ class StatServiceTest {
     StatisticJson defaultStatisticJson = statService.createDefaultStatisticJson(CurrencyValues.KZT, userCurrency, dateTo);
 
     for (SpendEntity spend : Stream.of(secondSpend, firstSpend, thirdSpend)
-        .sorted(Comparator.comparing(SpendEntity::getSpendDate))
-        .toList()) {
+            .sorted(Comparator.comparing(SpendEntity::getSpendDate))
+            .toList()) {
       defaultStatisticJson = statService.enrichStatisticTotalAmountByAllStreamElements(
-          defaultStatisticJson
+              defaultStatisticJson
       ).apply(spend);
     }
 
@@ -172,13 +172,13 @@ class StatServiceTest {
     StatisticJson defaultStatisticJson = statService.createDefaultStatisticJson(statisticCurrency, userCurrency, dateTo);
 
     for (SpendEntity spend : Stream.of(secondSpend, firstSpend, thirdSpend)
-        .sorted(Comparator.comparing(SpendEntity::getSpendDate))
-        .toList()) {
+            .sorted(Comparator.comparing(SpendEntity::getSpendDate))
+            .toList()) {
       defaultStatisticJson =
-          statService.enrichStatisticTotalInUserCurrencyByAllStreamElements(
-                  statService.enrichStatisticTotalAmountByAllStreamElements(defaultStatisticJson)
-                      .apply(spend), statisticCurrency, userCurrency)
-              .apply(spend);
+              statService.enrichStatisticTotalInUserCurrencyByAllStreamElements(
+                              statService.enrichStatisticTotalAmountByAllStreamElements(defaultStatisticJson)
+                                      .apply(spend), statisticCurrency, userCurrency)
+                      .apply(spend);
     }
 
     assertEquals(13350.0, defaultStatisticJson.total());
@@ -193,13 +193,13 @@ class StatServiceTest {
     StatisticJson defaultStatisticJson = statService.createDefaultStatisticJson(statisticCurrency, userCurrency, dateTo);
 
     for (SpendEntity spend : Stream.of(secondSpend, firstSpend, thirdSpend)
-        .sorted(Comparator.comparing(SpendEntity::getSpendDate))
-        .toList()) {
+            .sorted(Comparator.comparing(SpendEntity::getSpendDate))
+            .toList()) {
       defaultStatisticJson =
-          statService.enrichStatisticTotalInUserCurrencyByAllStreamElements(
-                  statService.enrichStatisticTotalAmountByAllStreamElements(defaultStatisticJson)
-                      .apply(spend), statisticCurrency, userCurrency)
-              .apply(spend);
+              statService.enrichStatisticTotalInUserCurrencyByAllStreamElements(
+                              statService.enrichStatisticTotalAmountByAllStreamElements(defaultStatisticJson)
+                                      .apply(spend), statisticCurrency, userCurrency)
+                      .apply(spend);
     }
     assertEquals(13350.0, defaultStatisticJson.total());
     assertEquals(178.0, defaultStatisticJson.totalInUserDefaultCurrency());
@@ -210,9 +210,9 @@ class StatServiceTest {
     CurrencyValues statisticCurrency = CurrencyValues.RUB;
 
     List<SpendEntity> sortedSpends = Stream.of(secondSpend, firstSpend, thirdSpend)
-        .filter(se -> se.getCurrency() == statisticCurrency)
-        .sorted(Comparator.comparing(SpendEntity::getSpendDate))
-        .toList();
+            .filter(se -> se.getCurrency() == statisticCurrency)
+            .sorted(Comparator.comparing(SpendEntity::getSpendDate))
+            .toList();
 
     Map<String, List<SpendJson>> map = statService.bindSpendsToCategories(sortedSpends);
 
