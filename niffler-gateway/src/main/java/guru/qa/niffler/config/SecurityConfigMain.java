@@ -32,13 +32,13 @@ public class SecurityConfigMain {
     corsCustomizer.corsCustomizer(http);
 
     http.authorizeHttpRequests(customizer ->
-        customizer.requestMatchers(
-                antMatcher("/api/session/current"),
-                antMatcher("/actuator/health"),
-                antMatcher(HttpMethod.POST, "/graphql"))
-            .permitAll()
-            .anyRequest()
-            .authenticated()
+            customizer.requestMatchers(
+                            antMatcher("/api/session/current"),
+                            antMatcher("/actuator/health"),
+                            antMatcher(HttpMethod.POST, "/graphql"))
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated()
     ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
     return http.build();
   }

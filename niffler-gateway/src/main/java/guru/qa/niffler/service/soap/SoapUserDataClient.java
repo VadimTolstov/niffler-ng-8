@@ -5,18 +5,18 @@ import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserDataClient;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import jaxb.userdata.AcceptInvitationRequest;
-import jaxb.userdata.AllUsersPageRequest;
-import jaxb.userdata.AllUsersRequest;
-import jaxb.userdata.CurrentUserRequest;
-import jaxb.userdata.DeclineInvitationRequest;
-import jaxb.userdata.FriendsPageRequest;
-import jaxb.userdata.FriendsRequest;
-import jaxb.userdata.RemoveFriendRequest;
-import jaxb.userdata.SendInvitationRequest;
-import jaxb.userdata.UpdateUserRequest;
-import jaxb.userdata.UserResponse;
-import jaxb.userdata.UsersResponse;
+import guru.qa.jaxb.userdata.AcceptInvitationRequest;
+import guru.qa.jaxb.userdata.AllUsersPageRequest;
+import guru.qa.jaxb.userdata.AllUsersRequest;
+import guru.qa.jaxb.userdata.CurrentUserRequest;
+import guru.qa.jaxb.userdata.DeclineInvitationRequest;
+import guru.qa.jaxb.userdata.FriendsPageRequest;
+import guru.qa.jaxb.userdata.FriendsRequest;
+import guru.qa.jaxb.userdata.RemoveFriendRequest;
+import guru.qa.jaxb.userdata.SendInvitationRequest;
+import guru.qa.jaxb.userdata.UpdateUserRequest;
+import guru.qa.jaxb.userdata.UserResponse;
+import guru.qa.jaxb.userdata.UsersResponse;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -73,15 +73,15 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
     request.setUsername(username);
     request.setSearchQuery(searchQuery);
     request.setPageInfo(
-        new SoapPageable(pageable).pageInfo()
+            new SoapPageable(pageable).pageInfo()
     );
 
     UsersResponse response = sendAndReceive(UsersResponse.class, request);
 
     return new PageImpl<>(
-        response.getUser().stream().map(UserJson::fromJaxb).toList(),
-        pageable,
-        response.getTotalElements()
+            response.getUser().stream().map(UserJson::fromJaxb).toList(),
+            pageable,
+            response.getTotalElements()
     );
   }
 
@@ -104,15 +104,15 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
     request.setUsername(username);
     request.setSearchQuery(searchQuery);
     request.setPageInfo(
-        new SoapPageable(pageable).pageInfo()
+            new SoapPageable(pageable).pageInfo()
     );
 
     UsersResponse response = sendAndReceive(UsersResponse.class, request);
 
     return new PageImpl<>(
-        response.getUser().stream().map(UserJson::fromJaxb).toList(),
-        PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
-        response.getTotalElements()
+            response.getUser().stream().map(UserJson::fromJaxb).toList(),
+            PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
+            response.getTotalElements()
     );
   }
 
@@ -160,19 +160,19 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
     request.setFriendToBeRemoved(targetUsername);
 
     getWebServiceTemplate().marshalSendAndReceive(
-        getDefaultUri(),
-        request
+            getDefaultUri(),
+            request
     );
   }
 
   private @Nonnull <T> T sendAndReceive(@Nonnull Class<T> responseType, @Nonnull Object request) {
     return Optional.ofNullable(
-        responseType.cast(getWebServiceTemplate().marshalSendAndReceive(
-            getDefaultUri(),
-            request
-        ))
+            responseType.cast(getWebServiceTemplate().marshalSendAndReceive(
+                    getDefaultUri(),
+                    request
+            ))
     ).orElseThrow(() -> new NoSoapResponseException(
-        "No SOAP " + responseType.getSimpleName() + " is given [/" + request.getClass().getSimpleName() + " Endpoint]"
+            "No SOAP " + responseType.getSimpleName() + " is given [/" + request.getClass().getSimpleName() + " Endpoint]"
     ));
   }
 }
