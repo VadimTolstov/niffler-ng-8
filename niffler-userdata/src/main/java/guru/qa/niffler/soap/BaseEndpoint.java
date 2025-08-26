@@ -14,9 +14,9 @@ public abstract class BaseEndpoint {
   protected @Nonnull UsersResponse enrichUsersResponse(@Nonnull Page<UserJsonBulk> users,
                                                        @Nonnull UsersResponse response) {
     response.getUser().addAll(
-        users.getContent().stream()
-            .map(UserJsonBulk::toJaxbUser)
-            .toList()
+            users.getContent().stream()
+                    .map(UserJsonBulk::toJaxbUser)
+                    .toList()
     );
     response.setTotalElements(users.getTotalElements());
     response.setTotalPages(users.getTotalPages());
@@ -26,9 +26,9 @@ public abstract class BaseEndpoint {
   protected @Nonnull UsersResponse enrichUsersResponse(@Nonnull List<UserJsonBulk> users,
                                                        @Nonnull UsersResponse response) {
     response.getUser().addAll(
-        users.stream()
-            .map(UserJsonBulk::toJaxbUser)
-            .toList()
+            users.stream()
+                    .map(UserJsonBulk::toJaxbUser)
+                    .toList()
     );
     return response;
   }

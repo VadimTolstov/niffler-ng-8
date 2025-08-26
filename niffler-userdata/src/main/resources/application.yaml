@@ -1,14 +1,7 @@
 server:
   port: 8089
-grpc:
-  server:
-    port: 8094
 
 spring:
-  grpc:
-    server:
-      servlet:
-        enabled: false
   application:
     name: niffler-userdata
   datasource:

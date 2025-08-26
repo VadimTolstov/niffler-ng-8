@@ -57,9 +57,9 @@ public class UserEndpoint extends BaseEndpoint {
   public UsersResponse allUsersPageRq(@RequestPayload AllUsersPageRequest request) {
     UsersResponse response = new UsersResponse();
     Page<UserJsonBulk> users = userService.allUsers(
-        request.getUsername(),
-        new SpringPageable(request.getPageInfo()).pageable(),
-        request.getSearchQuery()
+            request.getUsername(),
+            new SpringPageable(request.getPageInfo()).pageable(),
+            request.getSearchQuery()
     );
     return enrichUsersResponse(users, response);
   }

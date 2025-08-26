@@ -26,9 +26,9 @@ public class InvitationsEndpoint extends BaseEndpoint {
   public UserResponse sendInvitationRq(@RequestPayload SendInvitationRequest request) {
     UserResponse response = new UserResponse();
     response.setUser(
-        userService.createFriendshipRequest(
-            request.getUsername(), request.getFriendToBeRequested()
-        ).toJaxbUser()
+            userService.createFriendshipRequest(
+                    request.getUsername(), request.getFriendToBeRequested()
+            ).toJaxbUser()
     );
     return response;
   }
@@ -38,9 +38,9 @@ public class InvitationsEndpoint extends BaseEndpoint {
   public UserResponse acceptInvitationRq(@RequestPayload AcceptInvitationRequest request) {
     UserResponse response = new UserResponse();
     response.setUser(
-        userService.acceptFriendshipRequest(
-            request.getUsername(), request.getFriendToBeAdded()
-        ).toJaxbUser()
+            userService.acceptFriendshipRequest(
+                    request.getUsername(), request.getFriendToBeAdded()
+            ).toJaxbUser()
     );
     return response;
   }
@@ -50,9 +50,9 @@ public class InvitationsEndpoint extends BaseEndpoint {
   public UserResponse declineInvitationRq(@RequestPayload DeclineInvitationRequest request) {
     UserResponse response = new UserResponse();
     response.setUser(
-        userService.declineFriendshipRequest(
-            request.getUsername(), request.getInvitationToBeDeclined()
-        ).toJaxbUser()
+            userService.declineFriendshipRequest(
+                    request.getUsername(), request.getInvitationToBeDeclined()
+            ).toJaxbUser()
     );
     return response;
   }

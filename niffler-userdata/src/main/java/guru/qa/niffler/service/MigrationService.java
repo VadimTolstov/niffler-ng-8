@@ -36,7 +36,7 @@ public class MigrationService {
     List<UserEntity> users = userRepository.findAll();
     for (UserEntity user : users) {
       if ((user.getPhoto() != null && user.getPhoto().length > 0)
-          && (user.getPhotoSmall() == null || user.getPhotoSmall().length == 0)) {
+              && (user.getPhotoSmall() == null || user.getPhotoSmall().length == 0)) {
         try {
           String originalPhoto = new String(user.getPhoto(), StandardCharsets.UTF_8);
           if (isPhotoString(originalPhoto)) {
@@ -62,8 +62,8 @@ public class MigrationService {
       if ((user.getFirstname() != null || user.getSurname() != null) && (user.getFullname() == null)) {
         try {
           final String fullname = user.getFirstname() != null
-              ? user.getFirstname().trim() + (" " + user.getSurname()).trim()
-              : user.getSurname().trim();
+                  ? user.getFirstname().trim() + (" " + user.getSurname()).trim()
+                  : user.getSurname().trim();
           user.setFullname(fullname);
           userRepository.save(user);
           LOG.info("### Set fullname for user done: {}", user.getId());

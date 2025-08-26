@@ -38,9 +38,9 @@ public class FriendsEndpoint extends BaseEndpoint {
   public UsersResponse friendsPageRq(@RequestPayload FriendsPageRequest request) {
     UsersResponse response = new UsersResponse();
     Page<UserJsonBulk> users = userService.friends(
-        request.getUsername(),
-        new SpringPageable(request.getPageInfo()).pageable(),
-        request.getSearchQuery()
+            request.getUsername(),
+            new SpringPageable(request.getPageInfo()).pageable(),
+            request.getSearchQuery()
     );
     return enrichUsersResponse(users, response);
   }
@@ -48,8 +48,8 @@ public class FriendsEndpoint extends BaseEndpoint {
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "removeFriendRequest")
   public void removeFriendRq(@RequestPayload RemoveFriendRequest request) {
     userService.removeFriend(
-        request.getUsername(),
-        request.getFriendToBeRemoved()
+            request.getUsername(),
+            request.getFriendToBeRemoved()
     );
   }
 }

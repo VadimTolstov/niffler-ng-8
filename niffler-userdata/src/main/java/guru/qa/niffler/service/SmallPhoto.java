@@ -50,15 +50,15 @@ public class SmallPhoto {
              ByteArrayOutputStream os = new ByteArrayOutputStream()) {
 
           Thumbnails.of(ImageIO.read(is))
-              .height(height)
-              .width(width)
-              .outputQuality(quality)
-              .outputFormat(outputFormat)
-              .toOutputStream(os);
+                  .height(height)
+                  .width(width)
+                  .outputQuality(quality)
+                  .outputFormat(outputFormat)
+                  .toOutputStream(os);
 
           return concatArrays(
-              "data:image/png;base64,".getBytes(StandardCharsets.UTF_8),
-              Base64.getEncoder().encode(os.toByteArray())
+                  "data:image/png;base64,".getBytes(StandardCharsets.UTF_8),
+                  Base64.getEncoder().encode(os.toByteArray())
           );
         }
       } catch (Exception e) {

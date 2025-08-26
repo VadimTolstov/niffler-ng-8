@@ -27,16 +27,16 @@ public class NifflerUserdataConsumerConfiguration {
     final JsonDeserializer<UserJson> jsonDeserializer = new JsonDeserializer<>();
     jsonDeserializer.addTrustedPackages("*");
     return new DefaultKafkaConsumerFactory<>(
-        kafkaProperties.buildConsumerProperties(sslBundles),
-        new StringDeserializer(),
-        jsonDeserializer
+            kafkaProperties.buildConsumerProperties(sslBundles),
+            new StringDeserializer(),
+            jsonDeserializer
     );
   }
 
   @Bean
   public ConcurrentKafkaListenerContainerFactory<String, UserJson> kafkaListenerContainerFactory(SslBundles sslBundles) {
     ConcurrentKafkaListenerContainerFactory<String, UserJson> concurrentKafkaListenerContainerFactory
-        = new ConcurrentKafkaListenerContainerFactory<>();
+            = new ConcurrentKafkaListenerContainerFactory<>();
     concurrentKafkaListenerContainerFactory.setConsumerFactory(consumerFactory(sslBundles));
     return concurrentKafkaListenerContainerFactory;
   }
