@@ -2,8 +2,8 @@ package guru.qa.niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jaxb.userdata.Currency;
-import jaxb.userdata.User;
+import guru.qa.jaxb.userdata.Currency;
+import guru.qa.jaxb.userdata.User;
 import guru.qa.niffler.data.CurrencyValues;
 import guru.qa.niffler.data.projection.UserWithStatus;
 import jakarta.annotation.Nonnull;
@@ -49,8 +49,8 @@ public record UserJsonBulk(
     jaxbUser.setCurrency(Currency.valueOf(currency.name()));
     jaxbUser.setPhotoSmall(photoSmall);
     jaxbUser.setFriendshipStatus(friendshipStatus() == null ?
-            jaxb.userdata.FriendshipStatus.VOID :
-            jaxb.userdata.FriendshipStatus.valueOf(friendshipStatus().name()));
+            guru.qa.jaxb.userdata.FriendshipStatus.VOID :
+            guru.qa.jaxb.userdata.FriendshipStatus.valueOf(friendshipStatus().name()));
     return jaxbUser;
   }
 
@@ -61,7 +61,7 @@ public record UserJsonBulk(
             jaxbUser.getFullname(),
             CurrencyValues.valueOf(jaxbUser.getCurrency().name()),
             jaxbUser.getPhotoSmall(),
-            (jaxbUser.getFriendshipStatus() != null && jaxbUser.getFriendshipStatus() != jaxb.userdata.FriendshipStatus.VOID)
+            (jaxbUser.getFriendshipStatus() != null && jaxbUser.getFriendshipStatus() != guru.qa.jaxb.userdata.FriendshipStatus.VOID)
                     ? FriendshipStatus.valueOf(jaxbUser.getFriendshipStatus().name())
                     : null
     );
