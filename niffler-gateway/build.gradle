@@ -1,6 +1,5 @@
 plugins {
     id 'org.springframework.boot' version '3.4.2'
-    id 'io.spring.dependency-management' version '1.1.7'
     id 'com.google.cloud.tools.jib' version '3.4.1'
     id 'com.github.edeandrea.xjc-generation' version '1.6'
 }
@@ -23,7 +22,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-graphql'
     implementation "com.tailrocks.graphql:graphql-datetime-spring-boot-starter:${project.ext.springGraphqlDateTimeVersion}"
-    implementation "net.devh:grpc-client-spring-boot-starter:${project.ext.springGrpcVersion}"
+    implementation("net.devh:grpc-client-spring-boot-starter:${project.ext.springGrpcVersion}") {
+        exclude group: 'io.grpc'
+        exclude group: 'com.google.protobuf'
+    }
+    implementation "com.google.protobuf:protobuf-java-util:${project.ext.protobufVersion}"
+    implementation "io.grpc:grpc-netty-shaded:${project.ext.grpcVersion}"
+    implementation "io.grpc:grpc-services:${project.ext.grpcVersion}"
+    implementation "io.grpc:grpc-inprocess:${project.ext.grpcVersion}"
     implementation "org.springframework.cloud:spring-cloud-starter-vault-config:${project.ext.springVaultVersion}"
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${project.ext.springOpenApiVersion}"
 
@@ -37,7 +43,7 @@ xjcGeneration {
     schemas {
         wsdlSchema {
             schemaFile = 'userdata.wsdl'
-            javaPackageName = 'jaxb.userdata'
+            javaPackageName = 'guru.qa.jaxb.userdata'
             sourceSet = 'main'
         }
     }
