@@ -3,7 +3,7 @@ package guru.qa.niffler.config;
 import org.jetbrains.annotations.NotNull;
 
 enum LocalConfig implements Config {
-    INSTANCE;
+    instance;
 
     @NotNull
     @Override

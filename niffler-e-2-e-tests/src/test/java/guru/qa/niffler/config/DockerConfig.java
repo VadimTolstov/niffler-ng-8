@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import java.util.Objects;
 
 enum DockerConfig implements Config {
-    INSTANCE;
+    instance;
 
     @Nonnull
     @Override
@@ -17,7 +17,7 @@ enum DockerConfig implements Config {
     @Nonnull
     @Override
     public String authUrl() {
-        return "http://auth.niffler.dc/:9000";
+        return "http://auth.niffler.dc:9000/";
     }
 
     @Nonnull

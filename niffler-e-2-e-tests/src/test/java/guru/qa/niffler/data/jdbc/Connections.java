@@ -1,18 +1,21 @@
 package guru.qa.niffler.data.jdbc;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@ParametersAreNonnullByDefault
 public class Connections {
     private Connections() {
     }
 
     private static final Map<String, JdbcConnectionHolder> holders = new ConcurrentHashMap<>();
 
-    public static JdbcConnectionHolder holder(@Nonnull String jdbcUrl) {
+    @Nonnull
+    public static JdbcConnectionHolder holder(String jdbcUrl) {
         return holders.computeIfAbsent(
                 jdbcUrl,
                 key -> new JdbcConnectionHolder(
@@ -21,7 +24,8 @@ public class Connections {
         );
     }
 
-    public static @Nonnull JdbcConnectionHolders holders(@Nonnull String... jdbcUrl) {
+    @Nonnull
+    public static JdbcConnectionHolders holders(String... jdbcUrl) {
         List<JdbcConnectionHolder> result = new ArrayList<>();
         for (String url : jdbcUrl) {
             result.add(holder(url));

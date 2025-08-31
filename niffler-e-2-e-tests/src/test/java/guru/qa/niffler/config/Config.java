@@ -5,9 +5,9 @@ import javax.annotation.Nonnull;
 public interface Config {
 
     static Config getInstance() {
-        return "docker".equals(System.getProperty("test.evn"))
-                ? DockerConfig.INSTANCE
-                : LocalConfig.INSTANCE;
+        return "docker".equals(System.getProperty("test.env"))
+                ? DockerConfig.instance
+                : LocalConfig.instance;
     }
 
     @Nonnull
