@@ -6,11 +6,7 @@ import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.model.allure.ScreenDif;
 import io.qameta.allure.Allure;
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
-import org.junit.jupiter.api.extension.ParameterResolver;
-import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
+import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.springframework.core.io.ClassPathResource;
 
@@ -22,7 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
 
-import static guru.qa.niffler.jupiter.extension.TestMethodContextExtension.context;
+import static guru.qa.niffler.jupiter.extension.TestsMethodContextExtension.context;
 
 @ParametersAreNonnullByDefault
 public class ScreenShotTestExtension implements ParameterResolver, TestExecutionExceptionHandler {
@@ -62,7 +58,7 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
                     ImageIO.write(
                             actual,
                             "png",
-                            new File("src/test/resources/" + CFG.screenshotBaseDir() + screenShotTest.expected())
+                            new File(".screen-output/" + CFG.screenshotBaseDir() + screenShotTest.expected())
                     );
                 }
             }

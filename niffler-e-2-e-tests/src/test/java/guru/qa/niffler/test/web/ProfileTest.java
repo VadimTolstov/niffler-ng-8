@@ -86,7 +86,7 @@ public class ProfileTest {
 
     @User
     @ApiLogin
-    @ScreenShotTest(expected = "expectedAvatar.png")
+    @ScreenShotTest(expected = "expectedAvatar.png", rewriteExpected = true)
     @DisplayName("Перевод категории из архивной в действующий с изменением названия")
     void avatarTest(BufferedImage expectedAvatar) throws IOException {
         ProfilePage profilePage = Selenide.open(ProfilePage.URL, ProfilePage.class)
