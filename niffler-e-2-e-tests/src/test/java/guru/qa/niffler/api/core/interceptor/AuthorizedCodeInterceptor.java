@@ -2,7 +2,6 @@ package guru.qa.niffler.api.core.interceptor;
 
 
 import guru.qa.niffler.api.core.store.AuthCodeStore;
-import guru.qa.niffler.jupiter.extension.TestMethodContextExtension;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import org.apache.commons.lang3.StringUtils;
