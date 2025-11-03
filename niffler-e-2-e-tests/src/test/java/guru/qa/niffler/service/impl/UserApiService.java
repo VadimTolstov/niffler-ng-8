@@ -11,6 +11,7 @@ import guru.qa.niffler.utils.OauthUtils;
 import guru.qa.niffler.utils.RandomDataUtils;
 import io.qameta.allure.Step;
 import lombok.extern.slf4j.Slf4j;
+import org.opentest4j.AssertionFailedError;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -61,17 +62,21 @@ public class UserApiService implements UsersClient {
         while (sw.elapsed(TimeUnit.MILLISECONDS) < maxWaitTime) {
             try {
                 UserJson userJson = userApiClient.currentUser(username);
-                if (userJson != null || userJson.id() != null) {
+                if (userJson != null && userJson.id() != null) {
                     return userJson; // Пользователь найден, возвращаем
                 } else {
                     Thread.sleep(100); // Ожидаем перед следующей проверкой
                 }
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 throw new RuntimeException("Ошибка при выполнении запроса на получение пользователя или ожидании", e);
+            } catch (AssertionFailedError e) {
+                // Игнорируем AssertionFailedError и продолжаем ожидание
+                log.debug("AssertionFailedError при проверке пользователя {}, продолжаем ожидание...", username);
             }
         }
         // Если пользователь не найден за отведенное время
-        throw new AssertionError("Пользователь не был найден в системе после истечения времени ожидания");
+        throw new AssertionError("Пользователь " + username + " не найден после " + maxWaitTime + "ms");
     }
 
     @Override
