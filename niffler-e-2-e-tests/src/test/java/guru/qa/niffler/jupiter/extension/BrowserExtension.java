@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.*;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxOptions;
 
 import java.io.ByteArrayInputStream;
 
@@ -20,12 +21,25 @@ public class BrowserExtension implements
         LifecycleMethodExecutionExceptionHandler {
 
     static {
+        String browser = System.getenv("SELENOID_BROWSER");
+        if (browser == null || browser.isEmpty() || "chrome".equals(browser)) {
+            browser = "chrome";
+            Configuration.browserVersion = "127.0";
+        }
+
+        Configuration.browser = browser;
         Configuration.timeout = 8000;
         Configuration.pageLoadStrategy = "eager";
+        if ("firefox".equals(browser)) {
+            Configuration.browserVersion = "125.0";
+            Configuration.browserCapabilities = new FirefoxOptions();
+        }
+
         if ("docker".equals(System.getProperty("test.env"))) {
             Configuration.remote = "http://selenoid:4444/wd/hub";
-            Configuration.browserVersion = "127.0";
-            Configuration.browserCapabilities = new ChromeOptions().addArguments("--no-sandbox");
+            if ("chrome".equals(browser)) {
+                Configuration.browserCapabilities = new ChromeOptions().addArguments("--no-sandbox");
+            }
         }
     }
 
@@ -42,6 +56,8 @@ public class BrowserExtension implements
                 .savePageSource(false)
                 .screenshots(false)
         );
+        // Добавляем информацию о браузере в Allure
+        Allure.addAttachment("Browser", "text/plain", Configuration.browser + " " + Configuration.browserVersion);
     }
 
     @Override

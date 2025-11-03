@@ -81,12 +81,6 @@ enum DockerConfig implements Config {
         return Objects.requireNonNullElse(allureDockerApiUrl, "http://allure:5050/");
     }
 
-//    @Nonnull
-//    @Override
-//    public String screenshotBaseDir() {
-//        return "screenshots/local/";
-//    }
-
     @NotNull
     @Override
     public String screenshotBaseDir() {

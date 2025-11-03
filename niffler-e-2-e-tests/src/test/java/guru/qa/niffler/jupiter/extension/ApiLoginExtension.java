@@ -127,19 +127,19 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
     }
 
     public static void setToken(String token) {
-        TestMethodContextExtension.context().getStore(NAMESPACE).put("token", token);
+        TestsMethodContextExtension.context().getStore(NAMESPACE).put("token", token);
     }
 
     public static String getToken() {
-        return TestMethodContextExtension.context().getStore(NAMESPACE).get("token", String.class);
+        return TestsMethodContextExtension.context().getStore(NAMESPACE).get("token", String.class);
     }
 
     public static void setCode(String code) {
-        TestMethodContextExtension.context().getStore(NAMESPACE).put("code", code);
+        TestsMethodContextExtension.context().getStore(NAMESPACE).put("code", code);
     }
 
     public static String getCode() {
-        return TestMethodContextExtension.context().getStore(NAMESPACE).get("code", String.class);
+        return TestsMethodContextExtension.context().getStore(NAMESPACE).get("code", String.class);
     }
 
     public static Cookie getJsessionIdCookie() {

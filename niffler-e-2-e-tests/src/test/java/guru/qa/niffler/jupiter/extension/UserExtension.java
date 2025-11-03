@@ -55,7 +55,7 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
     }
 
     public static void setUser(UserJson user) {
-        final ExtensionContext context = TestMethodContextExtension.context();
+        final ExtensionContext context = TestsMethodContextExtension.context();
         context.getStore(NAMESPACE).put(
                 context.getUniqueId(),
                 user.withPassword(
@@ -75,12 +75,12 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
     }
 
     public static @Nullable UserJson createdUser() {
-        final ExtensionContext context = TestMethodContextExtension.context();
+        final ExtensionContext context = TestsMethodContextExtension.context();
         return context.getStore(NAMESPACE).get(context.getUniqueId(), UserJson.class);
     }
 
     public static UserJson getUserJson() {
-        final ExtensionContext context = TestMethodContextExtension.context();
+        final ExtensionContext context = TestsMethodContextExtension.context();
         return context.getStore(NAMESPACE).get(context.getUniqueId(), UserJson.class);
     }
 }
